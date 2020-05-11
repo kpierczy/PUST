@@ -1,0 +1,105 @@
+\chapter{Badanie odpornoœci regulatora na b³êdy pomiaru}
+
+Ostatnie zagadnienie, jakie przysz³o nam rozwa¿yæ w~kontekœcie projektowanego regulatora, to jego odpornoœæ na b³êdy pomiaru. Poprzednie eksperymenty pokaza³y, ¿e poprawnie zamodelowana zale¿noœæ miêdzy wartoœci¹ wyjœcia procesu, a~wartoœci¹ zak³ócenia i~uwzglêdnienie jej w~algorytmie DMC potrafi w~znacznym stopniu zredukowaæ b³êdy regulacji. Jednak w przypadku symulacji, regulator dysponowa³ zawsze dok³adnym pomiarem zak³ócenia, poniewa¿ to my, jako projektanci, ustalaliœmy jaki ma byæ jego przebieg. W~rzeczywistym œwiecie jest jednak inaczej. Ka¿dy pomiar wartoœci fizycznej jest obci¹¿ony pewn¹ niepewnoœci¹. W~przypadku wysokiej klasy aparatury pomiarowej b³êdy niepewnoœci te da siê w du¿ym stopniu ograniczyæ, jednak nigdy nie da siê ich kompletnie usun¹æ. Spróbowaliœmy zatem zamodelewaæ proces pomiaru obarczony niepewnoœci¹ i~w~takich warunkach przetestowaæ nasz regulator po raz ostatni.
+
+Zazwyczaj, ze wzglêdu na brak precyzyjnych danych na temat przyczyn powstawania b³êdu pomiarowego lub braku wiedzy na temat mierzonej wartoœci, wielkoœæ niepewnoœci mo¿emy modelowaæ jako pewn¹ zmienn¹ losow¹ o~¿¹danej wartoœci œredniej i~odchyleniu standardowym. Je¿eli ka¿dy pomiar zamodelujemy tak¹ sam¹ zmienn¹ losow¹, to zgodnie z Centralnym twierdzeniem granicznym, suma tych zmiennych bêdzie d¹¿y³a do zmiennej losowej o~rozk³adzie normalnym. Dlatego w³aœnie, jako model naszej niepewnoœci przyjeliœmy \textbf{addytywny szum gaussowski} realizowany z~wykorzystaniem funkcji \textit{randn()} œrodowiska Matlab. Trajektoria zak³ócenia powsta³a jako suma skokowej trajektorii, wykorzystywanej w~poprzednich eksperymentach, oraz~wektora losowego. Testy przeprowadziliœmy dla piêciu konfiguracji wartoœci œredniej i~odchylenia standardowego szumu, zastawionych w~tabeli \ref{gaussian_noise_configurations}.
+
+\vskip 0.5cm
+\begin{table}[h]
+    \centering
+	\sisetup{table-format = 2.4}
+	\begin{small}
+		\begin{tabular}{|c|c|c|}
+            \hline
+            Nr &  Wartoœæ œrednia  & Odchylenie standardowe \\
+            \hline
+            1  &        0.0        &         0.01           \\
+            2  &        0.0        &         0.08           \\
+            3  &        0.0        &         1.00           \\
+            4  &        0.1        &         0.10           \\
+            5  &        0.1        &         0.50           \\
+            \hline
+		\end{tabular}
+    \end{small}
+    \caption{Wartoœci œrednie i~odchyleni standardowe szumu wykorzystywanego w~eksperymentach}
+    \label{gaussian_noise_configurations}
+\end{table}
+\vskip 0.5cm
+
+Pierwsza po³owa testów zosta³a przeprowadzona przy zerowej wartoœci œredniej szumu. Jest to stosunkowo naturalne za³o¿enie, gdy¿ w~ogólnoœci, przy sprawnej aparaturze pomiarowej nie istniej¹ ¿adne przes³anki, które wprowadza³yby jak¹œ tendencjê w~zak³amywaniu pomiarów. Przebieg pokazany na rysunku \ref{Desired_output_plot_mean_0_std_dev_0.01} pokazuje, ¿e niewielki szum pomiarowy, który móg³by na przyk³ad odpowiadaæ b³êdowi kwantyzacji przy pomiarze z~wykorzystaniem przetwornika analogowo-cyfrowego o~wysokiej rozdzielczoœci praktycznie nie wp³ywana jakoœæ regulacji.
+
+\begin{center}
+    \begin{figure}[H]
+        \makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_7/Desired_output_plot_mean_0_std_dev_0.01.pdf}}
+        \caption{Wartoœæ œrednia = \num{0}, Odchylenie standardowe = \num{0.01}}
+        \label{Desired_output_plot_mean_0_std_dev_0.01}
+    \end{figure}
+\end{center}
+
+W~kolejnym eksperymencie zwiêkszono wartoœæ odchylenia standardowego szumu do \num{0.08}. Wyniki przedstawiono na rysunku \ref{Desired_output_plot_mean_0_std_dev_0.08}. Jak widaæ, jakoœæ regulacji uleg³a znacz¹cej zmianie. Regulator nie jest w~stanie doprowadziæ do stabilizacji wyjœcia procesu. Wystêpuj¹ ci¹g³e oscylacje wokó³ wartoœci zadanej. Oscylacje te s¹ jednak stosunkowo niewielkie i~w~wielu zastosowaniach by³yby one dopuszczalne.
+
+\begin{center}
+    \begin{figure}[H]
+        \makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_7/Desired_output_plot_mean_0_std_dev_0.08.pdf}}
+        \caption{Wartoœæ œrednia = \num{0}, Odchylenie standardowe = \num{0.08}}
+        \label{Desired_output_plot_mean_0_std_dev_0.08}
+    \end{figure}
+\end{center}
+
+Dalsze zwiêkszanie odchylenia standardowego szumu prowadzi do sytuacji pokazanej na wykresie \ref{Desired_output_plot_mean_0_std_dev_1}. W~tym przypadku jakoœæ regulacji jest ju¿ zupe³nie niedopuszczalna. Regulator nie jest w stanie ustabilizowaæ wyjœcia procesu. Sygna³ wyjœciowy zaczyna przypominaæ wektor losowy o~rozk³adzie przypominaj¹cym rozk³ad szumu pomiarowego.
+
+\begin{center}
+    \begin{figure}[H]
+        \makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_7/Desired_output_plot_mean_0_std_dev_1.pdf}}
+        \caption{Wartoœæ œrednia = \num{0}, Odchylenie standardowe = \num{1}}
+        \label{Desired_output_plot_mean_0_std_dev_1}
+    \end{figure}
+\end{center}
+
+Kolejne dwa testy zosta³y przeprowadzone z~niezerow¹ wartoœci¹ œredni¹ szumu. Wyniki zosta³y przedstawiona na wykresach \ref{Desired_output_plot_mean_0.2_std_dev_0.2} oraz \ref{Desired_output_plot_mean_0.1_std_dev_0.5}. Ponownie dochodzimy do tych samych wniosków. Szum pomiarowy oscyluj¹cy blisko wokó³ pewnej wartoœci nie jest wielk¹ przeszkod¹ do zastosowania algorytmu DMC z~uwzglêdnieniem mierzalnych zak³óceñ. Jednak gdy rozrzut b³êdu wokó³ wartoœci œredniej jest du¿y, regulator przestaje sobie radziæ. 
+
+\begin{center}
+    \begin{figure}[H]
+        \makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_7/Desired_output_plot_mean_0.2_std_dev_0.2.pdf}}
+        \caption{Wartoœæ œrednia = \num{0.2}, Odchylenie standardowe = \num{0.2}}
+        \label{Desired_output_plot_mean_0.2_std_dev_0.2}
+    \end{figure}
+\end{center}
+
+\begin{center}
+    \begin{figure}
+        \makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_7/Desired_output_plot_mean_0.1_std_dev_0.5.pdf}}
+        \caption{Wartoœæ œrednia = \num{0.1}, Odchylenie standardowe = \num{0.5}}
+        \label{Desired_output_plot_mean_0.1_std_dev_0.5}
+    \end{figure}
+\end{center}
+    
+Na naszych wykresach zabrak³o przypadku z~wysok¹ wartoœci¹ œredni¹ i~niskim odchyleniem standardowym szumu. Jednak takie testy zosta³y przeprowadzone. Okazuje siê, ¿e to w³aœnie du¿a wariancja b³êdów pomiarowych, a nie ich wartoœæ œrednia jest groŸna dla procesu regulacji. W~takiej sytuacji algorytm DMC próbuje w~ka¿dej iteracji skompensowaæ now¹ wartoœæ zak³ócenia, jednak zanim obiekt zd¹¿y zareagowaæ, wartosæ ta zostaje ca³kowicie zmieniona. Z~drugiej strony niski rozrzut b³êdu pomiarowego przy jego du¿ej wartoœci œredniej, praktycznie w~¿aden sposób nie zaburza regulacji. Dane to pokazuj¹ce zosta³y zestawione w tabeli \ref{tab:gaussian_noise_configurations}.
+
+\vskip 0.5cm
+\begin{table}[h]
+    \centering
+	\sisetup{table-format = 2.4}
+	\begin{small}
+		\begin{tabular}{|c|c|c|c|}
+            \hline
+            Nr &  Wartoœæ œrednia  & Odchylenie standardowe & B³¹d regulacji \\
+            \hline
+            0  &        0.0        &         0.00           &      87.88      \\
+            1  &        0.0        &         0.01           &      87.48      \\
+            2  &        0.0        &         0.08           &      88.54      \\
+            3  &        0.0        &         1.00           &      236.66      \\
+            4  &        0.1        &         0.10           &      91.55      \\
+            5  &        0.1        &         0.50           &      140.20      \\
+            6  &        6.0        &         0.00           &      328.07      \\
+            \hline
+		\end{tabular}
+    \end{small}
+    \caption{B³êdy regulacji przy ró¿nych rozk³adach szumu pomiarowego}
+    \label{tab:gaussian_noise_configurations}
+\end{table}
+\vskip 0.5cm
+
+Stosunkowo wysokie wartoœci b³êdu przy niskim odchyleniu standardowym i~wysokiej wartoœci œredniej szumu wynikaj¹ z tego, ¿e punktem pocz¹tkowym symulacji by³ punkt $u = z = y = 0$. Nag³a zmiana wartoœci zak³ócenia w~du¿ym zakresie spowodowa³a zatem skumulowanie b³êdu sterowania. Jednak po ustabilizowaniu wyjœcia, regulacja wróci³a do normy i~nie obserwowano znacznych odchyleñ wzglêdem regulacji bez szumu pomiarowego.
+
+Powy¿sze wnioski wydaj¹ siê stosunkowo intuicyjne w~przypadku algorytmu DMC. Jak wiadomo, model w~postaci odpowiedzi skokowej operuje \textbf{na zmianach wartoœci sygna³ów, a nie na ich wartoœciach bezwzglêdnych}. Jeœli zatem b³¹d pomiarowy jest wysoki, ale jego zmiennoœæ jest niska w~trakcie procesu regulacji, regulator szybko adaptuje siê bior¹c pod uwagê jedynie ró¿nice pomiarów z~kolejnych chwil dyskretnych. Pokazuje to, ¿e algorytm DMC sprawdzaæ siê mo¿e dobrze \textbf{w~sytuacjach, w których aparatura pomiarowa nara¿ona jest na uszkodzenia skutkuj¹ce przek³amaniem wartoœci mierzonej o~sta³¹ wartoœæ}.

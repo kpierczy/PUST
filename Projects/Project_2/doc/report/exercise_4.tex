@@ -1,0 +1,147 @@
+\chapter{Regulator DMC}
+Jak zaznaczono na wstêpie, celem dotychczasowych dzia³añ zwi¹zanych z~obiektem regulacji by³o zaprojektowanie regulatora DMC, który uwzglêdnia³by informacjê o~wartoœci zak³ócenia. W~tym celu ponownie wykorzystaliœmy funkcje Matlaba, które pos³u¿y³y nam do realizacji projektu pierwszego. Ze wzglêdu na fakt, ¿e zarówno wykorzystywany algorytm, jak i~metodologia przeprowadzanych badañ pozosta³a taka sama jak w~poprzednim projekcie. Funkcje te wymaga³y tylko nieznacznej zmiany w~postaci dodatkowych obliczeñ zwi¹zanych z~macierz¹ $M_z^P$ oraz uwzglêdniania wartoœci zak³ócenia przy obliczaniu trajektorii swobodnej $Y_0$. Obliczenia algorytmu DMC, po uwzglêdnieniu zak³ócenia mierzalnego przybieraj¹ postaæ
+
+\begin{equation}
+	\Delta u = K \cdot (Y^{zad} - Y^0),
+\end{equation}
+gdzie:
+\begin{equation}
+	K = (M^TM + \lambda I)^{-1}M^T
+\end{equation}
+\begin{equation}
+	Y^0 = Y(k) + M^P \cdot \Delta U^P(k) + M_z^P \cdot \Delta Z^P(k)
+\end{equation}
+\vskip 0.5cm
+
+Tak jak w przypadku SISO, $K$ jest macierz¹, któr¹ otrzymujemy w wyniku analitycznego rozwi¹zania zadania optymalizacji przyrostów sterowania na horyzoncie predykcji $N$, a~$Y_0$ jest trajektori¹ swobodn¹. Jedynie w przypadku tej drugiej wartoœci zachodzi zmiana wzglêdem wariantu, który nie uwzglêdnia wartoœci zak³óceñ. Wynika to z~faktu, i¿ zak³ócenie jest wejœciem niesterowanym, a~zatem trajektoria wymuszona od niego nie zale¿y. Wzory opisuj¹ce budowê poszczególnych macierzy i wektorów w powy¿szych równaniach przedstawiono poni¿ej.
+
+\vskip 0.5cm
+\begin{equation}
+    \boldsymbol{M}=\left[
+		\begin{array}
+			{cccc}
+			s_{1} & 0 & \ldots & 0\\
+			s_{2} & s_{1} & \ldots & 0\\
+			\vdots & \vdots & \ddots & \vdots\\
+			s_{N} & s_{N-1} & \ldots &  s_{N} - N_u + 1
+		\end{array}
+	\right]
+\end{equation}
+\vskip 0.5cm
+\begin{equation}
+    \boldsymbol{M^p}=\left[
+        \begin{array}
+            {cccc}
+            s_{2} - s_{1} & s_{3} - s_{2} & \ldots & s_{D} - s_{D-1}\\
+            s_{3} - s_{1} & s_{4} - s_{2} & \ldots & s_{D+1} - s_{D-1}\\
+            \vdots & \vdots & \ddots & \vdots\\
+            s_{N+1} - s_{1} & s_{N+2} - s_{2} & \ldots &  s_{N+D-1} - s_{D-1}
+        \end{array}
+    \right]
+\end{equation}
+\vskip 0.5cm
+\begin{equation}
+    \boldsymbol{M_z^p}=\left[
+        \begin{array}
+            {cccc}
+            s_{1}^z & s_{2}^z - s_{1}^z & \ldots & s_{D_z}^z - s_{D_z-1}^z \\
+            s_{2}^z & s_{3}^z - s_{1}^z & \ldots & s_{D_z}^z - s_{D_z-1}^z \\
+            \vdots & \vdots & \ddots & \vdots\\
+            s_{N}^z & s_{N+1}^z - s_{1}^z & \ldots &  s_{D_z}^z - s_{D_z-1}^z
+        \end{array}
+    \right]
+\end{equation}
+\vskip 0.5cm
+\begin{equation}
+    \boldsymbol{Y(k)}=\left[
+        \begin{array}
+            {c}
+            y(k)  \\
+            y(k)  \\
+            \vdots \\
+            y(k) 
+        \end{array}
+	\right]
+\end{equation}
+\vskip 0.5cm
+\begin{equation}
+    \boldsymbol{\Delta U^P(k)}=\left[
+		\begin{array}
+			{c}
+			\Delta u(k-1) \\
+			\Delta u(k-2) \\
+			\vdots \\
+			\Delta u(k - (D - 1))
+		\end{array}
+	\right]
+\end{equation}
+\vskip 0.5cm
+\begin{equation}
+    \boldsymbol{\Delta Z^P(k)}=\left[
+		\begin{array}
+			{c}
+			\Delta z(k) \\
+			\Delta u(k-1) \\
+			\vdots \\
+			\Delta u(k - D_z)
+		\end{array}
+	\right]
+\end{equation}
+
+Do doboru parametrów regulatora wykorzystaliœmy metodê in¿yniersk¹. Do oceny jakoœci regulacji wykorzystujemy wskaŸnik E dany wzorem:
+\begin{equation}
+	E = \sum\limits_{k = 1}^{k_{konc}} (y^{zad}(k) - y(k))^2
+\end{equation}
+Podczas testów bêdzie brany pod uwagê równie¿ przebieg sygna³u steruj¹cego (w przeciwnym przypadku regulator bêdzie bardzo gwa³townie zmienia³ sygna³ steruj¹cy i jego przyrosty w kolejnych próbkach bêd¹ znacz¹ce ). Ta ocena jest ustalana na podstawie obserwacji. 
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4/Desired_output_plot_zad_4_iter_01_D_180_Dz_0_N_60_Nu_60_lambda_1_error_84.1633.pdf}}
+\caption{D=180, Dz=0, N=60, Nu=60, $\lambda=1$, error=84.1633}
+\label{Desired_output_plot_zad_4_iter_01_D_180_Dz_0_N_60_Nu_60_lambda_1_error_84.1633}
+\end{figure}
+\end{center}
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4/Desired_output_plot_zad_4_iter_02_D_180_Dz_0_N_50_Nu_30_lambda_1_error_84.1633.pdf}}
+\caption{D=180, Dz=0, N=50, Nu=30, $\lambda=1$, error=84.1633}
+\label{Desired_output_plot_zad_4_iter_02_D_180_Dz_0_N_50_Nu_30_lambda_1_error_84.1633}
+\end{figure}
+\end{center}
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4/Desired_output_plot_zad_4_iter_03_D_180_Dz_0_N_50_Nu_30_lambda_10_error_104.4843.pdf}}
+\caption{D=180, Dz=0, N=50, Nu=30, $\lambda=10$, error=104.4843}
+\label{Desired_output_plot_zad_4_iter_03_D_180_Dz_0_N_50_Nu_30_lambda_10_error_104.4843}
+\end{figure}
+\end{center}
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4/Desired_output_plot_zad_4_iter_04_D_180_Dz_0_N_50_Nu_30_lambda_0.2_error_75.8395.pdf}}
+\caption{D=180, Dz=0, N=50, Nu=30, $\lambda=0.2$, error=75.8395}
+\label{Desired_output_plot_zad_4_iter_04_D_180_Dz_0_N_50_Nu_30_lambda_0.2_error_75.8395}
+\end{figure}
+\end{center}
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4/Desired_output_plot_zad_4_iter_05_D_180_Dz_0_N_20_Nu_10_lambda_0.2_error_75.8413.pdf}}
+\caption{D=180, Dz=0, N=20, Nu=10, $\lambda=0.2$, error=75.8413}
+\label{Desired_output_plot_zad_4_iter_05_D_180_Dz_0_N_20_Nu_10_lambda_0.2_error_75.8413}
+\end{figure}
+\end{center}
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4/Desired_output_plot_zad_4_iter_06_D_180_Dz_0_N_20_Nu_10_lambda_0.1_error_73.2834.pdf}}
+\caption{D=180, Dz=0, N=20, Nu=10, $\lambda=0.1$, error=73.2834}
+\label{Desired_output_plot_zad_4_iter_06_D_180_Dz_0_N_20_Nu_10_lambda_0.1_error_73.2834}
+\end{figure}
+\end{center}
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4/Desired_output_plot_zad_4_iter_07_D_180_Dz_0_N_20_Nu_10_lambda_0.01_error_68.0982.pdf}}
+\caption{D=180, Dz=0, N=20, Nu=10, $\lambda=0.01$, error=68.0982}
+\label{Desired_output_plot_zad_4_iter_07_D_180_Dz_0_N_20_Nu_10_lambda_0.01_error_68.0982}
+\end{figure}
+\end{center}
+
+Na podstawie testów widzimy, ¿e najwiêkszy wp³yw na wskaŸnik E ma parametr $\lambda$. Z tego powodu skróciliœmy horyzont predykcji i horyzont sterowania, gdy¿ nie wp³ywa w zauwa¿alnym stopniu na jakoœæ regulacji, ale zmniejsza liczbê potrzebnych obliczeñ w ka¿dej iteracji. Parametr $\lambda$ zmniejszaliœmy, by pozwoliæ na wiêksze przyrosty w kolejnych próbkach, co znacz¹co zwiêksza³o jakoœæ regulacji. Jak widzimy pomiêdzy $\lambda=\num{0,1}$ , a $\lambda=\num{0,01}$ nie daje a¿ takiego polepszenia jakoœci regulacji jak zmiana $\lambda$ z 1 na $\num{0,1}$. Zmiany sygna³u steruj¹cego s¹ oko³o dwa razy wy¿sze ni¿ dla $\lambda$ wynosz¹cego $\num{0,1}$. Z tego te¿ powodu ostatecznie wybrane te¿ parametry maj¹ wartoœæ : D =  180, N = 20, Nu = 10 , $\lambda=\num{0,1}$ i z nich bêdziemy korzystali w kolejnych zadaniach.

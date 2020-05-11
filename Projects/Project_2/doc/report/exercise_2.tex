@@ -1,0 +1,173 @@
+\chapter{Badanie odpowiedzi skokowej}
+W zadaniu drugim ponownie stanêliœmy przed zadaniem zbadania odpowiedzi skokowych uk³adu dla ró¿nych skoków wejœcia. Badanie to mia³o na celu sprawdzenie ewentualnej liniowoœci procesu oraz okreœlenia jego wzmocnienia statycznego. W~tym celu przeprowadziliœmy 153 symulacje. Wszystkie skoki odbywa³y siê z punktu pracy $u = z = y = 0$. Skoki wartoœci wejœciowych odbywa³y siê w zakresach
+
+\begin{equation}
+    \begin{cases}
+        u \in [-8.0; 8.0] \\
+        z \in [-4.0; 4.0]
+    \end{cases}
+\end{equation}
+
+P³aszczyzna ta zosta³a równomiernie pokryta przez symulacje, tzn. zosta³a sprawdzona ka¿da para wartoœci skoków sterowania i~zak³ócenia, przy czym wartoœci te by³y próbkowane z~podanych powy¿ej zakresów w~odleg³oœciach jednostkowych. Skoki wartoœci wejœciowych odbywa³y siê równoczeœnie w chwili $n = 0$ (zak³adaliœmy, ¿e wartoœci wszystkich sygna³ów w chwilach $n < 0$ by³y zerowe). Ze wzglêdu na liczbê przeprowadzonych eksperymentów zdecydowaliœmy siê zaprezentowaæ wyniki tylko tych, w~których skok wykonywany by³ tylko na jednym z~wejœæ. Na rysunkach \ref{input_step} oraz \ref{disturbance_step} zaprezentowano przebiegi sygna³u wyjœciowego kolejno dla skoków wartoœci steruj¹cej i~wartoœci zak³ócenia.
+
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=0.5\textwidth,
+                    xmin=0,xmax=100,ymin=-9,ymax=13,
+                    xlabel={$k$},
+                    ylabel={$y(k)$},
+                    xtick={0,25,50,75,100},
+                    legend pos=south east,
+                    legend style={font=\tiny},
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                
+                \addplot[const plot, blue]               file {data/exercise_2/U_steps_edited/U_jump_to_0_edited.txt};
+                \addplot[const plot, cyan]               file {data/exercise_2/U_steps_edited/U_jump_to_1_edited.txt};
+                \addplot[const plot, green]              file {data/exercise_2/U_steps_edited/U_jump_to_-1_edited.txt};
+                \addplot[const plot, lime]               file {data/exercise_2/U_steps_edited/U_jump_to_2_edited.txt};
+                \addplot[const plot, olive]              file {data/exercise_2/U_steps_edited/U_jump_to_-2_edited.txt};
+                \addplot[const plot, yellow]             file {data/exercise_2/U_steps_edited/U_jump_to_3_edited.txt};
+                \addplot[const plot, orange]             file {data/exercise_2/U_steps_edited/U_jump_to_-3_edited.txt};
+                \addplot[const plot, red]                file {data/exercise_2/U_steps_edited/U_jump_to_4_edited.txt};
+
+                \legend{$\Delta U=\num{0}$,$\Delta U=\num{1}$,$\Delta U=\num{-1}$,$\Delta U=\num{2}$,$\Delta U=\num{-2}$,$\Delta U=\num{3}$,$\Delta U=\num{-3}$,$\Delta U=\num{4}$}
+
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Przebieg wartoœci wyjœciowej procesu przy skokowej zmianie sygna³u steruj¹cego}
+    \label{input_step}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=0.5\textwidth,
+                    xmin=0,xmax=100,ymin=-5,ymax=7,
+                    xlabel={$k$},
+                    ylabel={$y(k)$},
+                    xtick={0,25,50,75,100},
+                    legend pos=south east,
+                    legend style={font=\tiny},
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                
+                \addplot[const plot, blue]               file {data/exercise_2/Z_steps_edited/Z_jump_to_0_edited.txt};
+                \addplot[const plot, cyan]               file {data/exercise_2/Z_steps_edited/Z_jump_to_1_edited.txt};
+                \addplot[const plot, green]              file {data/exercise_2/Z_steps_edited/Z_jump_to_-1_edited.txt};
+                \addplot[const plot, lime]               file {data/exercise_2/Z_steps_edited/Z_jump_to_2_edited.txt};
+                \addplot[const plot, olive]              file {data/exercise_2/Z_steps_edited/Z_jump_to_-2_edited.txt};
+                \addplot[const plot, yellow]             file {data/exercise_2/Z_steps_edited/Z_jump_to_3_edited.txt};
+                \addplot[const plot, orange]             file {data/exercise_2/Z_steps_edited/Z_jump_to_-3_edited.txt};
+                \addplot[const plot, red]                file {data/exercise_2/Z_steps_edited/Z_jump_to_4_edited.txt};
+
+                \legend{$\Delta U=\num{0}$,$\Delta U=\num{1}$,$\Delta U=\num{-1}$,$\Delta U=\num{2}$,$\Delta U=\num{-2}$,$\Delta U=\num{3}$,$\Delta U=\num{-3}$,$\Delta U=\num{4}$}
+
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Przebieg wartoœci wyjœciowej procesu przy skokowej zmianie zak³óceñ}
+    \label{disturbance_step}
+\end{figure}
+
+Wyniki wszystkich symulacji ujawni³y, ¿e w badanym zakresie wartoœci wejœciowych obiekt posiada silnie liniow¹ charakterystykê. Wykres prezentuj¹cy wartoœæ ustalon¹ wyjœcia po wykonaniu skoku dla wszystkich przeprowadzonych eksperymentów zaprezentowano na \ref{static_characteristic}.
+
+\begin{tikzpicture}
+\begin{axis}[
+	grid=both,minor tick num=1,
+	xlabel=$u$,ylabel=$z$,
+	legend pos = north east
+	]
+\addplot3[surf, shader=interp, mesh/ordering=y varies, mesh/cols=3]
+	table {
+8	4	27.5790000000000
+6	4	22.1840000000000
+4	4	16.7880000000000
+2	4	11.3920000000000
+0	4	5.99630000000000
+-2	4	0.600520000000000
+-4	4	-4.79520000000000
+-6	4	-10.1910000000000
+-8	4	-15.5870000000000
+8	3	26.0800000000000
+6	3	20.6840000000000
+4	3	15.2890000000000
+2	3	9.89300000000000
+0	3	4.49720000000000
+-2	3	-0.898550000000000
+-4	3	-6.29430000000000
+-6	3	-11.6900000000000
+-8	3	-17.0860000000000
+8	2	24.5810000000000
+6	2	19.1850000000000
+4	2	13.7900000000000
+2	2	8.39390000000000
+0	2	2.99810000000000
+-2	2	-2.39760000000000
+-4	2	-7.79340000000000
+-6	2	-13.1890000000000
+-8	2	-18.5850000000000
+8	1	23.0820000000000
+6	1	17.6860000000000
+4	1	12.2910000000000
+2	1	6.89480000000000
+0	1	1.49910000000000
+-2	1	-3.89670000000000
+-4	1	-9.29250000000000
+-6	1	-14.6880000000000
+-8	1	-20.0840000000000
+8	0	21.5830000000000
+6	0	16.1870000000000
+4	0	10.7920000000000
+2	0	5.39580000000000
+0	0	0
+-2	0	-5.39580000000000
+-4	0	-10.7920000000000
+-6	0	-16.1870000000000
+-8	0	-21.5830000000000
+8	-1	20.0840000000000
+6	-1	14.6880000000000
+4	-1	9.29250000000000
+2	-1	3.89670000000000
+0	-1	-1.49910000000000
+-2	-1	-6.89480000000000
+-4	-1	-12.2910000000000
+-6	-1	-17.6860000000000
+-8	-1	-23.0820000000000
+8	-2	18.5850000000000
+6	-2	13.1890000000000
+4	-2	7.79340000000000
+2	-2	2.39760000000000
+0	-2	-2.99810000000000
+-2	-2	-8.39390000000000
+-4	-2	-13.7900000000000
+-6	-2	-19.1850000000000
+-8	-2	-24.5810000000000
+8	-3	17.0860000000000
+6	-3	11.6900000000000
+4	-3	6.29430000000000
+2	-3	0.898550000000000
+0	-3	-4.49720000000000
+-2	-3	-9.89300000000000
+-4	-3	-15.2890000000000
+-6	-3	-20.6840000000000
+-8	-3	-26.0800000000000
+8	-4	15.5870000000000
+6	-4	10.1910000000000
+4	-4	4.79520000000000
+2	-4	-0.600520000000000
+0	-4	-5.99630000000000
+-2	-4	-11.3920000000000
+-4	-4	-16.7880000000000
+-6	-4	-22.1840000000000
+-8	-4	-27.5790000000000
+};
+\label{static_characteristic}
+\addlegendentry{$y(u,z)$}
+\end{axis}
+\end{tikzpicture}
+
+
+Wzmocnienie statyczne obiektu, obliczone na bazie powy¿szych wyników, wynios³o odpowiednio $K = \num{2.698}$ dla toru sterowanie-wyjœcie oraz $K = \num{1.499}$ dla toru zak³ócenie-wyjœcie.

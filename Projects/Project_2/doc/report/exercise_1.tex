@@ -1,0 +1,67 @@
+\chapter{Badanie poprawnoœci punktu pracy}
+Pierwsze z postawionych przed nami zadañ polega³o na zweryfikowaniu podanego w treœci zadania punktu pracy procesu. Punkt ten powinien mieæ wspó³rzêdne $u = z = y = 0$, gdzie symbole oznaczaj¹ kolejno wartoœæ sterowania, wartoœæ zak³ócenia oraz wartoœæ wyjœciow¹ procesu. Weryfikacja polega³a na podaniu na oba wejœcia procesu wartoœci zerowej i~obserwowaniu zachowania wyjœcia. Zgodnie z oczekiwaniami wyjœcie ustali³o siê na poziomie $y = 0$, co zosta³o zaprezentowane na \ref{work_point_verification}.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+width=0.5\textwidth,
+xmin=0,xmax=100,ymin=-1,ymax=1,
+xlabel={$k$},
+ylabel={$y(k)$},
+xtick={0,50,100},
+ytick={-1,0,1},
+legend pos=south east,
+y tick label style={/pgf/number format/1000 sep=},
+]
+\addplot[red , semithick ] file { data/exercise_1/work_point_check.txt};
+\legend{y(k)}
+\end{axis}
+\end{tikzpicture}
+\caption{Punkt pracy}
+\label{work_point_verification}
+\end{figure}
+
+
+Mimo i¿ zadanie by³o z~oczywistych wzglêdów trywialne, wprowadzi³o ono do naszego sposobu realizacji projektu pewn¹ drobn¹ innowacjê (wzglêdem projektu pierwszego). Ze wzglêdu na opóŸnienie wystêpuj¹ce w obiekcie, realizacja wszelkiej maœci symulacji musia³a uwzglêdniaæ w~realizowanej trajektorii pewien krótki okres ustabilizowania siê punktu pracy. Skutkowa³o to tym, ¿e skoki sterowania lub wartoœci zadanej musia³y odbywaæ siê w~~chwili charakterystycznej dla danego obiektu. Tym razem, aby ujednoliciæ odrobinê interfejs programistyczny i~przygotowaæ go do kolejnych projektów, stworzyliœmy funkcjê obliczaj¹c¹ trajektoriê wyjœcia na bazie trajektorii wejœciowych, która realizuje wspomniany okres stablizacji (w~praktyce, przyjmuje ona po prostu, ¿e w~chwilach $n < 0$ wszystkie sygna³y mia³y wartoœæ zero). Kod tej funkcji zosta³ przedstawiony na listingu \ref{object_simulation}.
+
+\begin{lstlisting}[style=Matlab-editor, label={object_simulation}, caption={Symulacja obiektu}]
+function Y = simulate_object(U, Z)
+
+% Throw error when vectors' sizes are not equal
+if size(U,1) ~= size(Z,1)
+    error('Lengths of both trajectories are not equal!')
+end
+simulation_time = size(U,1);
+
+% Initialize output vector
+Y = zeros(simulation_time, 1);
+
+% Simulate
+for i = 1:simulation_time
+    
+    if (i > 8)
+        Y(i) = symulacja_obiektu9y(U(i-7), U(i-8), Z(i-2), ...
+					Z(i-3), Y(i-1), Y(i-2));
+    elseif ( i > 7 )
+        Y(i) = symulacja_obiektu9y(U(i-7), 0, Z(i-2), Z(i-3), ...
+					Y(i-1), Y(i-2));
+    elseif ( i > 3 )
+        Y(i) = symulacja_obiektu9y(0, 0, Z(i-2), Z(i-3), ...
+					Y(i-1), Y(i-2));
+    elseif ( i > 2 )
+        Y(i) = symulacja_obiektu9y(0, 0, Z(i-2), 0, Y(i-1), ...
+					Y(i-2));
+    elseif ( i > 1 )
+        Y(i) = symulacja_obiektu9y(0, 0, 0, 0, Y(i-1), 0);
+    else
+        Y(i) = symulacja_obiektu9y(0, 0, 0, 0, 0, 0);
+    end
+
+end
+
+end
+
+\end{lstlisting}
+
+Przedstawiona funkcja nie jest oczywiœcie niczym odkrywczym. Naszym zdaniem warto jednak zwróciæ uwagê na te drobne elementy, których realizacja jest dopracowywana wraz z~realizacj¹ kolejnych etapów projektu, poniewa¿ stanowi to esencjê pracy in¿yniera. 

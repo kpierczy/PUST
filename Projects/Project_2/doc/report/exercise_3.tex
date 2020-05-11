@@ -1,0 +1,42 @@
+\chapter{Wyznaczanie odpowiedzi skokowej do DMC}
+Kolejnym krokiem do realizacji projektu by³o opracowanie wyników, otrzymanych w zadaniu drugim, i~uzyskanie z~nich odpowiedzi skokowej w~postaci wykorzystywanej w~algorytmie DMC. Bior¹c pod uwagê wniosek dotycz¹cy liniowoœci obiektu w~ca³ym badanym zakresie, do tego celu wybraæ mogliœmy dowolne odpowiedzi skokowe z obu torów. Zdecydowaliœmy siê na skoki z~$u = 0$ do $u = 1$ oraz z~$z = 0$ do $z = 1$. Wartoœæ wejœciowa toru komplementarnego by³a zerowa w~przypadku obydwu skoków. Odpowiedzi te zosta³y przedstawione na rysunkach \ref{u_step_response} i \ref{z_step_response}.
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+width=0.5\textwidth,
+xmin=0,xmax=190,ymin=0,ymax=3,
+xlabel={$k$},
+ylabel={$y(k)$},
+legend pos=south east,
+y tick label style={/pgf/number format/1000 sep=},
+]
+\addplot[red , semithick ] file { data/exercise_3/U_step_response_DMC.txt};
+\legend{y(k)}
+\end{axis}
+\end{tikzpicture}
+\caption{OdpowiedŸ skokowa DMC na sygna³ steruj¹cy}
+\label{u_step_response}
+\end{figure}
+
+\begin{figure}[h]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+width=0.5\textwidth,
+xmin=0,xmax=40,ymin=0,ymax=2,
+xlabel={$k$},
+ylabel={$y(k)$},
+legend pos=south east,
+y tick label style={/pgf/number format/1000 sep=},
+]
+\addplot[red , semithick ] file { data/exercise_3/Z_step_response_DMC.txt};
+\legend{y(k)}
+\end{axis}
+\end{tikzpicture}
+\caption{OdpowiedŸ skokowa DMC na zak³ócenie}
+\label{z_step_response}
+\end{figure}
+
+Liniowoœæ obiektu i~brak ograniczeñ wartoœci sygna³ów pozwoli³y nam wybraæ dogodne wartoœci skoków co zniwelowa³o potrzebê przeskalowywania otrzymanej odpowiedzi. Jedynym zabiegiem, jaki musieliœmy wykonaæ, by³o wybranie z wektorów próbek odpowiedzi tych, o~w³aœciwych indeksach. Jako ¿e skoki odbywa³y siê w~chwili $n = 0$, do odpowiedzi skokowej zosta³y wziête tylko próbki z~chwil $n >= 1$. Wstêpne horyzonty dynamiki zosta³y wybrane tak, aby zmiana wartoœci wyjœcia w~chwilach $n > D$, gdzie $D$ to wybrany horyzont, by³y niewiêksze ni¿ \num{0.01}\% wartoœci maksymalnej.
