@@ -6,3 +6,7 @@
 *.fls
 *.synctex.gz
 *.toc
+*.auxlock
+*.dep
+*.dpth
+*.md5

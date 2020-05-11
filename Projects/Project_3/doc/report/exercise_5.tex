@@ -1,0 +1,47 @@
+\chapter{Rozmyte algorytmy PID i DMC}
+
+Rozmyty algorytm regulacji polega na stworzeniu kilku regulatorów lokalnych, przeznaczonych do dzia³a z~obiektami liniowymi, które bêd¹ regulowa³y proces jedynie w niewielkim fragmencie jego charakterystyki. Narzêdzi do takiego opisu algorytmów regulacji dostarcza teoria zbiorów rozmytych. Pos³uguj¹c siê jej ¿argonem mo¿na powiedzieæ, ¿e obszar pracy obiektu dzielony jest na kilka zbiorów rozmytych (ze wzglêdu na wartoœæ wyjœæ lub te¿ wyjœæ, o czym póŸniej). Dla ka¿dego regulatora definiowana jest nastêpnie, w~ogólnoœci nieliniowa, funkcja przynale¿noœci, która okreœla jak du¿y jest wk³ad danego regulatora do koñcowej wartoœci sterowania w~zale¿noœci od punktu pracy, w~którym znajduje siê proces.
+
+
+Jak wiadomo, ka¿d¹ krzyw¹ mo¿na aproksymowaæ z nieskoñczenie du¿¹ dok³adnoœci¹ przez nieskoñczenie liczny zbiór odcinków. Skutkiem tego, niektóre funkcje liniowe (w~tym równie¿ charakterystyki uk³adów dynamicznych) mo¿na aproksymowaæ na pewnych odcinkach funkcj¹ liniow¹. To w³aœnie ten fakt stoi za ide¹ stosowania regulatorów rozmytych. Ka¿dy z~lokalnych regulatorów pracuje w obszarze, który z~pewn¹ dok³adnoœci¹ mo¿na aproksymowaæ lini¹ prost¹. Im mniejszy ten obszar, tym dok³adniejsza jest zazwyczaj aproksymacja.
+
+\begin{equation}
+    u_k = \frac{\sum_{i=1}^{n} u_{ki} * f_i(y_k)}{ \sum_{i=1}^{n} f_i(y_k)}
+    \label{fuzzy_sumation}
+\end{equation}
+
+Lokalne regulatory funkcjonuj¹ w~obszarze, który mo¿na uznaæ za (w przybli¿eniu liniowy). Dziêki temu, ¿e funkcje przynale¿noœci s¹ czêsto modelowane przez funkcje g³adkie, zmiany wp³ywów poszczególnych regulatorów na przestrzeni obszaru pracy równie¿ zmieniaj¹ siê w~sposób g³adki. Taki uk³ad, przy odpowiednio dobranej liczbie i~rozmieszczeniu regulatorów lokalnych pozwala regulowaæ znaczn¹ klasê procesów nieliniowych. Matematyczne ujêcie idei "wk³adów" poszczególnych regulatorów zapisano w~równaniu \ref{fuzzy_sumation}, gdzie $u_{ki}$ oznacza wyjœcie i-tego regulatora w chwili k, a~$f_i(y_k)$ wartoœæ funkcji przynale¿noœci w~chwili k regulator i-tego. 
+
+\begin{equation} 
+    f(x) = exp(\frac{-(x - average)^2}{2 * std ^ 2} )
+    \label{gaussian_fuzz}
+\end{equation}
+
+W celu rozmycia zbiorów obecnych w~naszej implementacji algorytmów (zarówno PID, jak i~DMC) wykorzystaliœmy funkcjê dzwonow¹ Gaussa definiowan¹ przez równanie \ref{gaussian_fuzz}. $average$ oznacza  argument maksimum funkcji przynale¿noœci regulatora, a~$std$ decyduje o~szerokoœci krzywej. Funkcja ta jest popularna miêdzy innymi ze wzglêdu na ³atwoœæ jej definiowania w~kontekœcie po³o¿enia maksimum i~szybkoœci spadku jej wartoœci wraz z~odejœciem od niego.  
+
+Jak wspomniano wczeœniej, \textit{"rozmywanie"} regulatorów lokalnych mo¿e nastêpowaæ ze wzglêdu na wartoœci wyjœcia lub te¿ wartoœci wejœcia. Wybór ten zale¿y od tego, która wersja regulatora sprawdza siê lepiej przy danym procesie. W~naszym przypadku \textbf{wybrana zosta³a wartoœæ wyjœciowa}, gdy¿ przeprowadzone eksperymenty wskazywa³y na doœæ znacz¹c¹ przewagê tego podejœcia. Taki stan rzeczy nie jest bynajmniej przypadkowy. Zale¿a³o nam na tym, aby regulatory lokalne mog³y byæ rozmieszone w~miarê mo¿liwoœci równomiernie, gdy¿ zwalnia³oby to nas z~koniecznoœci rêcznego dobierania po³o¿eñ funkcji przynale¿noœci. Patrz¹c od strony zmiennej wejœciowej, charakterystyka statyczna jest niemal¿e liniowa w przedziale $0 \leqslant 1$ i~silnie nieliniowa w przedziale $-1 \leqslant 0$. Umieszczenie wiêkszej liczby regulatorów po prawej stronie od $0$ wydaje siê zatem marnotrawstwem mocy obliczeniowej. Wiêksza liczba przyda³aby siê za to po stronie ujemnych sterowañ. Stoi to w~sprzecznoœci z~potrzeb¹ równomiernego rozmieszczania regulatorów.
+
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=0.5\textwidth,
+                    xmin=-1.1,xmax=1.1,ymin=-4,ymax=2,
+                    xlabel={$u$},
+                    ylabel={$y(u)$},
+                    legend pos=south east,
+                    legend style={font=\tiny},
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                
+                \addplot[mark=o,draw=black]               file {data/exercise_2/static_characteristic.txt};
+
+                \legend{$y(u)$}
+            \end{axis}
+        \end{tikzpicture}
+		\label{static_characteristic}
+\end{figure}
+\vskip 0.5cm
+
+Gdy spojrzymy na charakterystykê od strony wyjœcia kwestia wygl¹da nieco inaczej. Wydaje siê, ¿e funkcja zachowuje podobny stopieñ nieliniowoœci we wszystkich obszarach. Z~tego te¿ powodu wybór wartoœci wyjœciowej jako zmiennej rozmywaj¹cej wyda³ nam siê bardziej korzystny, co w~póŸniejszym czasie potwierdzi³y eksperymenty.

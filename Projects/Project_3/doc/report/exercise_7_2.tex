@@ -1,0 +1,247 @@
+\chapter{Analiza wyników kalibracji rozmytego regulatora DMC}
+
+% 'pik' mo¿na by na coœ zamieniæ, ale nie wiem na co :x
+Regulator DMC wyró¿nia siê w stosunku do regulatora PID znacznie krótszym czasem stabilizacji wyjœcia. Ju¿ przy pojedynczym regulatorze stabilizacja nastêpuje stosunkowo szybko z~jednym widocznym pikiem przy ka¿dej zmianie wartoœci zadanej. Jest to jednak okupineo wprowadzeniem widocznych oscylacji do sygna³u steruj¹cego, szczególnie w~przypadku skoków wartoœci zadanej o~wiêkszej amplitudzie.
+
+\newpage
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$D$ & $N$ & $N_u$ & $\lambda$ & $c$ & $\sigma$ \\
+\hline
+$\num{25}$ & $\num{15}$ & $\num{10}$ & $\num{1}$ & $\num{-2.5}$ & $\num{0.6}$\\
+\hline
+$\num{25}$ & $\num{15}$ & $\num{10}$ & $\num{1}$ & $\num{-0.7}$ & $\num{0.6}$\\
+\hline
+\end{tabular}
+\label{eksperyment2_DMC}
+\caption{Parametry 2 rozmyte regulatory DMC}
+\end{table}
+
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_DMC_number_of_fuzzy_reg_2.pdf}}
+\label{Desired_plot_DMC_number_of_fuzzy_reg_2}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+\newpage
+
+Wprowadzenie drugiego regulatora lokalnego nie przynosi praktycznie ¿adnej poprawy. Przebieg wartoœci regulowanej zmienia siê w~prawdzie nieznacznie, jednak bez dok³adnych wyliczeñ ciê¿ko by³oby okreœliæ, czy sumaryczny b³¹d wzrós³, czy zmala³. Równie¿ na przebiegu wartoœci sterowania nie widaæ wyraŸnych zmian.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$D$ & $N$ & $N_u$ & $\lambda$ & $c$ & $\sigma$ \\
+\hline
+$\num{58}$ & $\num{16}$ & $\num{14}$ & $\num{1}$ & $\num{-2.6}$ & $\num{0.21}$ \\
+\hline
+$\num{49}$ & $\num{16}$ & $\num{14}$ & $\num{1}$ & $\num{-1.5}$ & $\num{0.21}$\\
+\hline
+$\num{39}$ & $\num{16}$ & $\num{14}$ & $\num{1}$ & $\num{-0.4}$ & $\num{0.21}$\\
+\hline
+\end{tabular}
+\label{eksperyment3_DMC}
+\caption{Parametry 3 rozmyte regulatory DMC}
+\end{table}
+
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_DMC_number_of_fuzzy_reg_3.pdf}}
+\label{Desired_plot_DMC_number_of_fuzzy_reg_3}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+\newpage
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$D$ & $N$ & $N_u$ & $\lambda$ & $c$ & $\sigma$ \\
+\hline
+$\num{60}$ & $\num{15}$ & $\num{10}$ & $\num{1}$ & $\num{-2.8}$ & $\num{0.2}$\\
+\hline
+$\num{54}$ & $\num{15}$ & $\num{10}$ & $\num{1}$ & $\num{-1.98}$ & $\num{0.2}$\\
+\hline
+$\num{45}$ & $\num{15}$ & $\num{10}$ & $\num{1}$ & $\num{-1.2}$ & $\num{0.2}$\\
+\hline
+$\num{38}$ & $\num{15}$ & $\num{10}$ & $\num{0.01}$ & $\num{-0.35}$ & $\num{0.2}$\\
+\hline
+\end{tabular}
+\label{eksperyment4_DMC}
+\caption{Parametry 4 rozmyte regulatory DMC}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_DMC_number_of_fuzzy_reg_4.pdf}}
+\label{Desired_plot_DMC_number_of_fuzzy_reg_4}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+\newpage
+ 
+Równie¿ dla przebiegów zarejestrowanych przy $3$ i $4$ regulatorach nie widaæ wyraŸnej poprawy ani od strony wartoœci wyjœciowej procesu, ani od strony sygna³u steruj¹cego.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$D$ & $N$ & $N_u$ & $\lambda$ & $c$ & $\sigma$ \\
+\hline
+$\num{60}$ & $\num{14}$ & $\num{14}$ & $\num{1}$ & $\num{-2.8}$ & $\num{0.2}$\\
+\hline
+$\num{55}$ & $\num{14}$ & $\num{14}$ & $\num{1}$ & $\num{-2.1}$ & $\num{0.2}$\\
+\hline
+$\num{49}$ & $\num{14}$ & $\num{14}$ & $\num{1}$ & $\num{-1.6}$ & $\num{0.3}$\\
+\hline
+$\num{41}$ & $\num{14}$ & $\num{14}$ & $\num{1}$ & $\num{-1}$ & $\num{0.3}$\\
+\hline
+$\num{40}$ & $\num{14}$ & $\num{14}$ & $\num{1}$ & $\num{-0.5}$ & $\num{0.3}$\\
+\hline
+\end{tabular}
+\label{eksperyment4_DMC}
+\caption{Parametry 5 rozmytch regulatorów DMC}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_DMC_number_of_fuzzy_reg_5.pdf}}
+\label{Desired_plot_DMC_number_of_fuzzy_reg_5}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+
+Dopiero zwiêkszenie liczby regulatorów do $5$ pozwoli³o uzyskaæ przebieg wyraŸnie lepszy ni¿ w przypadku $n=2$. Przeregulowania s¹ wiêkszoœci przypadków minimalne, a czas regulacji bardzo krótki. W~sygnale steruj¹cym obserwujemy oscylacje o~nieco wiêkszej czêstotliwoœci ni¿ w~przypadku dwóch regulatorów.
+
+Powy¿sze eksperymenty zosta³y przeprowadzone po skalibrowaniu regulatorów ze sta³¹ wartoœci¹ parametru $\lambda$ wynosz¹c¹ $\lambda=1$, który okreœla karê za zmiennoœæ przebiegu sygna³u steruj¹cego. Parametr ten mo¿e siê okazaæ kluczowy w~wielu sytuacjach praktycznych, gdy¿ pozwala on zapanowaæ zarówno nad wartoœci¹ jak i~szybkoœci¹ wahañ sterowania co w~prosty sposób przek³adaæ siê mo¿e na wytrzyma³oœæ i~bezpieczeñstwo elementów wykonawczych struktury sterowania.
+
+
+
+
+\section{Kalibracja parametru $\lambda$}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$D$ & $N$ & $N_u$ & $\lambda$ & $c$ & $\sigma$ \\
+\hline
+$\num{25}$ & $\num{15}$ & $\num{10}$ & $\num{0.1}$ & $\num{-2.5}$ & $\num{0.6}$\\
+\hline
+$\num{25}$ & $\num{15}$ & $\num{10}$ & $\num{0.1}$ & $\num{-0.7}$ & $\num{0.6}$\\
+\hline
+\end{tabular}
+\label{eksperyment2_DMC}
+\caption{Parametry 2 rozmyte regulatory DMC}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_7/Desired_plot_DMC_number_of_fuzzy_reg_2.pdf}}
+\label{Desired_plot_DMC_number_of_fuzzy_reg_2}
+\caption{Kalibracja parametru $\lambda$, 2 regulatory}
+\end{figure}
+\end{center}
+
+
+
+Chocia¿ dobieraj¹c parametr $\lambda$ nale¿y mieæ na uwadze wartoœci sygna³u steruj¹cego, to jednak g³ównym celem regulacji jest zapewnienie jak najmniejszego b³êdu regulacji. Dlatego te¿, w~przypadku dwóch regulatorów zdecydowaliœmy siê na dziesiêciokrotne zmniejszenie tego parametru. Chocia¿ oscylacje sterowania zauwa¿alnie wzros³y, to jednak jak pokazuj¹ dok³adne wyliczenia, sumaryczny b³¹d regulatora zmala³. Czy jest to op³acalna wymiana? To ju¿ zale¿y od praktycznych uwarunkowañ jak chocia¿by wspomniane mo¿liwoœci elementów wykonawczych.
+
+\newpage
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$D$ & $N$ & $N_u$ & $\lambda$ & $c$ & $\sigma$ \\
+\hline
+$\num{58}$ & $\num{16}$ & $\num{14}$ & $\num{8}$ & $\num{-2.6}$ & $\num{0.21}$ \\
+\hline
+$\num{49}$ & $\num{16}$ & $\num{14}$ & $\num{20}$ & $\num{-1.5}$ & $\num{0.21}$\\
+\hline
+$\num{39}$ & $\num{16}$ & $\num{14}$ & $\num{0.9}$ & $\num{-0.4}$ & $\num{0.21}$\\
+\hline
+\end{tabular}
+\label{eksperyment3_DMC}
+\caption{Parametry 3 rozmyte regulatory DMC}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_7/Desired_plot_DMC_number_of_fuzzy_reg_3.pdf}}
+\label{Desired_plot_DMC_number_of_fuzzy_reg_3}
+\caption{Kalibracja parametru $\lambda$, 3 regulatory}
+\end{figure}
+\end{center}
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$D$ & $N$ & $N_u$ & $\lambda$ & $c$ & $\sigma$ \\
+\hline
+$\num{60}$ & $\num{15}$ & $\num{10}$ & $\num{0.1}$ & $\num{-2.8}$ & $\num{0.2}$\\
+\hline
+$\num{54}$ & $\num{15}$ & $\num{10}$ & $\num{30}$ & $\num{-1.98}$ & $\num{0.2}$\\
+\hline
+$\num{45}$ & $\num{15}$ & $\num{10}$ & $\num{15}$ & $\num{-1.2}$ & $\num{0.2}$\\
+\hline
+$\num{38}$ & $\num{15}$ & $\num{10}$ & $\num{0.01}$ & $\num{-0.35}$ & $\num{0.2}$\\
+\hline
+\end{tabular}
+\label{eksperyment4_DMC}
+\caption{Parametry 4 rozmyte regulatory DMC}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_7/Desired_plot_DMC_number_of_fuzzy_reg_4.pdf}}
+\label{Desired_plot_DMC_number_of_fuzzy_reg_4}
+\caption{Kalibracja parametru $\lambda$, 4 regulatory}
+\end{figure}
+\end{center}
+
+W~uk³adzie implementuj¹cym trzy regulatory lokalne uda³o nam siê zredukowaæ nie tylko sumaryczny b³¹d regulacji, ale te¿ w znacznym stopniu opanowaæ oscylacje sygna³u steruj¹cego. Przy niewielkich skokach wartoœci zadanej przeregulowanie praktycznie nie wystêpuje, a~w~przypadku skoków o~wiêkszej amplitudzie nie przekracza $15\%$. Przypadek z~czterema regulatorami sprawi³ nam szczególn¹ trudnoœæ w strojeniu. Jedyne co uda³o nam siê osi¹gn¹æ, to niewielkie zmniejszenie sumarycznego b³êdu. By³o to jednak okupione wprowadzeniem znacznych wahañ sygna³u steruj¹cego.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$D$ & $N$ & $N_u$ & $\lambda$ & $c$ & $\sigma$ \\
+\hline
+$\num{60}$ & $\num{14}$ & $\num{14}$ & $\num{8}$ & $\num{-2.8}$ & $\num{0.2}$\\
+\hline
+$\num{55}$ & $\num{14}$ & $\num{14}$ & $\num{10}$ & $\num{-2.1}$ & $\num{0.2}$\\
+\hline
+$\num{49}$ & $\num{14}$ & $\num{14}$ & $\num{10}$ & $\num{-1.6}$ & $\num{0.3}$\\
+\hline
+$\num{41}$ & $\num{14}$ & $\num{14}$ & $\num{0.6}$ & $\num{-1}$ & $\num{0.3}$\\
+\hline
+$\num{40}$ & $\num{14}$ & $\num{14}$ & $\num{0.2}$ & $\num{-0.5}$ & $\num{0.3}$\\
+\hline
+\end{tabular}
+\label{eksperyment4_DMC}
+\caption{Parametry 5 rozmytch regulatorów DMC}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_7/Desired_plot_DMC_number_of_fuzzy_reg_5.pdf}}
+\label{Desired_plot_DMC_number_of_fuzzy_reg_5}
+\caption{Kalibracja parametru $\lambda$, 5 regulatorów}
+\end{figure}
+\end{center}
+
+Przypadek piêciu regulatorów równie¿ by³ problematyczny. Pod wzglêdem jakoœci regulacji nie uda³o nam siê przy jego pomocy przebiæ osi¹gów algorytmu z czterema regulatorami lokalnymi. W znacznym stopniu ograniczyliœmy jednak têtnienia sterowania.
+
+
+\chapter{Podsumowanie}
+
+Po zakoñczeniu eksperymentów z oboma rozmytymi algorytmami regulacji mogliœmy zauwa¿yæ pewne tendencje. Dla obiektów nieliniowych, jak przyk³adowy wykorzystywany podczas tego laboratorium,jesteœmy w stanie otrzymaæ regulacjê za pomoc¹ jednego regulatora zwyk³ego, ale jej jakoœæ mo¿e nie byæ zadowalaj¹ca. Zdecydowanie wykorzystanie wiêkszej liczby regulatorów pozwala na znacz¹co lepsz¹ jakoœæ regulacji, gdy¿ mo¿emy spróbowaæ podzieliæ obszar regulacji na obszary w przybli¿eniu liniowe co poprawi mo¿liw¹ jakoœæ. W teorii czym wiêksza liczba regulatorów rozmytych, tym lepsza powinna byæ jakoœæ, bo jesteœmy wstanie podzieliæ obszary regulacji na mniejsze obszary, które bêd¹ w przybli¿eniu bardziej liniowe. Zwiêkszanie liczby regulatorów zwiêksza równie¿ liczbê parametrów wymagaj¹cych dostrojenia. Powoduje to, ¿e dobór metod¹ in¿ynierska nie jest wskazany, gdy¿ du¿y nak³ad czasu poœwiêcony na strojenie t¹ metod¹ nie bêdzie mia³ odzwierciedlenia w jakoœci sterowania. Z tego wzglêdu wskazane jest dostrajanie do obiektu regulatorów rozmytych. W przypadku rozmytego algorytmu DMC dobranie poprawnych parametrów funkcji rozmywaj¹cych dla ka¿dego regulatora jest krytyczne, gdy¿ bêd¹ one definiowa³y odpowiedŸ skokow¹ dla danego obszaru i b³êdne dobranie tych parametrów spowoduje, ¿e po dostrojeniu wszystkich regulatorów nadal ogólna jakoœæ regulacji bêdzie daleka od optymalnej i najpewniej niezadowalaj¹ca. Parametry funkcji rozmywaj¹cej musz¹ zostaæ dobrane przed sam¹ kalibracj¹ konkretnych regulatorów, co powoduje, ¿e bardzo trudno oceniæ czy wybrane obszary pozwol¹ ostatecznie na lepsz¹ regulacjê ni¿ inne ( po kalibracji regulatorów pod konkretne obszary oczywiœcie ).

@@ -1,0 +1,25 @@
+\chapter{Badanie poprawnoœci punktu pracy}
+Zgodnie z tradycj¹ pierwsze z~zadañ polega³o na zweryfikowaniu podanego w treœci zadania punktu pracy obiektu regulacji. Punkt ten powinien mieæ wspó³rzêdne $u = y = 0$, gdzie kolejne symbole oznaczaj¹ wartoœæ sterowania oraz wartoœæ wyjœciow¹. Weryfikacja polega³a na podaniu na wejœcie procesu wartoœci zerowej i~obserwowaniu zachowania wyjœcia. Zgodnie z oczekiwaniami, wyjœcie ustali³o siê na poziomie $y = 0$, co zosta³o zaprezentowane na wykresie 2.1..
+
+\vskip 0.5cm
+\begin{figure}[h]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                width=0.5\textwidth,
+                xmin=0,xmax=100,ymin=-1,ymax=1,
+                xlabel={$k$},
+                ylabel={$y(k)$},
+                xtick={0,50,100},
+                ytick={-1,0,1},
+                legend pos=south east,
+                y tick label style={/pgf/number format/1000 sep=},
+                ]
+                \addplot[red , semithick ] file { data/exercise_1/work_point_check.txt};
+                \legend{y(k)}
+            \end{axis}
+        \end{tikzpicture}
+        \label{work_point_verification}
+        \caption{Punkt pracy}
+    \end{figure}
+\vskip 0.5cm

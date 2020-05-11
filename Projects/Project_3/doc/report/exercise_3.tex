@@ -1,0 +1,163 @@
+\chapter{Implementacja regulatorów liniowych}
+Aby pokazaæ, ¿e algorytmy liniowe nie sprawdzaj¹ siê w~przypadku regulacji obiektów nieliniowych, zaimplementowane zosta³y dwa klasyczne regulatory PID (\textit{ang. Proportional Integral Derivative Controller}) oraz DMC (\textit{ang. Dynamic Matrix Control}). Oba algorytmy zosta³y zaimplementowane w~postaci klas jêzyka Matlab, co pozwoli³o w~du¿ym stopniu ujednoliciæ ich interfejsy, a~tym samym skrypty testuj¹ce ich dzia³anie. 
+
+\textbf{Uwaga. Okreœlenia "algorytmy liniowe" oraz "regulatory liniowe" s¹ jedynie skrótem myœlowym i~nie nale¿y kojarzyæ ich z~liniowoœci¹ samych regulatorów jako uk³adów dynamicznych. Odnosz¹ siê one do faktu, ¿e dana metoda regulacji jest zaprojektowana do sterowania procesami liniowymi.}
+
+\section{Regulator PID}
+Regulator PID jest jednym z~najbardziej znanych regulatorów liniowych. Zawdziêcza to przede wszystkim swojej prostocie, zarówno w~domenie koncepcyjnej, jak i~domenie implementacyjnej. Posiada on jedynie trzy parametry strojenia co umo¿liwia stosowanie automatycznych procedur ich optymalizacji, je¿eli tylko posiadamy model obiektu regulacji.
+
+Koncepcja, która le¿y u podstaw algorytmu, polega na aktualizowaniu wartoœci sterowania na bazie aktualnego uchybu (ró¿nicy miêdzy wartoœci¹ zadan¹, a~rzeczywist¹ wartoœci¹ wyjœcia procesu). Zale¿noœæ miêdzy wejœciem, a~wyjœciem regulatora ma trojaki charakter, co ukazane jest w~klasycznym równaniu regulatora \ref{classic_PID}.
+
+\vskip 0.5cm
+\begin{equation}
+		 u(k) = K[1+\frac{T}{2T_i}(\frac{1+z^{-1}}{1-z^{-1}})+\frac{T_d}{T}(1-z^{-1})]e(k)
+    %u(t) = K_p(e(t) + \frac{1}{T_i}\int_{0}^te(t')dt' + T_d\frac{de(t)}{dt})
+    \label{classic_PID}
+\end{equation}
+\vskip 0.5cm
+
+Powy¿sza formu³a zawiera trzy sk³adniki. Pierwszy z~nich to \textit{cz³on proporcjonalny}. Dziêki niemu si³a z~jak¹ regulator reaguje na wychylenia uchybu jest wprost proporcjonalna do jego wartoœci. Chocia¿ ma on najwiêkszy wp³yw na jakoœæ regulacji, to jednak, gdy wystêpuje osobno, posiada pewien uci¹¿liwy mankament. Regulator proporcjonalny (czyli operuj¹cy jedynie na cz³onie proporcjonalnym) charakteryzuje siê tzw. uchybem ustalonym, tzn. ró¿nic¹ miêdzy wartoœci¹ zadan¹, a~wartoœci¹ rzeczywist¹ wyjœcia procesu w~stanie ustalonym. Aby wyeliminowaæ tê niedoskona³oœæ wprowadza siê drugi cz³on zwany \textit{cz³onem ca³kuj¹cym}. Jego wk³ad do sterowania jest tym wiêkszy, im d³u¿ej wystêpuje niezerowa wartoœæ uchybu. Regulator sk³adaj¹cy siê tylko z~tych dwóch cz³onów (regulator PI) jest czêsto wystarczaj¹cy przy sterowania obiektów o~wolniejszej dynamice. Aby zwiêkszyæ szybkoœæ reagowania regulatora wprowadza siê jeszcze jeden element, a mianowicie \textit{cz³on ró¿niczkuj¹cy}. Wprowadza on zale¿noœæ miêdzy wartoœci¹ sterowania, a \textbf{szybkoœci¹ zmian} uchybu. Jako ¿e uchyb zawiera w sobie zarówno wartoœæ wyjœciow¹, jak i~wartoœæ zadan¹, odpowiednie dostrojenie cz³onu ró¿niczkuj¹cego pozwala nie tylko dostosowaæ siê do dynamiki obiektu, ale równie¿ zwiêkszyæ szybkoœæ reagowania na zmiany wartoœci zadanej.
+
+Powy¿sze równania zale¿¹ nie tylko od aktualnej wartoœci uchybu ale równie¿ od jego wartoœci z~chwili poprzedniej oraz sumy wszystkich jego wartoœci od rozpoczêcia procesu regulacji. Po zaaplikowaniu do równañ kilku algebraicznych transformacji mo¿na otrzymaæ formu³ê, która zale¿y od aktualnej wartoœci uchybu, jego wartoœci z~dwóch poprzednich chwil oraz ostatniej wartoœci sterowania. Postaæ ta jest bardziej przystêpna w~implementacji i~to w³aœnie ona zosta³a wykorzystana w~zaprojektowanym przez nas regulatorze. Równania wynikowe przedstawiono poni¿ej.
+
+\vskip 0.5cm
+\begin{equation}
+	u(k) = r_0 * e(k) + r_1 * e(k-1) + r_2 * e(k-2)
+\end{equation}
+\begin{equation}
+	r_0 = K * ( 1 + \frac{T_s}{2*T_i} + \frac{T_d}{T_s} )
+\end{equation}
+\begin{equation}
+	r_1 = K * ( \frac{T_s}{2*T_i} - \frac{2*T_d}{T_s} - 1)
+\end{equation}
+\begin{equation}
+	r_2 = K * \frac{T_d}{T_s}
+\end{equation}
+\vskip 0.5cm
+
+
+
+\section{Regulator DMC}
+Regulator DMC nale¿y do rodziny algorytmów predykcyjnych. Algorytmy te, bazuj¹ce na pewnym modelu regulowanego procesu, przeprowadzaj¹ proces optymalizacji wartoœci sygna³ów steruj¹cych w~kilku kolejnych iteracjach algorytmu. Liczba chwil dyskretnych, na które wyznaczane s¹ sterowania, nazywa siê \textit{horyzontem sterowania}, i~jest oznaczana przez $N_\mathrm{u}$. Iloœæ przysz³ych chwil, z~których brana jest pod uwagê przewidywana wartoœci regulowanej oznacz siê przez $N$ i~zwyczajowo nazywa siê \textit{horyzontem predykcji}. 
+
+Metoda optymalizacji stosowana przez dany algorytm jest uzale¿niona od kilku czynników. Przede wszystkim bierze siê pod uwagê, czy dla okreœlonego przez algorytm problemu optymalizacji istniej¹ rozwi¹zania analityczne. Je¿eli tak, ich zastosowanie pozwala w~bardzo du¿ym stopniu zredukowaæ wymagania dotycz¹ce mocy obliczeniowej konsumowanej przez regulator. Warto zauwa¿yæ, ¿e w~rzeczywistoœci wszystkie uk³ady sterowania maj¹ pewne ograniczenia co do mo¿liwoœci generowania sterowania. Analityczne rozwi¹zania dla problemów optymalizacji z~ograniczeniami s¹ w~praktyce doœæ rzadkie, co wymusza stosowanie \textbf{rzutowania sterowañ wyznaczonych przez algorytm} na zbiór ograniczeñ. Jako, ¿e rzutowanie odbywa siê poza procesem optymalizacji, prowadzi to czêsto do pogorszenia jakoœci regulacji, gdy¿ algorytm nie posiada pe³nej informacji o~procesie i~wyznaczone przez niego wartoœci nie s¹ optymalne. Aby temu zaradziæ stosuje siê czêsto numeryczne metody optymalizacji, które w~³atwy sposób umo¿liwiaj¹ uwzglêdnienie ograniczeñ, jednak s¹ znacznie bardziej kosztowne obliczeniowo.
+
+Ka¿dy algorytm predykcyjny charakteryzuje siê typem modelu, z~jakiego korzysta, i~na bazie którego estymuje wartoœci wyjœæ procesu na horyzoncie predykcji. W przypadku regulatora DMC model ten przedstawiony jest w postaci \textbf{odpowiedzi skokowej}, bêd¹cej wektorem wartoœci wyjœcia procesu w~kolejnych chwilach po wykonaniu na jego wejœciu \textit{skoku jednostkowego}. Dla dok³adnoœci regulacji wa¿ne jest to, aby wektor ten mia³ wartoœæ nie krótsz¹ ni¿ \textbf{rz¹d dynamiki} obiektu. Wartoœæ ta, oznaczana czêsto przez $D$, okreœla liczbê chwil dyskretnych, po których wejœcie procesu mo¿na uznaæ za ustabilizowane. Po zebraniu odpowiedzi skokowej konieczne jest rozwi¹zanie problemu optymalizacji danego wzorem \ref{DMC_fit_function}.
+
+\vskip 0.5cm
+\begin{equation}
+        J(k)=\sum\limits_{p=1}^{N}(y^{zad}(k+p|k) - \hat{y}(k+p|k))^2 					+ \sum\limits_{p=0}^{N_u}\lambda_p(\Delta u(k+p|k))^2
+    \label{DMC_fit_function}
+\end{equation}
+\vskip 0.5cm
+
+Funkcja celu sk³ada siê z~dwóch sk³adników. Pierwszy z~nich okreœla skumulowany b³¹d regulacji (uchyb) estymowany na horyzoncie predykcji. Drugi wprowadza z kolei ograniczenia na szybkoœæ zmian sygna³ów steruj¹cych. Jako ¿e model w~postaci odpowiedzi skokowej reprezentuje liniow¹ zale¿noœæ pomiêdzy zbiorem sterowañ, a~zbiorem wartoœci wyjœciowych, powy¿sze równanie mo¿na przepisaæ do formy macierzowej, co przedstawiono w~równaniu \ref{DMC_matrix_fit_function}
+
+\vskip 0.5cm
+\begin{equation}
+		J(k) = ||Y^{zad}(k)-\hat{Y}(k)||_\Psi^2+||\Delta U(k)||_\Lambda^2
+    \label{DMC_matrix_fit_function}
+\end{equation}
+\vskip 0.5cm
+
+Okazuje siê, ¿e postawiony w~ten sposób problem posiada rozwi¹zanie analitycznej w~postaci \ref{DMC_solution}
+
+\vskip 0.5cm
+\begin{equation}
+    \Delta U(k)=(M^T\Psi M+\Lambda)^{-1}M^T\Psi(Y^{zad}(k)-Y(k) -M^P\Delta U^P(k)) = K(Y^{zad}(k)-Y(k) -M^P\Delta U^P(k))
+    \label{DMC_solution}
+\end{equation}
+\vskip 0.5cm
+
+\begin{equation}
+	Y^0 = Y(k) + M^p + \Delta U^p(k)
+	\label{eq1}
+\end{equation}
+
+\begin{equation}
+\boldsymbol\Psi=\left[
+\begin{array}
+{ccc}
+\phi_1 & & \\
+ & \ddots & \\
+&  & \phi_N
+\end{array}
+\right]
+\label{eq2}
+\end{equation}
+
+\begin{equation}
+\boldsymbol\Lambda=\left[
+\begin{array}
+{ccc}
+\lambda_1 & & \\
+ & \ddots & \\
+&  & \lambda_N
+\end{array}
+\right]
+\label{eq3}
+\end{equation}
+
+	\begin{equation}
+		\boldsymbol{M}=\left[
+		\begin{array}
+			{cccc}
+			s_{1} & 0 & \ldots & 0\\
+			s_{2} & s_{1} & \ldots & 0\\
+			\vdots & \vdots & \ddots & \vdots\\
+			s_{N} & s_{N-1} & \ldots &  s_{N} - N_u + 1
+		\end{array}
+	\right]
+	\label{eq4}
+\end{equation}
+	\begin{equation}
+		\boldsymbol{M^p}=\left[
+		\begin{array}
+			{cccc}
+			s_{2} - s_{1} & s_{3} - s_{2} & \ldots & s_{D} - s_{D-1}\\
+			s_{3} - s_{1} & s_{4} - s_{2} & \ldots & s_{D+1} - s_{D-1}\\
+			\vdots & \vdots & \ddots & \vdots\\
+			s_{N+1} - s_{1} & s_{N+2} - s_{2} & \ldots &  s_{N+D-1} - s_{D-1}
+		\end{array}
+	\right]
+	\label{eq5}
+\end{equation}
+
+	\begin{equation}
+		\boldsymbol{Y(k)}=\left[
+		\begin{array}
+			{c}
+			y(k)  \\
+			y(k)  \\
+			\vdots \\
+			y(k) 
+		\end{array}
+	\right]
+	\label{eq6}
+	\end{equation}
+	\begin{equation}
+		\boldsymbol{Y^{zad}(k)}=\left[
+		\begin{array}
+			{c}
+			y^{zad}(k)  \\
+			y^{zad}(k)  \\
+			\vdots \\
+			y^{zad}(k) 
+		\end{array}
+	\right]
+	\label{eq7}
+\end{equation}
+	\begin{equation}
+		\boldsymbol{\Delta U^p(k)}=\left[
+		\begin{array}
+			{c}
+			\Delta u(k-1) \\
+			\Delta u(k-2) \\
+			\vdots \\
+			\Delta u(k - (D - 1))
+		\end{array}
+	\right]
+	\label{eq8}
+\end{equation}
+
+Postaæ macierzy i wektorów wystêpuj¹cych w~równaniach przedstawiono we wzorach \ref{eq1},\ref{eq2}, \\ \ref{eq3},\ref{eq4},\ref{eq5}, \ref{eq6},\ref{eq7},\ref{eq8}. Algorytm ten zaimplementowano w~wersji "rozrzutnej", tzn. w~takiej, w~której wyznaczane s¹ wszystkie przyrosty sterowaæ na horyzoncie sterowania.

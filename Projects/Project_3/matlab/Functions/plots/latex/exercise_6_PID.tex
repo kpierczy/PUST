@@ -1,0 +1,152 @@
+\documentclass[a4paper,11pt]{article}
+\usepackage{pgfplots}
+\usepackage{siunitx}
+\sisetup{detect-weight,exponent-product=\cdot,output-decimal-marker={,},
+	per-mode=symbol,binary-units=true,range-phrase={-},range-units=single}
+\SendSettingsToPgf
+\usetikzlibrary{pgfplots.groupplots}
+\pgfplotsset{compat=1.11}
+\usepgfplotslibrary{external}
+\tikzexternalize
+
+\textwidth 160mm \textheight 247mm
+
+\pgfplotsset{width=\figurewidth,compat=1.11}
+\pgfplotsset{
+tick label style={font=\tiny},
+label style={font=\footnotesize},
+legend style={font=\footnotesize},
+title style={font=\footnotesize}
+}
+
+\newcommand{\szer}{16cm}
+\newcommand{\wys}{6cm}
+\newcommand{\odstepionowy}{1.2cm}
+
+\begin{document}
+%newplot
+\begin{figure}[tb]
+\tikzsetnextfilename{Desired_plot_PID_number_of_fuzzy_reg_1}
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=1 by 2,vertical sep=\odstepionowy},
+width=\szer,height=\wys]
+\nextgroupplot
+[xmin=0,xmax=750,ymin=-4,ymax=1,
+xlabel=$k$,ylabel={$y(k)$},legend cell align=left,
+legend pos=north east]
+\addplot[const plot,color=black,semithick, dotted] file {../../../doc/data/exercise_6/PID/Desired_plot_PID_number_of_fuzzy_reg_1.txt};
+\addplot[const plot,color=blue,semithick] file {../../../doc/data/exercise_6/PID/Output_plot_PID_number_of_fuzzy_reg_1.txt};
+\legend{$y^{zad}$,$y(k)$}
+
+\nextgroupplot
+[xmin=0,xmax=750,ymin=-2,ymax=1,
+xlabel=$k$,ylabel=$u(k)$,legend cell align=left,
+legend pos=north east]
+\addplot[const plot,color=green,semithick] file {../../../doc/data/exercise_6/PID/Input_plot_PID_number_of_fuzzy_reg_1_error_88.835.txt};
+\legend{$u(k)$}
+
+\end{groupplot}
+\end{tikzpicture}
+\end{figure}
+
+%newplot
+\begin{figure}[tb]
+\tikzsetnextfilename{Desired_plot_PID_number_of_fuzzy_reg_2}
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=1 by 2,vertical sep=\odstepionowy},
+width=\szer,height=\wys]
+\nextgroupplot
+[xmin=0,xmax=750,ymin=-4,ymax=1,
+xlabel=$k$,ylabel={$y(k)$},legend cell align=left,
+legend pos=north east]
+\addplot[const plot,color=black,semithick, dotted] file {../../../doc/data/exercise_6/PID/Desired_plot_PID_number_of_fuzzy_reg_2.txt};
+\addplot[const plot,color=blue,semithick] file {../../../doc/data/exercise_6/PID/Output_plot_PID_number_of_fuzzy_reg_2.txt};
+\legend{$y^{zad}$,$y(k)$}
+
+\nextgroupplot
+[xmin=0,xmax=750,ymin=-2,ymax=1,
+xlabel=$k$,ylabel=$u(k)$,legend cell align=left,
+legend pos=north east]
+\addplot[const plot,color=green,semithick] file {../../../doc/data/exercise_6/PID/Input_plot_PID_number_of_fuzzy_reg_2_error_77.4807.txt};
+\legend{$u(k)$}
+
+\end{groupplot}
+\end{tikzpicture}
+\end{figure}
+
+%newplot
+\begin{figure}[tb]
+\tikzsetnextfilename{Desired_plot_PID_number_of_fuzzy_reg_3}
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=1 by 2,vertical sep=\odstepionowy},
+width=\szer,height=\wys]
+\nextgroupplot
+[xmin=0,xmax=750,ymin=-4,ymax=1,
+xlabel=$k$,ylabel={$y(k)$},legend cell align=left,
+legend pos=north east]
+\addplot[const plot,color=black,semithick, dotted] file {../../../doc/data/exercise_6/PID/Desired_plot_PID_number_of_fuzzy_reg_3.txt};
+\addplot[const plot,color=blue,semithick] file {../../../doc/data/exercise_6/PID/Output_plot_PID_number_of_fuzzy_reg_3.txt};
+\legend{$y^{zad}$,$y(k)$}
+
+\nextgroupplot
+[xmin=0,xmax=750,ymin=-2,ymax=1,
+xlabel=$k$,ylabel=$u(k)$,legend cell align=left,
+legend pos=north east]
+\addplot[const plot,color=green,semithick] file {../../../doc/data/exercise_6/PID/Input_plot_PID_number_of_fuzzy_reg_3_error_74.8305.txt};
+\legend{$u(k)$}
+
+\end{groupplot}
+\end{tikzpicture}
+\end{figure}
+
+%newplot
+\begin{figure}[tb]
+\tikzsetnextfilename{Desired_plot_PID_number_of_fuzzy_reg_4}
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=1 by 2,vertical sep=\odstepionowy},
+width=\szer,height=\wys]
+\nextgroupplot
+[xmin=0,xmax=750,ymin=-4,ymax=1,
+xlabel=$k$,ylabel={$y(k)$},legend cell align=left,
+legend pos=north east]
+\addplot[const plot,color=black,semithick, dotted] file {../../../doc/data/exercise_6/PID/Desired_plot_PID_number_of_fuzzy_reg_4.txt};
+\addplot[const plot,color=blue,semithick] file {../../../doc/data/exercise_6/PID/Output_plot_PID_number_of_fuzzy_reg_4.txt};
+\legend{$y^{zad}$,$y(k)$}
+
+\nextgroupplot
+[xmin=0,xmax=750,ymin=-2,ymax=1,
+xlabel=$k$,ylabel=$u(k)$,legend cell align=left,
+legend pos=north east]
+\addplot[const plot,color=green,semithick] file {../../../doc/data/exercise_6/PID/Input_plot_PID_number_of_fuzzy_reg_4_error_70.9685.txt};
+\legend{$u(k)$}
+
+\end{groupplot}
+\end{tikzpicture}
+\end{figure}
+
+%newplot
+\begin{figure}[tb]
+\tikzsetnextfilename{Desired_plot_PID_number_of_fuzzy_reg_5}
+\begin{tikzpicture}
+\begin{groupplot}[group style={group size=1 by 2,vertical sep=\odstepionowy},
+width=\szer,height=\wys]
+\nextgroupplot
+[xmin=0,xmax=750,ymin=-4,ymax=1,
+xlabel=$k$,ylabel={$y(k)$},legend cell align=left,
+legend pos=north east]
+\addplot[const plot,color=black,semithick, dotted] file {../../../doc/data/exercise_6/PID/Desired_plot_PID_number_of_fuzzy_reg_5.txt};
+\addplot[const plot,color=blue,semithick] file {../../../doc/data/exercise_6/PID/Output_plot_PID_number_of_fuzzy_reg_5.txt};
+\legend{$y^{zad}$,$y(k)$}
+
+\nextgroupplot
+[xmin=0,xmax=750,ymin=-2,ymax=1,
+xlabel=$k$,ylabel=$u(k)$,legend cell align=left,
+legend pos=north east]
+\addplot[const plot,color=green,semithick] file {../../../doc/data/exercise_6/PID/Input_plot_PID_number_of_fuzzy_reg_5_error_67.7044.txt};
+\legend{$u(k)$}
+
+\end{groupplot}
+\end{tikzpicture}
+\end{figure}
+
+\end{document}

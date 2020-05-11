@@ -1,0 +1,144 @@
+\chapter{Analiza wyników kalibracji rozmytego regulatora PID}
+
+Tak jak zaznaczono podczas analizowania zadania numer $4$, przebiegi dla pojedynczego regulatora s¹ dalekie od doskona³oœci, jednak w~okreœlonych przypadkach mog³yby byæ uznane za wystarczaj¹ce. Proces prawie zawsze udaje siê ustabilizowaæ, chocia¿ mo¿e zaj¹æ to d³u¿sz¹ chwilê. Sygna³ steruj¹cy ma postaæ stosunkowo p³ask¹. 
+
+\newpage
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$K$ & $T_i$ & $T_d$ & $T_s$ & $c$ & $\sigma$ \\
+\hline
+$\num{0.14}$ & $\num{2.6}$ & $\num{0.7}$ & $\num{0.5}$ & $\num{-2.3}$ & $\num{0.4}$\\
+\hline
+$\num{0.235}$ & $\num{2.09}$ & $\num{1.0}$ & $\num{0.5}$ & $\num{-0.5}$ & $\num{0.4}$\\
+\hline
+\end{tabular}
+\label{eksperyment2_PID}
+\caption{Parametry 2 rozmyte regulatory PID}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_PID_number_of_fuzzy_reg_2.pdf}}
+\label{Desired_plot_PID_number_of_fuzzy_reg_2}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+
+
+Zwiêkszenie liczby regulatorów do dwóch skutkuje znacznym skokiem jakoœci regulacji. Przeregulowanie w~kierunku dodatnim znacznie maleje, a~czas oscylacji po zmianie wartoœci zadanej znacznie siê zmniejsza. Wszystkie wartoœci zadane s¹ bez problemu osi¹gane. Przebieg sygna³u steruj¹cego nie zmienia siê znacz¹co, chocia¿ i~tutaj mo¿na zauwa¿yæ, ¿e têtnienia zosta³y st³umione przy skokach w~kierunku dodatnim oraz lekko wzmocnione w~kierunku ujemnym. Jeszcze raz ukazuje to nieliniow¹ strukturê obiektu regulacji.
+
+\newpage
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$K$ & $T_i$ & $T_d$ & $T_s$ & $c$ & $\sigma$ \\
+\hline
+$\num{0.15}$ & $\num{2.7}$ & $\num{0.6}$ & $\num{0.5}$ & $\num{-2.4}$ & $\num{0.3}$\\
+\hline
+$\num{0.09}$ & $\num{2.0}$ & $\num{1.2}$ & $\num{0.5}$ & $\num{-1.2}$ & $\num{0.3}$\\
+\hline
+$\num{0.31}$ & $\num{2.9}$ & $\num{0.7}$ & $\num{0.5}$ & $\num{-0.2}$ & $\num{0.3}$\\
+\hline
+\end{tabular}
+\label{eksperyment3_PID}
+\caption{Parametry 3 rozmyte regulatory PID}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_PID_number_of_fuzzy_reg_3.pdf}}
+\label{Desired_plot_PID_number_of_fuzzy_reg_3}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+
+
+
+Trzeci regulator lokalny pozwala zapanowaæ nad ujemnym przergulowaniem. Têtnienia przebiegu w~dolnych obszarach charakterystyki s¹ wyraŸnie st³umione przy jednoczesnym zachowaniu poprawnej regulacji w~obszarach dodatnich sterowañ.
+
+\newpage
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$K$ & $T_i$ & $T_d$ & $T_s$ & $c$ & $\sigma$ \\
+\hline
+$\num{0.14}$ & $\num{2.25}$ & $\num{1.0}$ & $\num{0.5}$ & $\num{-2.7}$ & $\num{0.2}$\\
+\hline
+$\num{0.1}$ & $\num{2.7}$ & $\num{0.6}$ & $\num{0.5}$ & $\num{-2.1}$ & $\num{0.2}$\\
+\hline
+$\num{0.18}$ & $\num{3.7}$ & $\num{1.1}$ & $\num{0.5}$ & $\num{-1.3}$ & $\num{0.2}$\\
+\hline
+$\num{0.255}$ & $\num{2.57}$ & $\num{0.87}$ & $\num{0.5}$ & $\num{-0.5}$ & $\num{0.2}$\\
+\hline
+\end{tabular}
+\label{eksperyment4_PID}
+\caption{Parametry 4 rozmyte regulatory PID}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_PID_number_of_fuzzy_reg_4.pdf}}
+\label{Desired_plot_PID_number_of_fuzzy_reg_4}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+
+
+\newpage
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$K$ & $T_i$ & $T_d$ & $T_s$ & $c$ & $\sigma$ \\
+\hline
+$\num{0.14}$ & $\num{3.3}$ & $\num{1.0}$ & $\num{0.5}$ & $\num{-2.7}$ & $\num{0.1}$\\
+\hline
+$\num{0.09}$ & $\num{2.3}$ & $\num{0.7}$ & $\num{0.5}$ & $\num{-2.1}$ & $\num{0.1}$\\
+\hline
+$\num{0.15}$ & $\num{2.9}$ & $\num{1.2}$ & $\num{0.5}$ & $\num{-1.6}$ & $\num{0.1}$\\
+\hline
+$\num{0.15}$ & $\num{2.8}$ & $\num{1.9}$ & $\num{0.5}$ & $\num{-1}$ & $\num{0.1}$\\
+\hline
+$\num{0.34}$ & $\num{3.2}$ & $\num{0.6}$ & $\num{0.5}$ & $\num{-0.5}$ & $\num{0.1}$\\
+\hline
+\end{tabular}
+\label{eksperyment5_PID}
+\caption{Parametry 5 rozmytych regulatorów PID}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_PID_number_of_fuzzy_reg_5.pdf}}
+\label{Desired_plot_PID_number_of_fuzzy_reg_5}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+
+
+Przy czterech i~piêciu regulatorach lokalnych w~niewielkim stopniu regulacja poprawia siê w~nieliniowym obszarze charakterystyki, za to ulega (równie¿ nieznacznemu) pogorszeniu rejonach liniowych. Jest to szczególnie widoczne dla $n=5$. Wynika to najprawdopodobniej z faktu, ¿e przy równomiernym rozmieszczeniu piêciu regulatorów, ¿aden z~nich nie znajduje siê w~okolicach œrodka obszaru liniowego.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} | }
+\hline
+liczba regulatorów & b³¹d DMC \\
+\hline
+1 & \num{84.7209} \\
+\hline
+2 & \num{70.8563} \\
+\hline
+3 & \num{67.6583} \\
+\hline
+4 & \num{66.1229} \\
+\hline
+5 & \num{68.6593} \\
+
+\hline
+\end{tabular}
+\label{DMC_error}
+\caption{Tabela b³êdów regulatorów DMC}
+\end{table}

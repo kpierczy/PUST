@@ -1,0 +1,72 @@
+\chapter{Badanie odpowiedzi skokowej}
+W zadaniu drugim, równie¿ tradycyjnie, zmierzyliœmy siê z~zadaniem zbadania odpowiedzi skokowych uk³adu dla ró¿nych wielkoœci skoków wejœcia. W~tym celu przeprowadziliœmy \num{8} symulacji po \num{4} w~kierunku dodatnich i~ujemnych wartoœci sterowania. Wszystkie skoki odbywa³y siê z punktu pracy $u = y = 0$ , a~ich wartoœci zawiera³y siê w~przedziale
+
+\vskip 0.5cm
+\begin{equation}
+    -1 \leqslant u \leqslant 1
+\end{equation}
+\vskip 0.5cm
+
+Przedzia³ ten zosta³a równomiernie pokryte przez wartoœci skoków, co pozwoli³o pokazaæ charakter obiektu regulacji w ca³ym przedziale pracy. Wyniki wszystkich symulacji zosta³y przedstawione na wykresie 3.1..
+
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=0.5\textwidth,
+                    xmin=0,xmax=100,ymin=-9,ymax=13,
+                    xlabel={$k$},
+                    ylabel={$y(k)$},
+                    xtick={0,25,50,75,100},
+                    legend pos=south east,
+                    legend style={font=\tiny},
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                
+                \addplot[const plot, blue]               file {data/exercise_2/responses_edited/U_jump_to_0.5_edited.txt};
+                \addplot[const plot, cyan]               file {data/exercise_2/responses_edited/U_jump_to_-0.5_edited.txt};
+                \addplot[const plot, green]              file {data/exercise_2/responses_edited/U_jump_to_0.25_edited.txt};
+                \addplot[const plot, lime]               file {data/exercise_2/responses_edited/U_jump_to_-0.25_edited.txt};
+                \addplot[const plot, olive]              file {data/exercise_2/responses_edited/U_jump_to_0.75_edited.txt};
+                \addplot[const plot, yellow]             file {data/exercise_2/responses_edited/U_jump_to_-0.75_edited.txt};
+                \addplot[const plot, orange]             file {data/exercise_2/responses_edited/U_jump_to_1_edited.txt};
+                \addplot[const plot, red]                file {data/exercise_2/responses_edited/U_jump_to_-1_edited.txt};
+
+                \legend{$\Delta U=\num{0.5}$,$\Delta U=\num{-0.5}$,$\Delta U=\num{0.25}$,$\Delta U=\num{-0.25}$,$\Delta U=\num{0.75}$,$\Delta U=\num{-0.75}$,$\Delta U=\num{1}$,$\Delta U=\num{-1}$}
+
+            \end{axis}
+        \end{tikzpicture}
+		\label{input_step}
+    \caption{Przebieg wartoœci wyjœciowej procesu przy skokowej zmianie sygna³u steruj¹cego}
+\end{figure}
+\vskip 0.5cm
+
+Wyniki eksperymentów w~wyraŸny sposób ukazuj¹ spodziewany, nieliniowy charakter procesu. Wartoœci wyjœciowe przy dodatnich skokach sterowania nie przekracza³y poziomu \num{0.15}, gdy przy skokach ujemnych siêga³y wartoœci bliskich \num{3.5}. Nieliniowoœæ obiektu widaæ jeszcze wyraŸniej, jeœli spojrzy siê na charakterystykê statyczn¹ przedstawion¹ na wykresie 3.2..
+
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=0.5\textwidth,
+                    xmin=-1.1,xmax=1.1,ymin=-4,ymax=2,
+                    xlabel={$u$},
+                    ylabel={$y(u)$},
+                    legend pos=south east,
+                    legend style={font=\tiny},
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                
+                \addplot[mark=o,draw=black]               file {data/exercise_2/static_characteristic.txt};
+
+                \legend{$y(u)$}
+            \end{axis}
+        \end{tikzpicture}
+		\label{static_characteristic}
+    \caption{Charakterystyka statyczna}
+\end{figure}
+\vskip 0.5cm
+
+
+W~czêœci dodatniej (ze wzglêdu na wartoœci sterowania) charakterystyka wydaje siê mieæ charakter przynajmniej w~przybli¿eniu liniowy. Jednak w~czêœci ujemnej zale¿noœæ miêdzy wartoœci¹ wejœcia, a~ustalon¹ wartoœci¹ wyjœcia staje siê silnie nieliniowa (w przybli¿eniu kwadratowa). Taka sytuacja ka¿de nam s¹dziæ, ¿e zastosowanie do regulacji obiektu klasycznych algorytmów liniowych typu PID lub DMC mo¿e daæ niezadowalaj¹ce efekty. Teza ta zostanie sprawdzona na kolejnych etapach badañ.

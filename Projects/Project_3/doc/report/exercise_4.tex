@@ -1,0 +1,58 @@
+\chapter{Strojeni regulatorów klasycznych}
+
+Stworzone regulatory zosta³y wstêpnie dostrojone, po czym przeprowadzono z~ich udzia³em szereg symulacji w~tych samym warunkach testowych. Zarówno w~przypadku regulatora PID jak i~DMC parametry zosta³y dobrane metod¹ in¿yniersk¹. Jak wiadomo, ka¿dy student Automatyki i~Robotyki posiada na trzecim roku studiów taki baga¿ doœwiadczeñ zwi¹zanych z~obydwoma algorytmami, ¿e optymalne parametry dla przypadków $1*1$ wyczuwa podœwiadomie. Znalezione parametry regulatora PID zestawiono w~tabeli \ref{PID_params}.
+
+\vskip 0.5cm
+\begin{center}
+    \begin{figure}[H]
+        \makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_PID_number_of_fuzzy_reg_1.pdf}}
+        \label{PID_experiment}
+        \caption{Przebieg eksprymentu dla dobranych parametrów regulatora PID}
+    \end{figure}
+\end{center}
+\vskip 0.5cm
+
+Przebiegi scenariusza testowego zosta³y przedstawione na \ref{PID_experiment}. Jak widaæ jakoœæ regulacji jest niedoskona³a, ale bior¹c pod uwagê, ¿e algorytm PID nie jest przeznaczony dla procesów nieliniowych, wyniki i~tak wypadaj¹ stosunkowo dobrze. Sumaryczny b³¹d regulatora rozumiany jako suma kwadratów uchybu ze wszystkich chwil dyskretnych symulacji wyniós³ $\num{88.835}$. Przebieg sterowania wydaje siê dopuszczalny.
+
+
+\vskip 0.5cm
+\begin{center}
+    \begin{figure}[H]
+        \makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_DMC_number_of_fuzzy_reg_1.pdf}}
+        \label{Desired_plot_DMC_number_of_fuzzy_reg_1}
+        \caption{Przebieg eksprymentu dla dobranych parametrów regulatora DMC}
+    \end{figure}
+\end{center}
+\vskip 0.5cm
+
+Parametry regulatora DMC znalaz³y siê z kolei w tabeli \ref{DMC_params}. W~jego przypadku przebiegi s¹ ³agodniejsze w~czêœci liniowej i~trochê bardziej poszarpane po przejœciu do obszaru liniowego. Zmiana ta zosta³a okupiona wzmo¿onymi oscylacjami sterowania po wykonywanych skokach. Sumaryczny b³¹d regulatora wyniós³ $\num{85.7141}$, czyli nieznacznie lepiej ni¿ w~przypadku regulatora PID.
+
+\vskip 0.5cm
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} | }
+        \hline
+        $K$ & $T_i$ & $T_d$ & $T_s$ \\
+        \hline
+        $\num{0.174}$ & $\num{2.3}$ & $\num{0.8}$ & $\num{0.5}$ \\
+        \hline
+    \end{tabular}
+    \label{PID_params}
+    \caption{Parametry regulator PID}
+\end{table}
+\vskip 0.5cm
+
+\vskip 0.5cm
+\begin{table}[H]
+    \centering
+    \begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} | }
+        \hline
+        $D$ & $N$ & $N_u$ & $\lambda$ \\
+        \hline
+        $\num{51}$ & $\num{15}$ & $\num{7}$ & $\num{0.2}$ \\
+        \hline
+    \end{tabular}
+    \label{DMC_params}
+    \caption{Parametry regulator DMC}
+\end{table}
+\vskip 0.5cm

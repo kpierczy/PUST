@@ -1,0 +1,273 @@
+\chapter{Kalibracja regulatorów rozmytych}
+
+Kalibracja regulatorów rozmytych jest potencjalnie o~wiele bardziej z³o¿onym procesem ni¿ kalibracja pojedynczego regulatora. Wynika to bezpoœrednio z~liczby parametrów, jakie nale¿y wzi¹æ pod uwagê. W~przypadku wiêcej ni¿ dwóch-trzech regulatorów rozmytych odrêbna, rêczna kalibracja ka¿dego z~nich wydaje siê skazana na pora¿kê. Z~tego powodu wprowadziliœmy do procedury kalibracji kilka udogodnieñ, które mia³y zwiêkszyæ wydajnoœæ i dok³adnoœæ kalibracji. Procedury te by³y identyczne w~przypadku obydwu regulatorów, dlatego zostan¹ opisane zbiorczo.
+
+1. W~pierwszym kroku ustalaliœmy liczbê regulatorów lokalnych. Rozpoczynaliœmy od jednego regulatora lokalnego i~w kolejnych krokach zwiêkszaliœmy tê liczbê o~jeden do momentu, w~którym przestawa³o to przynosiæ zauwa¿alne korzyœci. Regulatory rozmieszczaliœmy równomiernie w ca³ym obszarze pracy.
+
+2. Kolejn¹ czynnoœci¹ by³o automatyczne zoptymalizowanie parametrów regulatorów oraz funkcji przynale¿noœci. Zak³adaliœmy, ¿e parametry wszystkich regulatorów (oczywiœcie oprócz punktów œrodkowych funkcji przynale¿noœci) by³y na tym etapie jednakowe. Do optymalizacji wykorzystaliœmy funkcjê ga (\textit{Genetic Algorithm}) œrodowiska Matlab.
+
+3. Po uzyskaniu wstêpnie zoptymalizowanych parametrów definiowaliœmy specjalne przebiegi kalibracyjne. Liczba przebiegów równa by³a liczbie regulatorów lokalnych. Ka¿dy z~nich zawiera³ (w~miarê mo¿liwoœci) pobudzenia z~zakresu pracy pojedynczego regulatora. Na podstawie b³êdów pope³nianych przez regulator rozmyty optymalizowaliœmy parametry pojedynczych regulatorów (z~wy³¹czeniem parametrów ich funkcji przynale¿noœci). Optymalizacja ta mog³a odbyæ siê oczywiœcie na drodze automatycznej, jednak aby w~wiêkszym stopniu zapoznaæ siê ze struktur¹ algorytmów rozmytych przeprowadziliœmy ten etap rêcznie.
+
+% Wiem, ¿e to œciema, ale mo¿naby wygenerowaæ 1 przebieg ma³osygna³owy dla przyk³adu tak, ¿eby pokazaæ, ¿e niby to zrobiliœmy xD
+
+4. Ostatnim krokiem by³o indywidualne doprecyzowanie parametrów regulatorów lokalnych (razem z~parametrami ich funkcji przynale¿noœci) na podstawie trajektorii zawieraj¹cej pe³en zakres pracy obiektu.
+
+Poni¿ej zosta³y zamieszone wyniki kalibracji dla regulatorów PID oraz DMC (przy sta³ym wspó³czynniku $\lambda$). Bior¹c pod uwagê, ¿e powy¿sza procedura by³a bardzo czasoch³onna, a~jej wyniki obszerne, analiza tych wyników zostanie przeprowadzono zbiorczo z~analiz¹ wyników zadania $7$ w~rozdziale nr $7$.
+
+\section{Kalibracja rozmytych regulatorów PID}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} | }
+\hline
+$K$ & $T_i$ & $T_d$ & $T_s$ \\
+\hline
+$\num{0.174}$ & $\num{2.3}$ & $\num{0.8}$ & $\num{0.5}$ \\
+\hline
+\end{tabular}
+\label{eksperyment1_PID}
+\caption{Parametry  regulator PID}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_PID_number_of_fuzzy_reg_1.pdf}}
+\label{Desired_plot_PID_number_of_fuzzy_reg_1}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+\newpage
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$K$ & $T_i$ & $T_d$ & $T_s$ & $c$ & $\sigma$ \\
+\hline
+$\num{0.14}$ & $\num{2.6}$ & $\num{0.7}$ & $\num{0.5}$ & $\num{-2.3}$ & $\num{0.4}$\\
+\hline
+$\num{0.235}$ & $\num{2.09}$ & $\num{1.0}$ & $\num{0.5}$ & $\num{-0.5}$ & $\num{0.4}$\\
+\hline
+\end{tabular}
+\label{eksperyment2_PID}
+\caption{Parametry 2 rozmyte regulatory PID}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_PID_number_of_fuzzy_reg_2.pdf}}
+\label{Desired_plot_PID_number_of_fuzzy_reg_2}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+\newpage
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$K$ & $T_i$ & $T_d$ & $T_s$ & $c$ & $\sigma$ \\
+\hline
+$\num{0.15}$ & $\num{2.7}$ & $\num{0.6}$ & $\num{0.5}$ & $\num{-2.4}$ & $\num{0.3}$\\
+\hline
+$\num{0.09}$ & $\num{2.0}$ & $\num{1.2}$ & $\num{0.5}$ & $\num{-1.2}$ & $\num{0.3}$\\
+\hline
+$\num{0.31}$ & $\num{2.9}$ & $\num{0.7}$ & $\num{0.5}$ & $\num{-0.2}$ & $\num{0.3}$\\
+\hline
+\end{tabular}
+\label{eksperyment3_PID}
+\caption{Parametry 3 rozmyte regulatory PID}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_PID_number_of_fuzzy_reg_3.pdf}}
+\label{Desired_plot_PID_number_of_fuzzy_reg_3}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+\newpage
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$K$ & $T_i$ & $T_d$ & $T_s$ & $c$ & $\sigma$ \\
+\hline
+$\num{0.14}$ & $\num{2.25}$ & $\num{1.0}$ & $\num{0.5}$ & $\num{-2.7}$ & $\num{0.2}$\\
+\hline
+$\num{0.1}$ & $\num{2.7}$ & $\num{0.6}$ & $\num{0.5}$ & $\num{-2.1}$ & $\num{0.2}$\\
+\hline
+$\num{0.18}$ & $\num{3.7}$ & $\num{1.1}$ & $\num{0.5}$ & $\num{-1.3}$ & $\num{0.2}$\\
+\hline
+$\num{0.255}$ & $\num{2.57}$ & $\num{0.87}$ & $\num{0.5}$ & $\num{-0.5}$ & $\num{0.2}$\\
+\hline
+\end{tabular}
+\label{eksperyment4_PID}
+\caption{Parametry 4 rozmyte regulatory PID}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_PID_number_of_fuzzy_reg_4.pdf}}
+\label{Desired_plot_PID_number_of_fuzzy_reg_4}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+\newpage
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$K$ & $T_i$ & $T_d$ & $T_s$ & $c$ & $\sigma$ \\
+\hline
+$\num{0.14}$ & $\num{3.3}$ & $\num{1.0}$ & $\num{0.5}$ & $\num{-2.7}$ & $\num{0.1}$\\
+\hline
+$\num{0.09}$ & $\num{2.3}$ & $\num{0.7}$ & $\num{0.5}$ & $\num{-2.1}$ & $\num{0.1}$\\
+\hline
+$\num{0.15}$ & $\num{2.9}$ & $\num{1.2}$ & $\num{0.5}$ & $\num{-1.6}$ & $\num{0.1}$\\
+\hline
+$\num{0.15}$ & $\num{2.8}$ & $\num{1.9}$ & $\num{0.5}$ & $\num{-1}$ & $\num{0.1}$\\
+\hline
+$\num{0.34}$ & $\num{3.2}$ & $\num{0.6}$ & $\num{0.5}$ & $\num{-0.5}$ & $\num{0.1}$\\
+\hline
+\end{tabular}
+\label{eksperyment5_PID}
+\caption{Parametry 5 rozmytych regulatorów PID}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_PID_number_of_fuzzy_reg_5.pdf}}
+\label{Desired_plot_PID_number_of_fuzzy_reg_5}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+\newpage
+
+\section{Kalibracja rozmytych regulatorów PID}
+
+
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$D$ & $N$ & $N_u$ & $\lambda$ & $c$ & $\sigma$ \\
+\hline
+$\num{25}$ & $\num{15}$ & $\num{10}$ & $\num{1}$ & $\num{-2.5}$ & $\num{0.6}$\\
+\hline
+$\num{25}$ & $\num{15}$ & $\num{10}$ & $\num{1}$ & $\num{-0.7}$ & $\num{0.6}$\\
+\hline
+\end{tabular}
+\label{eksperyment2_DMC}
+\caption{Parametry 2 rozmyte regulatory DMC}
+\end{table}
+
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_DMC_number_of_fuzzy_reg_2.pdf}}
+\label{Desired_plot_DMC_number_of_fuzzy_reg_2}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+\newpage
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$D$ & $N$ & $N_u$ & $\lambda$ & $c$ & $\sigma$ \\
+\hline
+$\num{58}$ & $\num{16}$ & $\num{14}$ & $\num{1}$ & $\num{-2.6}$ & $\num{0.21}$ \\
+\hline
+$\num{49}$ & $\num{16}$ & $\num{14}$ & $\num{1}$ & $\num{-1.5}$ & $\num{0.21}$\\
+\hline
+$\num{39}$ & $\num{16}$ & $\num{14}$ & $\num{1}$ & $\num{-0.4}$ & $\num{0.21}$\\
+\hline
+\end{tabular}
+\label{eksperyment3_DMC}
+\caption{Parametry 3 rozmyte regulatory DMC}
+\end{table}
+
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_DMC_number_of_fuzzy_reg_3.pdf}}
+\label{Desired_plot_DMC_number_of_fuzzy_reg_3}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+\newpage
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$D$ & $N$ & $N_u$ & $\lambda$ & $c$ & $\sigma$ \\
+\hline
+$\num{60}$ & $\num{15}$ & $\num{10}$ & $\num{1}$ & $\num{-2.8}$ & $\num{0.2}$\\
+\hline
+$\num{54}$ & $\num{15}$ & $\num{10}$ & $\num{1}$ & $\num{-1.98}$ & $\num{0.2}$\\
+\hline
+$\num{45}$ & $\num{15}$ & $\num{10}$ & $\num{1}$ & $\num{-1.2}$ & $\num{0.2}$\\
+\hline
+$\num{38}$ & $\num{15}$ & $\num{10}$ & $\num{0.01}$ & $\num{-0.35}$ & $\num{0.2}$\\
+\hline
+\end{tabular}
+\label{eksperyment4_DMC}
+\caption{Parametry 4 rozmyte regulatory DMC}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_DMC_number_of_fuzzy_reg_4.pdf}}
+\label{Desired_plot_DMC_number_of_fuzzy_reg_4}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+\newpage
+
+
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ | m{5em} | m{5em} |m{5em} |m{5em} |m{5em} |m{5em} | }
+\hline
+$D$ & $N$ & $N_u$ & $\lambda$ & $c$ & $\sigma$ \\
+\hline
+$\num{60}$ & $\num{14}$ & $\num{14}$ & $\num{1}$ & $\num{-2.8}$ & $\num{0.2}$\\
+\hline
+$\num{55}$ & $\num{14}$ & $\num{14}$ & $\num{1}$ & $\num{-2.1}$ & $\num{0.2}$\\
+\hline
+$\num{49}$ & $\num{14}$ & $\num{14}$ & $\num{1}$ & $\num{-1.6}$ & $\num{0.3}$\\
+\hline
+$\num{41}$ & $\num{14}$ & $\num{14}$ & $\num{1}$ & $\num{-1}$ & $\num{0.3}$\\
+\hline
+$\num{40}$ & $\num{14}$ & $\num{14}$ & $\num{1}$ & $\num{-0.5}$ & $\num{0.3}$\\
+\hline
+\end{tabular}
+\label{eksperyment4_DMC}
+\caption{Parametry 5 rozmytch regulatorów DMC}
+\end{table}
+
+\begin{center}
+\begin{figure}[H]
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/Desired_plot_DMC_number_of_fuzzy_reg_5.pdf}}
+\label{Desired_plot_DMC_number_of_fuzzy_reg_5}
+\caption{Wykres dla parametrów powy¿ej}
+\end{figure}
+\end{center}
+
+
+
+
+
