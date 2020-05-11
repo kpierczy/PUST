@@ -1,0 +1,80 @@
+\chapter{Wyznaczanie odpowiedzi skokowej}
+
+Drugie zadanie polega³o na wyznaczeniu odpowiedzi uk³adu na kilka skokowych zmian wartoœci sygna³u steruj¹cego przy zachowaniu ograniczeñ ich wartoœci. Sygna³ steruj¹cy musi zawieraæ siê w~przedziale $U\in[\num{1.4}; \num{2.0}]$. Œrodkowi tego przedzia³u odpowiada punkt pracy uk³adu weryfikowany w~zadaniu nr 1, który w~tym przypadku pos³u¿y³ jako wartoœæ startowa. Obiekt zosta³ doprowadzony do punktu pracy poprzez zainicjalizowanie wektorów wartoœci steruj¹cej i~wartoœci wyjœciowej odpowiednimi wartoœciami $U=\num{1.7},Y=\num{2}$, co zosta³o przedstawione na poni¿szym listingu.
+
+\vskip 0.5cm
+\begin{lstlisting}[style=Matlab-editor]
+    U_init = ones(STEPS_NUM,1) * 1.7;
+    Y_init = ones(STEPS_NUM,1) * 2;
+\end{lstlisting} 
+\vskip 0.5cm
+
+Wykonano ³¹cznie 8 skoków wartoœci steruj¹cej, przy czym cztery z~nich mia³y wartoœci ujemne, a~cztery wartoœci dodatnie. Wszystkie zosta³y równo rozmieszczone pomiêdzy punktem pocz¹tkowym, a~minimaln¹/maksymaln¹ dozwolon¹ wartoœci¹. Wyniki pomiarów przedstawiono na rys. \ref{step_responses}. Dane pomiarowe zosta³y przesuniête w~czasie tak, aby punkt pocz¹tkowy ($Czas=0s$) by³ momentem wykonania skoku sterowania.
+
+\vskip 1cm
+\begin{figure}[h]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=0.5\textwidth,
+                    xmin=0,xmax=100,ymin=1.5,ymax=2.5,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0,25,50,75,100},
+                    ytick={1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5},
+                    legend pos=south east,
+                    legend style={font=\tiny},
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                
+                \addplot[const plot, blue]               file {data/exercise_2/step_response_1.txt};
+                \addplot[const plot, cyan]               file {data/exercise_2/step_response_2.txt};
+                \addplot[const plot, green]              file {data/exercise_2/step_response_3.txt};
+                \addplot[const plot, lime]               file {data/exercise_2/step_response_4.txt};
+                \addplot[const plot, olive]              file {data/exercise_2/step_response_5.txt};
+                \addplot[const plot, yellow]             file {data/exercise_2/step_response_6.txt};
+                \addplot[const plot, orange]             file {data/exercise_2/step_response_7.txt};
+                \addplot[const plot, red]                file {data/exercise_2/step_response_8.txt};
+
+                \legend{$\Delta U=\num{0.3}$,$\Delta U=\num{0.225}$,$\Delta U=\num{0.150}$,$\Delta U=\num{0.075}$,$\Delta U=\num{-0.075}$,$\Delta U=\num{-0.150}$,$\Delta U=\num{-0.225}$,$\Delta U=\num{-0.3}$}
+
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Przebieg wartoœci wyjœciowej procesu przy skokowej zmianie sygna³u steruj¹cego}
+    \label{step_responses}
+\end{figure}
+\vskip 1cm
+
+Druga czêœæ zadania polega³a na zbadaniu charakterystyki statycznej uk³adu i~okreœleniu, czy proces jest w przybli¿eniu liniowy. Zebrawszy odpowiedzi skokowe stworzyliœmy wektor par $(U_{pp}, Y_{pp})$ reprezentuj¹cych punkty pracy uk³adu. Punkty te wyrysowane na p³aszczyŸnie ukaza³y charakterystykê, któr¹ mo¿emy obserwowaæ na rys. \ref{static_characteristic}
+
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=0.5\textwidth,
+                    xmin=1.4,xmax=2,ymin=1.5,ymax=2.5,
+                    xlabel={$u$},
+                    ylabel={$y(u)$},
+                    xtick={1.4,1.5,1.6, 1.7, 1.8, 1.9, 2.0},
+                    ytick={1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2, 2.3, 2.4, 2.5},
+                    legend pos=south east,
+                    x tick label style={/pgf/number format/1000 sep={,}},
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[blue]                file {data/exercise_2/static_characteristic.txt};
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Charakterystyka statyczna obiektu}
+    \label{static_characteristic}
+\end{figure}
+\vskip 0.5cm
+
+Jak widaæ, obiekt wykazuje silnie liniowy charakter. Pozwala to wyznaczyæ wzmocnienie statyczne uk³adu, czyli wartoœæ zmiany wyjœcia uk³adu przy jednostkowej zmianie wartoœci sygna³u steruj¹cego. Obliczaj¹c stosunek zmiany na wyjœciu uk³adu do zmiany wartoœci steruj¹cej przy skoku z~$U=\num{1.7}$ do $U=\num{2.0}$ otrzymujemy równanie pokazane na rys. \ref{static_gain}.
+
+\vskip 0.5cm
+\begin{equation}
+    K = \dfrac{\Delta Y}{\Delta U} = \dfrac{\num{2.4320}}{\num{0.3}} = \num{0.6945}
+    \label{static_gain}
+\end{equation}
+\vskip 0.5cm

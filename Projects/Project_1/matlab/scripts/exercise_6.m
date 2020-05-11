@@ -1,0 +1,195 @@
+clear
+clc
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%% Configuration %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Initial search point for PID optimisation
+x0_PID = [0, 0, 0]; 
+
+% PID parameters constraits
+lb_PID = [0, 0, 0];
+ub_PID = [1000, 1000, 1000];
+
+% DMC parameters constraits
+lb_DMC = [1, 1, 0];
+ub_DMC = [120, 120, 100];
+
+% Turn on regulators' optiimsation (0 = don't optimise, 1 = optimise)
+PID_OPTIMISE = 0;
+DMC_OPTIMISE = 1;
+
+% Turn on plotting score functions (0 = don't plot, 1 = plot)
+PID_PLOT = 1;
+DMC_PLOT = 0;
+
+% Plots' resolution
+RESOLUTION = 40;
+
+% Parameter that is set constant during plottin PID_score function
+%   1 : K
+%   2 : Ti
+%   3 : Td
+PID_CONST_PARAM = 3;
+
+% Parameter that is set constant during plottin DMC_score function
+%   1 : N
+%   2 : Nu
+%   3 : lambda
+DMC_CONST_PARAM = 2;
+
+% Options of the optimisation algorithms
+PID_options = optimoptions('fmincon', 'Algorithm', 'interior-point', 'SubproblemAlgorithm', 'factorization', 'StepTolerance', 10*10^(-12));
+DMC_options = optimoptions('ga', 'PopulationSize', 50, 'EliteCount', 2);
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%% Computations %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% PID parameters optimisation
+if PID_OPTIMISE == 1
+    PID_params = fmincon(@PID_score, x0_PID, [], [], [], [], lb_PID, ub_PID, [], PID_options);
+end
+
+% DMC parameters optimisation
+if DMC_OPTIMISE == 1
+    DMC_params = ga(@DMC_score, 3, [], [], [], [], lb_DMC, ub_DMC, [], [1 2], DMC_options);
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%% Score functions plotting %%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+close
+
+if PID_PLOT == 1 && PID_OPTIMISE == 1
+
+    % Get meshgrid for the plot
+    x = linspace(lb_PID(mod(PID_CONST_PARAM, 3) + 1), ...
+                 ub_PID(mod(PID_CONST_PARAM, 3) + 1), ...
+                 RESOLUTION);
+             
+    y = linspace(lb_PID(mod(PID_CONST_PARAM + 1, 3) + 1), ...
+                 ub_PID(mod(PID_CONST_PARAM + 1, 3) + 1), ...
+                 RESOLUTION);
+             
+    [xg, yg] = meshgrid(x, y);
+
+    % Get grid for the const param
+    const_param = ones([size(xg, 1), size(xg, 2)]) * PID_params(PID_CONST_PARAM);
+    
+    % Place parameters in an appropriate order
+    arrayfun_params = zeros(size(xg, 1), size(xg, 2) * 3);
+    arrayfun_params(:, ...
+                    (PID_CONST_PARAM - 1) * size(xg, 2) + 1 : ...
+                    (PID_CONST_PARAM    ) * size(xg, 2)) ...
+                    = const_param;
+    arrayfun_params(:, ...
+                    mod(PID_CONST_PARAM, 3) * size(xg, 2) + 1 : ...
+                    (mod(PID_CONST_PARAM, 3) + 1) * size(xg, 2)) ...
+                    = xg;
+    arrayfun_params(:, ...
+                    mod(PID_CONST_PARAM + 1, 3) * size(xg, 2) + 1 : ...
+                    (mod(PID_CONST_PARAM + 1, 3) + 1) * size(xg, 2)) ...
+                    = yg;
+    
+    % Convert array of params to param list
+    param_list = mat2cell(arrayfun_params, size(xg, 1), [size(xg, 2), size(xg, 2), size(xg, 2)]);
+    
+    % Call score function for all arguments in the meshgrid
+    zg = arrayfun(@(K, Ti, Td)PID_score([K, Ti, Td]), param_list{:});
+
+    % Save plot values
+    PID_xg = xg;
+    PID_yg = yg;
+    PID_zg = zg;
+    
+    % Save axis labels
+    labels = {'K', 'Ti', 'Td'};
+    PID_xg_label = labels{mod(PID_CONST_PARAM, 3) + 1};
+    PID_yg_label = labels{mod(PID_CONST_PARAM + 1, 3) + 1};
+    
+    % Plot PID_score function
+    figure
+    surf(PID_xg, PID_yg, PID_zg)
+    xlabel(PID_xg_label)
+    ylabel(PID_yg_label)
+
+end
+
+if DMC_PLOT == 1 && DMC_OPTIMISE == 1
+
+    % Get meshgrid for the plot
+    if DMC_CONST_PARAM == 1
+        x = linspace(lb_DMC(2), ...
+                     ub_DMC(2), ...
+                     ub_DMC(2) - lb_DMC(2) + 1);
+        y = linspace(lb_DMC(3), ...
+                     ub_DMC(3), ...
+                     RESOLUTION);
+    elseif DMC_CONST_PARAM == 2
+        x = linspace(lb_DMC(1), ...
+                     ub_DMC(1), ...
+                     ub_DMC(1) - lb_DMC(1) + 1);
+        y = linspace(lb_DMC(3), ...
+                     ub_DMC(3), ...
+                     RESOLUTION);
+    else
+        x = linspace(lb_DMC(1), ...
+             ub_DMC(1), ...
+             ub_DMC(1) - lb_DMC(1) + 1);
+        y = linspace(lb_DMC(2), ...
+            ub_DMC(2), ...
+            ub_DMC(2) - lb_DMC(2) + 1);
+    end
+    
+    [xg, yg] = meshgrid(x, y);
+
+    % Get grid for the const param
+    const_param = ones([size(xg, 1), size(xg, 2)]) * DMC_params(DMC_CONST_PARAM);
+    
+    % Place parameters in an appropriate order
+    arrayfun_params = zeros(size(xg, 1), size(xg, 2) * 3);
+    arrayfun_params(:, ...
+                    (DMC_CONST_PARAM - 1) * size(xg, 2) + 1 : ...
+                    (DMC_CONST_PARAM    ) * size(xg, 2)) ...
+                    = const_param;
+    arrayfun_params(:, ...
+                    mod(DMC_CONST_PARAM, 3) * size(xg, 2) + 1 : ...
+                    (mod(DMC_CONST_PARAM, 3) + 1) * size(xg, 2)) ...
+                    = xg;
+    arrayfun_params(:, ...
+                    mod(DMC_CONST_PARAM + 1, 3) * size(xg, 2) + 1 : ...
+                    (mod(DMC_CONST_PARAM + 1, 3) + 1) * size(xg, 2)) ...
+                    = yg;
+    
+    % Convert array of params to param list
+    param_list = mat2cell(arrayfun_params, size(xg, 1), [size(xg, 2), size(xg, 2), size(xg, 2)]);
+    
+    % Call score function for all arguments in the meshgrid
+    zg = arrayfun(@(N, Nu, lambda)DMC_score([N, Nu, lambda]), param_list{:});
+
+    % Save plot values
+    DMC_xg = xg;
+    DMC_yg = yg;
+    DMC_zg = zg;
+    
+    % Save axis labels
+    labels = {'N', 'Nu', 'lambda'};
+    DMC_xg_label = labels{mod(DMC_CONST_PARAM, 3) + 1};
+    DMC_yg_label = labels{mod(DMC_CONST_PARAM + 1, 3) + 1};
+    
+    % Plot DMC_score function
+    figure
+    surf(xg, yg, zg)
+    xlabel(DMC_xg_label)
+    ylabel(DMC_yg_label)
+    
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%% Clearing %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+clearvars -except PID_params DMC_params PID_xg PID_yg PID_zg DMC_xg DMC_yg DMC_zg PID_xg_label PID_yg_label DMC_xg_label DMC_yg_label

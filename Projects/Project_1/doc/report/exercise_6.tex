@@ -1,0 +1,40 @@
+\chapter{Optymalizacja parametrów regulatorów}
+
+Parametry obydwu regulatorów zosta³y dobrane tak¿e przy pomocy funkcji optymalizuj¹cych dostêpnych w~œrodowisku Matlab - \verb!ga! oraz \verb!fmincon!. Pierwsza z~nich, oparta o~algorytm genetyczny, zosta³a zastosowana do dostrojenia obydwu regulatorów. Druga, jedynie w przypadku regulatora PID. Wynika to z~faktu, ¿e dwa z~trzech parametrów regulatora DMC (horyzont predykcji $N$ oraz horyzont sterowania $N_u$) s¹ parametrami ca³kowitoliczbowymi. Jedynie \verb!ga! pozwala na optymalizacjê ze wzglêdu na parametry ca³kowitoliczbowe. Funkcja \verb!fmincon! pozwala na optymalizacjê dowolnej, w~ogólnoœci nieliniowej, funkcji celu o parametrach rzeczywistych w oparciu o jeden z dostêpnych algorytmów (m.in. \verb!Interior-point!, \verb!sqp!). Obie funkcje pozwalaj¹ na³o¿yæ zestaw liniowych ograniczeñ na rozwi¹zanie, co nie zosta³o w tym przypadku wykorzystane.
+
+Pierwsz¹ z~wykorzystanych metod by³a \verb!ga!. Jako, ¿e obie funkcje udostêpniaj¹ szeroki zakres parametrów, umo¿liwiaj¹cy dostosowywanie algorytmu optymalizacji, wykorzystaliœmy je, aby zwiêkszyæ prawdopodobieñstwo, ¿e znalezione parametry s¹ faktycznym optimum globalnym (oczywiœcie w~przeszukiwanym obszarze). Parametry regulatora PID ($K$, $T_i$, $T_d$) poszukiwane by³y w obszarze o brzegach $[0 0 0]$ $[100 1000000 1000]$. Dla parametrów regulatora DMC ($[K T_i T_d]$) by³ to obszar $[1 1 0]$ $[120 120 10]$, gdzie oczywiœcie pierwsze dwa parametry by³y ca³kowitoliczbowe. W kolejnych podejœciach do optymalizacji manipulowano kilkoma parametrami algorytmu \verb!ga!:
+
+\begin{enumerate}
+\item PopulationSize (50, 100, 150, 200) : rozmiar populacji
+\item FunctionTolerance (1e-2, 1e-4, 1e-6, 1e-8) : tolerancja zmiany wartoœci funkcji celu, któr¹ algorytm uznaje wci¹¿ za poprawê
+\item EliteCount (2\%, 5\%, 10\%, 20\% populacji) : Procent osobników w populacji, które maj¹ zagwarantowane przejœcie do nastêpnej generacji
+\item MigrationFraction (0.2, 0.3, 0.4) : Procent osobników w~ka¿dej subpopulacji, które migruj¹ miêdzy subpopulacjami
+\end{enumerate}
+
+W przypadku \verb!fmincon! parametry, którymi manipulowaliœmy to kolejno:
+
+\begin{enumerate}
+\item Algorithm ('interior-point', 'active-set') : algorytm stosowany w procesie optymalizacji
+\item MaxIterations (400, 2000) : maksymalna liczba iteracji
+\item OptimalityTolerance (1e-2, 1e-4, 1e-6, 1e-8) : tolerancja zmiany wartoœci funkcji celu, któr¹ algorytm uznaje wci¹¿ za poprawê
+\item * HessianApproximation ('bfgs', 'lbfgs', 'finite-difference') : metoda aproksymacji hesjanu funkcji celu
+\end{enumerate}
+* - dotyczy algorytmu 'active-set'
+
+W~przypadku obu regulatorów manipulacja parametrami algorytmów nie przynios³a wiêkszych zmian w~wartoœci b³êdu generowanego przez regulator przy znalezionych parametrach. W szczególnoœci, znalezione wartoœci okaza³y siê praktycznie identyczne, dla regulatora DMC, i~o~oko³o $20\%$ gorsze, dla regulatora PID, ni¿ w przypadku strojenia rêcznego. Poni¿ej znajduj¹ siê wykresy dla najlepszych parametrów strojenia (PID: \ref{K_1.0107_Ti_10.4463_Td_1.449_error_23.1441xy_zad} oraz DMC: \ref{N_20_Nu_4_lambda_0.0373_error_17.9563xy_zad}).
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/K_1.0107_Ti_10.4463_Td_1.449_error_23.1441xy_zad.pdf}}
+\caption{K=1.0107, Ti=10.4463, Td=1.449, error=23.1441}
+\label{K_1.0107_Ti_10.4463_Td_1.449_error_23.1441xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/N_20_Nu_4_lambda_0.0373_error_17.9563xy_zad.pdf}}
+\caption{N=20, Nu=4, lambda=0.0373, error=17.9563}
+\label{N_20_Nu_4_lambda_0.0373_error_17.9563xy_zad}
+\end{figure}
+\end{center}

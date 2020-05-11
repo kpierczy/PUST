@@ -1,0 +1,26 @@
+\chapter{Badanie poprawnoœci punktu pracy}
+
+Pierwsze zadanie sprowadza³o siê do zweryfikowania poprawnoœci, podanego w~treœci zadania, punktu pracy $U_{pp}=\num{1.7}$, $Y_{pp}=\num{2}$. Weryfikacja polega³a na podaniu na wejœcie obiektu sta³ej wartoœci pobudzenia $U=\num{1.7}$ przy jednoczesnym za³o¿eniu, ¿e wartoœæ wyjœcia w~przesz³oœci ustalona by³a na poziomie $Y=\num{2.0}$ i sprawdzeniu, czy wartoœæ ta ulegnie zmianie. Wynik eksperymentu zosta³ przedstawiony na rys. \ref{work_point_check}. Zgodnie z~danymi podanymi w~treœci zadania, punkt $U=\num{1.7},Y=\num{2}$ jest rzeczywiœcie punktem pracy.
+
+\vskip 0.5cm
+\begin{figure}[h]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=0.5\textwidth,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=south east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_1/work_point_check.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Przebieg wartoœci wyjœciowej procesu po podaniu sta³ego wejœcia $U=\num{1.7}$}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm

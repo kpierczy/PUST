@@ -1,0 +1,35 @@
+\chapter{Przekszta³canie odpowiedzi skokowej na potrzeby DMC}
+
+Kolejnym krokiem maj¹cym na~celu stworzenie regulatora do~obiektu by³o przeskalowanie, zarówno w~czasie jak i~w~wartoœci, jednej z~otrzymanych odpowiedzi skokowych tak, aby spe³nia³a ona wymagania algorytmu DMC. Odby³o siê to w~dwóch krokach. Pierwszy z~nich polega³ na wybraniu odpowiedniego zestawu próbek z~otrzymanego wektora wartoœci wyjœciowych. Bior¹c pod uwagê, ¿e skok sterowania nastêpowa³ w~chwili $n=3$, wektor wynikowy powinien zawieraæ próbki od chwili nastêpnej, czyli $n=\num{4}$. Ponadto wektor ten powinien mieæ d³ugoœæ równ¹ wartoœci rzêdu dynamiki uk³adu. Wartoœæ ta zosta³a wybrana poprzez znalezienie pierwszego elementu wektora próbek, któego wartoœæ by³a mniejsza o~nie~wiêcej ni¿ wielkoœæ przyjêtej tolerancji ($tolerancja=\num{0.0001}$) od wartoœci maksymalnej. W~wyniku takiego wyszukiwania otrzymaliœmy $D=\num{147}$. Drugim krokiem by³o przeskalowanie wartoœci otrzymanego wektora zgodnie z~formu³¹ \ref{step_response_scaling}.
+
+\vskip 0.5cm
+\begin{equation}
+    S = \dfrac{S^0 - Y_{pp}}{\Delta U}
+    \label{step_response_scaling}
+\end{equation}
+\vskip 0.5cm
+
+$S$ jest porz¹danym wektorem wspó³czynników odpowiedzi skokowej, a~$S^0$ to wektor otrzymany po wykonaniu kroku pierwszego. $Y_pp$ stanowi wartoœæ wyjœcia obiektu sprzed zmiany wartoœci sterowania, natomiast $\Delta U$ to wartoœæ samej zmiany sterowania. W wyniku wy¿ej opisanych czynnoœci otrzymaliœmy odpowiedŸ skokow¹ widoczn¹ na rys. \ref{step_response_DMC}.
+
+\vskip 0.5cm
+\begin{figure}[h]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=0.5\textwidth,
+                    xmin=0,xmax=147,ymin=0,ymax=1.5,
+                    xlabel={$n$},
+                    ylabel={$y[n]$},
+                    xtick={0,25,50,75,100,125},
+                    ytick={0,0.3,0.6,0.9,1.2,1.5},
+                    legend pos=south east,
+                    x tick label style={/pgf/number format/1000 sep={,}},
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_3/step_response_DMC.txt};
+            \end{axis}
+        \end{tikzpicture}
+    \caption{OdpowiedŸ skokowa przystosowana do algorytmu DMC}
+    \label{step_response_DMC}
+\end{figure}
+\vskip 0.5cm

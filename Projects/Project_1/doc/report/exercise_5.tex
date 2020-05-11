@@ -1,0 +1,337 @@
+\chapter{Dobranie nastaw metod¹ eksperymentaln¹}
+\section{strojenie PID}
+
+Dla regulatora PID przeprowadziliœmy strojenie metod¹ eksperymentaln¹, w której w pierwszej kolejnoœci dobieramy parametr K, nastêpnie $T_i$, a na koñcu $T_d$. Poni¿ej wykresów wygenerowanych dla tych eksperymentów zapisane s¹ nastawy regulatora oraz obliczony b³¹d, korzystaj¹c z formu³y:
+\begin{equation}
+E = \sum_{k=1}^{k_{konc}}(y^{zad}(k)-y(k))^2
+\end{equation}
+B³¹d podany jest jako error=... . W dalszych rozwa¿aniach przyjmowana bêdzie trajektoria zmian sygna³u $y^{zad}$ : $2.0 -> 2.4 -> 1.7 -> 2.0.$
+\newpage
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_10_Ti_10000_Td_0_error_45.0778xy_zad.pdf}}
+\caption{K=10, Ti=10000, Td=0, error=45.0778}
+\label{K_10_Ti_10000_Td_0_error_45.0778xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_2_Ti_10000_Td_0_error_38.6859xy_zad.pdf}}
+\caption{K=2, Ti=10000, Td=0, error=38.6859}
+\label{K_2_Ti_10000_Td_0_error_38.6859xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_1_Ti_10000_Td_0_error_37.0311xy_zad.pdf}}
+\caption{K=1, Ti=10000, Td=0, error=37.0311}
+\label{K_1_Ti_10000_Td_0_error_37.0311xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_0.8_Ti_10000_Td_0_error_36.6129xy_zad.pdf}}
+\caption{K=0.8, Ti=10000, Td=0, error=36.6129}
+\label{K_0.8_Ti_10000_Td_0_error_36.6129xy_zad}
+\end{figure}
+\end{center}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_0.8_Ti_10_Td_0_error_21.2342xy_zad.pdf}}
+\caption{K=0.8, Ti=10, Td=0, error=21.2342}
+\label{K_0.8_Ti_10_Td_0_error_21.2342xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_1.2_Ti_10_Td_0_error_20.6152xy_zad.pdf}}
+\caption{K=1.2, Ti=10, Td=0, error=20.6152}
+\label{K_1.2_Ti_10_Td_0_error_20.6152xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_2_Ti_10_Td_0_error_19.4053xy_zad.pdf}}
+\caption{K=2, Ti=10, Td=0, error=19.4053}
+\label{K_2_Ti_10_Td_0_error_19.4053xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_2_Ti_9_Td_0_error_19.4431xy_zad.pdf}}
+\caption{K=2, Ti=9, Td=0, error=19.4431}
+\label{K_2_Ti_9_Td_0_error_19.4431xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_1_Ti_10_Td_0_error_20.4703xy_zad.pdf}}
+\caption{K=1, Ti=10, Td=0, error=20.4703}
+\label{K_1_Ti_10_Td_0_error_20.4703xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_1.2_Ti_4_Td_0_error_18.6904xy_zad.pdf}}
+\caption{K=1.2, Ti=4, Td=0, error=18.6904}
+\label{K_1.2_Ti_4_Td_0_error_18.6904xy_zad}
+\end{figure}
+\end{center}
+
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_1_Ti_4_Td_0_error_19.0115xy_zad.pdf}}
+\caption{K=1, Ti=4, Td=0, error=19.0115}
+\label{K_1_Ti_4_Td_0_error_19.0115xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_1.2_Ti_6_Td_0_error_19.6207xy_zad.pdf}}
+\caption{K=1.2, Ti=6, Td=0, error=19.6207}
+\label{K_1.2_Ti_6_Td_0_error_19.6207xy_zad}
+\end{figure}
+\end{center}
+
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_1_Ti_5_Td_0_error_19.0302xy_zad.pdf}}
+\caption{K=1, Ti=5, Td=0, error=19.0302}
+\label{K_1_Ti_5_Td_0_error_19.0302xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_1_Ti_6_Td_0_error_18.8405xy_zad.pdf}}
+\caption{K=1, Ti=6, Td=0, error=18.8405}
+\label{K_1_Ti_6_Td_0_error_18.8405xy_zad}
+\end{figure}
+\end{center}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_2_Ti_12_Td_4_error_21.3271xy_zad.pdf}}
+\caption{K=2, Ti=12, Td=4, error=21.3271}
+\label{K_2_Ti_12_Td_4_error_21.3271xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_2_Ti_12_Td_6_error_21.7122xy_zad.pdf}}
+\caption{K=2, Ti=12, Td=6, error=21.7122}
+\label{K_2_Ti_12_Td_6_error_21.7122xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_2_Ti_9_Td_2_error_19.9437xy_zad.pdf}}
+\caption{K=2, Ti=9, Td=2, error=19.9437}
+\label{K_2_Ti_9_Td_2_error_19.9437xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_2_Ti_9_Td_4_error_19.9535xy_zad.pdf}}
+\caption{K=2, Ti=9, Td=4, error=19.9535}
+\label{K_2_Ti_9_Td_4_error_19.9535xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/K_1.2_Ti_12_Td_4_error_23.532xy_zad.pdf}}
+\caption{K=1.2, Ti=12, Td=4, error=23.532}
+\label{K_1.2_Ti_12_Td_4_error_23.532xy_zad}
+\end{figure}
+\end{center}
+\newpage
+Jak widaæ na powy¿szych wykresach rozpoczynaj¹c od wykresu \ref{K_10_Ti_10000_Td_0_error_45.0778xy_zad} obni¿amy parametr K, aby wyjœæ ze strefy drgañ niegasn¹cych. Po dobraniu parametru na wykresie \ref{K_0.8_Ti_10000_Td_0_error_36.6129xy_zad} dalsze dobieranie parametrów przeprowadzane jest "na czuja", przez co dochodzimy do parametrów najlepszych pod wzglêdem minimalizacji wskaŸnika jakoœci(\ref{K_1_Ti_6_Td_0_error_18.8405xy_zad}) oraz wed³ug nas najlepszy(\ref{K_2_Ti_9_Td_2_error_19.9437xy_zad}).
+
+\section{strojenie DMC}
+
+Dla regulatora DMC przeprowadziliœmy strojenie metod¹ eksperymentaln¹, w której w pierwszej kolejnoœci dobieramy parametr N, nastêpnie $N_u$, a na koñcu $\lambda$. Poni¿ej wykresów wygenerowanych dla tych eksperymentów zapisane s¹ nastawy regulatora oraz obliczony b³¹d, korzystaj¹c z formu³y:
+\begin{equation}
+E = \sum_{k=1}^{k_{konc}}(y^{zad}(k)-y(k))^2
+\end{equation}
+B³¹d podany jest jako error=... . 
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_120_Nu_110_lambda_1_error_17.9641xy_zad.pdf}}
+\caption{N=120, Nu=110, lambda=1, error=17.9641}
+\label{N_120_Nu_110_lambda_1_error_17.9641xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_80_Nu_70_lambda_1_error_17.9641xy_zad.pdf}}
+\caption{N=80, Nu=70, lambda=1, error=17.9641}
+\label{N_80_Nu_70_lambda_1_error_17.9641xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_80_Nu_40_lambda_1_error_17.9641xy_zad.pdf}}
+\caption{N=80, Nu=40, lambda=1, error=17.9641}
+\label{N_80_Nu_40_lambda_1_error_17.9641xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_60_Nu_40_lambda_1_error_17.9641xy_zad.pdf}}
+\caption{N=60, Nu=40, lambda=1, error=17.9641}
+\label{N_60_Nu_40_lambda_1_error_17.9641xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_25_Nu_10_lambda_2_error_17.9642xy_zad.pdf}}
+\caption{N=25, Nu=10, lambda=2, error=17.9642}
+\label{N_25_Nu_10_lambda_2_error_17.9642xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_25_Nu_10_lambda_3_error_17.9676xy_zad.pdf}}
+\caption{N=25, Nu=10, lambda=3, error=17.9676}
+\label{N_25_Nu_10_lambda_3_error_17.9676xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_25_Nu_10_lambda_5_error_17.9836xy_zad.pdf}}
+\caption{N=25, Nu=10, lambda=5, error=17.9836}
+\label{N_25_Nu_10_lambda_5_error_17.9836xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_25_Nu_20_lambda_1_error_17.9628xy_zad.pdf}}
+\caption{N=25, Nu=20, lambda=1, error=17.9628}
+\label{N_25_Nu_20_lambda_1_error_17.9628xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_24_Nu_22_lambda_1_error_17.9622xy_zad.pdf}}
+\caption{N=24, Nu=22, lambda=1, error=17.9622}
+\label{N_24_Nu_22_lambda_1_error_17.9622xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_25_Nu_10_lambda_1000_error_45.9859xy_zad.pdf}}
+\caption{N=25, Nu=10, lambda=1000, error=45.9859}
+\label{N_25_Nu_10_lambda_1000_error_45.9859xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_25_Nu_10_lambda_100_error_25.4516xy_zad.pdf}}
+\caption{N=25, Nu=10, lambda=100, error=25.4516}
+\label{N_25_Nu_10_lambda_100_error_25.4516xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_25_Nu_10_lambda_140_error_28.8587xy_zad.pdf}}
+\caption{N=25, Nu=10, lambda=140, error=28.8587}
+\label{N_25_Nu_10_lambda_140_error_28.8587xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_25_Nu_10_lambda_150_error_29.7139xy_zad.pdf}}
+\caption{N=25, Nu=10, lambda=150, error=29.7139}
+\label{N_25_Nu_10_lambda_150_error_29.7139xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_25_Nu_10_lambda_1650_error_45.47xy_zad.pdf}}
+\caption{N=25, Nu=10, lambda=1650, error=45.47}
+\label{N_25_Nu_10_lambda_1650_error_45.47xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_25_Nu_10_lambda_165_error_30.9703xy_zad.pdf}}
+\caption{N=25, Nu=10, lambda=165, error=30.9703}
+\label{N_25_Nu_10_lambda_165_error_30.9703xy_zad}
+\end{figure}
+\end{center}
+
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_25_Nu_10_lambda_400_error_42.5096xy_zad.pdf}}
+\caption{N=25, Nu=10, lambda=400, error=42.5096}
+\label{N_25_Nu_10_lambda_400_error_42.5096xy_zad}
+\end{figure}
+\end{center}
+
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_22_Nu_10_lambda_10_error_18.2618xy_zad.pdf}}
+\caption{N=22, Nu=10, lambda=10, error=18.2618}
+\label{N_22_Nu_10_lambda_10_error_18.2618xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_25_Nu_10_lambda_20_error_18.4273xy_zad.pdf}}
+\caption{N=25, Nu=10, lambda=20, error=18.4273}
+\label{N_25_Nu_10_lambda_20_error_18.4273xy_zad}
+\end{figure}
+\end{center}
+
+\begin{center}
+\begin{figure}
+\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_5/N_22_Nu_10_lambda_1_error_17.9604xy_zad.pdf}}
+\caption{N=22, Nu=10, lambda=1, error=17.9604}
+\label{N_22_Nu_10_lambda_1_error_17.9604xy_zad}
+\end{figure}
+\end{center}
+\newpage
+Jak mo¿na siê by³o spodziewaæ, dla nieproporcjonalnie du¿ej wartoœci $\lambda$ osi¹gamy du¿e wartoœci b³êdu (wykres \ref{N_25_Nu_10_lambda_1000_error_45.9859xy_zad}). Najlepsze rezultaty osi¹gnêliœmy dla parametrów regulatora N=22, Nu=10, lambda=1, error=17.9604 (wykres \ref{N_22_Nu_10_lambda_1_error_17.9604xy_zad}).
+
+
+
+
