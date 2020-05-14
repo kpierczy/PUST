@@ -1,0 +1,44 @@
+Celem przeprowadzonych przez na badañ by³o pokazanie zalet p³yn¹cych z~zastosowania regulatorów dedykowanych pracy z~uk³adami nieliniowymi. Operuj¹c na modelu obiektu dynamicznego dostarczonego nam w~postaci funkcji jêzyka \textit{Matlab}. Pierwszy rzut oka na poni¿sz¹ charakterystykê statyczn¹ utwierdza w~przekonaniu o~jego nieliniowoœci.
+
+\vskip 1cm
+\begin{figure}[H]
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=0.20\textwidth,
+                    height=0.1\textheight,
+                    xmin=-1.1,xmax=1.1,ymin=-4,ymax=2,
+                    xlabel={$u$},
+                    ylabel={$y(u)$},
+                    legend pos=south east,
+                    legend style={font=\tiny},
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                
+                \addplot[mark=o,draw=black]               file {data/static_characteristic.txt};
+
+                \legend{$y(u)$}
+            \end{axis}
+        \end{tikzpicture}
+        \label{static_characteristic}
+\end{figure}
+\vskip 1cm
+
+W~ramach projektu zaimplementowane zosta³y cztery algorytmy regulacji: PID i~DMC oraz ich rozmyte odpowiedniki. Regulacja rozmyta polega na przybli¿eniu charakterystyki nieliniowego uk³adu dynamicznego za pomoc¹ lokalnych modeli liniowych, do których mo¿liwe jest zastosowanie regulatorów liniowych. Wartoœæ sterowania wyznaczana przez regulator rozmyty jest wa¿on¹ sum¹ sterowañ obliczanych przez regulatory lokalne. Wagi determinowane s¹ przez aktualny punkt pracy uk³adu. Ogólne równanie regulatora rozmytego mo¿na przedstawiæ w~postaci:
+
+\vskip 1cm
+    \begin{equation}
+        u_k = \frac{\sum_{i=1}^{n} u_{ki} \times f_i(y_k)}{ \sum_{i=1}^{n} f_i(y_k)} \vee u_k = \frac{\sum_{i=1}^{n} u_{ki} \times f_i(u_{k-1})}{ \sum_{i=1}^{n} f_i(u_{k-1})}
+        \label{fuzzy_sumation}
+    \end{equation}
+\vskip 1cm
+
+gdzie $f_i(*)$ s¹ wartoœciami \textit{funkcji przynale¿noœci} (zwanymi tak¿e \textit{funkcjami rozmywaj¹c¹cymi}) przypisanych do poszczególnych regulatorów lokalnych. W~trakcie badañ badañ pos³ugiwaliœmy siê funkcjami o~kszta³cie gaussowskim danymi wzorami:
+
+\vskip 1cm
+    \begin{equation} 
+        f(x) = exp(\frac{-(x - m)^2}{2 \times \delta ^ 2} )
+        \label{gaussian_fuzz}
+    \end{equation}
+\vskip 1cm
+
+Parametry $m$ oraz $\delta$, które definiuj¹ kszta³t krzywej by³y dobierane w~procesie kalibracji wraz z~parametrami lokalnych regulatorów liniowych. Niniejsza praca przedstawia spójne, systematyczne podejœcie do strojenia badanych regulatorów rozmytych wraz z~zestawieniem i~podsumowaniem jego efektów.

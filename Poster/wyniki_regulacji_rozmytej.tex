@@ -1,0 +1,20 @@
+Zgodnie z~przewidywaniami, rozmycie regulatorów liniowych pozwoli³o uzyskaæ zauwa¿alnie, chocia¿ nie nadzwyczajnie lepsz¹ jakoœæ regulacji. Podstaw¹ oceny jakoœci regulacji by³ sumaryczny b³¹d kwadratowy pope³niany przez regulator w~trakcie symulacji. W~mniejszym stopniu brany by³ tak¿e pod uwagê charakter przebiegu wartoœci steruj¹cej.
+
+Rozmywanie regulatora PID zakoñczyliœmy na \textbf{5 regulatorach rozmytych}. W~tej konfiguracji uzyskaliœmy najmniejszy b³¹d regulacji. Przy wszystkich zmianach wartoœci zadanej wyraŸnie zmniejszone zosta³o przeregulowanie, co jest nierzadko jednym z~najwa¿niejszych kryteriów regulacji. Ponadto, w~dolnych partiach charakterystyki uda³o siê uzyskaæ znaczne skrócenie czasu regulacji. Jedynie przy widocznym na wykresie skoku wartoœci zadanej w~kierunku dodatnim, czas regulacji wyd³u¿y³ siê.
+
+\vskip 1cm
+    \begin{figure}[H]
+        \makebox[0.21\textwidth]{\includegraphics[width=0.2\paperwidth, height=0.15\paperheight]{data/Desired_plot_PID_number_of_fuzzy_reg_5.pdf}}
+    \end{figure}
+    \vskip 1cm
+
+Wiêksz¹ poprawê zauwa¿yæ mo¿na przy porównaniu klasycznej i~rozmytej wersji regulatora DMC. Dziêki \textbf{zwiêkszeniu liczby regulatorów lokalnych do 3} uzyskaliœmy znaczne zmniejszenie przeregulowania oraz skrócenie czasu regulacji przy ka¿dym ze skoków wartoœci zadanej. Równie¿ przebieg sygna³u steruj¹cego charakteryzuje siê zmniejszonymi oscylacjami oraz szybszym czasem stabilizacji. 
+
+
+\vskip 1cm
+    \begin{figure}[H]
+        \makebox[0.21\textwidth]{\includegraphics[width=0.2\paperwidth, height=0.15\paperheight]{data/Desired_plot_DMC_number_of_fuzzy_reg_3.pdf}}
+    \end{figure}
+\vskip 1cm
+
+Uzyskane przez nas wyniki jednoznacznie pokazuj¹ zastosowanie teorii zbiorów rozmytych w~zadaniu regulacji obiektów nieliniowych przyczyniæ siê mo¿e do poprawy jakoœci sterowania. Jednoczeœnie zabieg ten nie jest okupiony du¿ym wzrostem skomplikowania idei sterowania, poniewa¿ in¿ynier wci¹¿ ma do czynienia ze standardowymi regulatorami liniowymi tylko, ¿e w~wiêkszej liczbie.

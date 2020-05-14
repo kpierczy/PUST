@@ -1,0 +1,15 @@
+Systemy liniowe stanowi¹ wa¿n¹ klasê obiektów we wspó³czesnej automatyce. Ich cechy charakterystyczne jak addytywnoœæ czy jednorodnœæ sprawiaj¹, ¿e proces projektowania algorytmów maj¹cych kontrolowaæ pracê takich uk³adów staje siê o~wiele prostszy. Dziêki temu na przestrzeni ostatnich dekad rozwinê³o siê kilka koncepcji, które pozwalaj¹ na stosunkowo prost¹, a~dziêki temu niezawodn¹, implementacjê regulatorów dedykowanych procesom tej klasy. Wœród najpopularniejszych z~nich mo¿emy wymieniæ :
+
+\vskip 1cm
+\begin{itemize}
+    \item regulatory PID (\textit{Proportional-Integral-Derivative})
+    \item regulatory predykcyjne, np. DMC, GPC, MPCS
+    \item regulatory ze sprzê¿eniem od stanu
+\end{itemize}
+\vskip 1cm
+
+Dziêki popularnoœci tych algorytmów, spo³ecznoœæ in¿ynierów wypracowa³a standardowe metody postêpowania, które znacznie przyspieszaj¹ proces kalibracji bazuj¹cych na nich regulatorów, a~tym samym skracaj¹ czas potrzebny na w³¹czenie ich w~rytm produkcyjny przedsiêbiorstw.
+
+\section*{Obiekty nieliniowe}
+
+Niestety znaczna czêœæ rzeczywistych obiektów regulacji wykazuje ró¿nego rodzaju nieliniowoœci. Czasami  nieliniowoœæ  obiektu  mo¿na  pomin¹æ w~pewnym niewielkim przedziale jej charakterystyki. Innym razem mo¿liwe jest zastosowanie pewnej transformacji wartoœci wejœciowych lub wyjœciowych tak, aby sumaryczny uk³ad by³ liniowy. Wszêdzie tam, gdzie zabiegi te nie s¹ mo¿liwe, zachodzi potrzeba skonstruowania regulatora, którego charakter pozwoli na bezpoœredni¹ regulacjê obiektu nieliniowego.

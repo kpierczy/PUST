@@ -1,0 +1,156 @@
+
+
+\documentclass[
+	a0paper,
+	landscape,
+	17pt,
+	margin=1cm,
+	blockverticalspace=2cm,
+	colspace=15mm,
+	subcolspace=15mm,
+]{tikzposter} 
+
+%=============================================================================================%
+%========================================== Packages =========================================%
+%=============================================================================================%
+
+\usepackage{float} % force figure anchoring
+\usepackage{avant}
+\usepackage{polski} % Polish language specifics
+\usepackage{amsmath} % Mathematical commands
+\usepackage{amsfonts} % Fonts commands
+\usepackage{amssymb} % Symbolical commands
+\usepackage{graphicx} % Importing external graphics
+\usepackage{float} % Forcing plot's position
+\usepackage{url} % Web-related text (urls, mail adresses, etc.)
+\usepackage{tikz} % Creating graphical elements like lines, dots, curves, figures
+\usepackage{rotating} % Rotating objects of an arbitrary angle
+\usepackage[percent]{overpic} % Makes it able to put LaTeX commands onto the included graphics (with a dedicated environment)
+\usepackage[cp1250]{inputenc} % Non-standrard encoding of the LaTeX files
+\usepackage{xcolor} % Easy driver-independent access to several kinds of color tints, shades, tones, and mixes of arbitrary colors
+\usepackage{pgfplots} % High-quality function plots in normal or logarithmic scaling with a user-friendly interface
+\usepackage{listings} % Source code printer
+\usepackage{matlab-prettifier} % Matlab source code printer
+\usepackage{enumitem} % List environments
+\usepackage{siunitx} % Physical units
+\usepackage{float} % force figure anchoring
+\renewcommand*\familydefault{\sfdefault}
+%\renewcommand*\familydefault{\ttdefault}
+
+%=============================================================================================%
+%======================================= Definitions =========================================%
+%=============================================================================================%
+
+% Basic informations
+\title{Rozmywanie regulatorów liniowych}
+% \institute{Wydzia³ Elektroniki i Technik Informacyjnych Politechniki Warszawskiej}
+\author{Bugyi Pawe³, Michalski Marcin, Pierczyk Krzysztof}
+
+
+%=============================================================================================%
+%======================================= Configuration =======================================%
+%=============================================================================================%
+
+\useblockstyle{Minimal}
+\settitle{}
+
+
+
+%=============================================================================================%
+%======================================= Color styles ========================================%
+%=============================================================================================%
+
+% Color fedinitions
+\definecolor{mygray}{HTML}{CCCCCC}
+
+% Color styles definitions
+\definecolorstyle{myColorStyle}{
+	\colorlet{colorOne}{black}
+	\colorlet{colorTwo}{mygray}
+	\colorlet{colorThree}{mygray}
+}{
+	%Background color
+	\colorlet{backgroundcolor}{white} % BACKGROUND COLOR
+	\colorlet{framecolor}{white} % color of title frame, set as backgroundcolor
+	%Title color do not touch!
+	\colorlet{titlefgcolor}{white}
+	\colorlet{titlebgcolor}{white}
+	%Block color
+	\colorlet{blocktitlebgcolor}{blue} %
+	\colorlet{blocktitlefgcolor}{black} % 
+	\colorlet{blockbodybgcolor}{white} % 
+	\colorlet{blockbodyfgcolor}{black} %
+	%Inner block do not touch!
+	\colorlet{innerblocktitlebgcolor}{black}
+	\colorlet{innerblocktitlefgcolor}{black}
+	\colorlet{innerblockbodybgcolor}{black}
+	\colorlet{innerblockbodyfgcolor}{black}
+	%Note color do not touch!
+	\colorlet{notefgcolor}{black}
+	\colorlet{notebgcolor}{black}
+	\colorlet{notefrcolor}{black}
+}
+
+% Color styles setting
+\usecolorstyle{myColorStyle}
+
+
+%=============================================================================================%
+%========================================= Document ==========================================%
+%=============================================================================================%
+
+\begin{document}
+
+% Title block with title, author, logo, etc.
+\maketitle[
+	titletextscale=0.20,
+	titletotopverticalspace=1cm,
+	titletoblockverticalspace=0cm
+]
+
+% Header
+\node [below right,font=\Huge] at (-17,40) {ROZMYWANIE REGULATORÓW LINIOWYCH};
+
+\begin{columns}
+
+	% First column (width relative to whole-poster's text width)
+	\column{0.25}
+		
+		\block[]{Wprowadzenie}{	\input{wprowadzenie.tex}}
+		\block[bodyoffsety = 2cm, titleoffsety = 2cm]{Cele i za³o¿enia projektu}{\input{cele_i_zalozenia_projektu.tex}}
+
+	% Second column
+	\column{0.5}
+
+		% Top part of both 'Klasyczne regulatory PID i DMC'
+		% and 'Kalibracja regulatorów rozmytych'
+		\begin{subcolumns}
+			\subcolumn{0.5} \block{Klasyczne regulatory PID i DMC}{\input{klasyczne_regulatory_pid_i_dmc1.tex}}
+			\subcolumn{0.5} \block{Kalibracja regulatorów rozmytych}{\input{kalibracja_regulatorow_rozmytych1.tex}}
+		\end{subcolumns}
+
+		% Central picture
+		\block[]{}{\input{ladny_obrazek.tex}}
+
+		% Bottom part of both 'Klasyczne regulatory PID i DMC'
+		% and 'Kalibracja regulatorów rozmytych'
+		\begin{subcolumns}
+			\subcolumn{0.5} 
+				\block[titleoffsety=0mm,bodyoffsety=-15cm]{}{\input{klasyczne_regulatory_pid_i_dmc2.tex}}	
+			\subcolumn{0.5} 
+				\block[bodyoffsety=-15cm]{}{\input{kalibracja_regulatorow_rozmytych2.tex}}
+		\end{subcolumns}
+
+	% Third COLUMN
+	\column{0.25}
+
+		\block{Wyniki regulacji rozmytej}{\input{wyniki_regulacji_rozmytej.tex}}
+		\block{Podsumowanie}{\input{podsumowanie.tex}}
+
+\end{columns}
+
+% Footer
+\node [above right,font=\small] at (bottomleft) {Autorzy: Pawe³ Bugyi, Marcin Michalski, Krzysztof Pierczyk. Wykorzystana grafika ze strony: https://towardsdatascience.com/fuzzy-logic-and-how-it-is-curing-cancer-dc6bcc961ded};
+
+\end{document}
+\endinput

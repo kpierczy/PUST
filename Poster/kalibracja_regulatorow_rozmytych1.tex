@@ -1,0 +1,15 @@
+Chocia¿ regulatory rozmyte oferuj¹ znacznie wiêksz¹ elastycznoœæ w~kontekœcie procesów mo¿liwych do wysterowania, to jednak wprowadzj¹ one znaczne komplikacje w~dziedzinie doboru ich nastaw. Wynika to z~faktu, ¿e liczba parametrów roœci w~ich przypadku liniowo wraz ze wzrostem liczby regulatorów lokalnych. Sk³adania to do postawienia tezy, ¿e zwiêkszanie liczby regulatorów przynosi poprawê jedynie do pewnego momentu. Ich zbyt du¿a iloœæ, prowadzi do b³êdów kalibracji, które kompensuj¹ poprawê wynikaj¹c¹ z~lepszego dopasowania regulatora do charakterystyki obiektu.
+
+W~zwi¹zku z~powy¿szymi spostrze¿eniami procedura doboru parametrów musia³a byæ z~góry zaplanowana. Regulatory testowaliœmy rozpoczynaj¹c zawsze od jednego regulatora lokalnego. Badanie algorytmu koñczyliœmy wówcza, gdy dalsze zwiêkszanie licbzy regulatorów skutkowa³o pogorszeniem regulacji. Ka¿dy wariant kalibraowany by³ w piêciu krokach:
+
+\vskip 0.5cm
+\begin{enumerate}
+    \item Równomierne roz³o¿enie regulatorów lokalnych w~obszarze pracy
+    \item Optymalizacja parametrów przy u¿yciu algorytmu ewolucyjnego (parametry wszystkich regulatorów równe)
+    \item Skonstruowanie dedykowanych przebiegów wartoœci zadanej pobudzajacych obszar pracy ka¿dego z~lokalnych regulatorów
+    \item Indywidualna optymalizacja regulatorów ze wzglêdu na b³¹dy pope³niane na skonstruowanych trajektoriach
+    \item Rêczna poprawa parametrów wybranych regulatorów 
+\end{enumerate}
+\vskip 0.5cm
+
+

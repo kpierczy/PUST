@@ -1,0 +1,26 @@
+Sprecyzowany schemat postêpowania powoli³ nam obiektywnie porównywaæ poszczególne warianty i~znacznie przyspieszy³ prowadzenie badañ. Na tym etapie warto podkreœliæ, ¿e jako \textit{zmienna rozmywaj¹ca} wybrana zosta³ wartoœæ wyjœciowa obiektu. Przeprowadzone eksprytmenty pokaza³y, ¿e prowadzi to do poprawienia jakoœci regulacji, co da³o siê przewidzieæ ju¿ na etapie analizy charakterystyki statycznej obiektu. Dalsze badania potwierdzi³y stawian¹ tezê, co przedstawia poni¿szy wykres. Pewien niepokój mo¿e powodowaæ fakt zwiêkszenia b³êdu przy 4 regulatorach DMC, jednak by³o to spowodowane nieoptymalnym rozlokowaniem regulatorów na danym zakresie sterowania (regulatory rozlokowane by³y w równych odstêpach).
+
+\vskip 1cm
+\begin{figure}[H]
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=0.20\textwidth,
+                    height=0.1\textheight,
+                    xmin=0,xmax=6,ymin=60,ymax=100,
+                    xlabel={liczba regulatorów},
+                    ylabel={error},
+                    xtick={0,1,2,3,4,5,6},
+                    legend pos=south east,
+                    legend style={font=\tiny},
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                
+                \addplot[mark=o,draw=blue]               file {data/DMC_error.txt};
+                \addplot[mark=o,draw=red]               file {data/PID_error.txt};
+
+                \legend{DMC error, PID error}
+            \end{axis}
+        \end{tikzpicture}
+        \label{DMC_PIS_error}
+\end{figure}
+\vskip 1cm
