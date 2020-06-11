@@ -1,0 +1,34 @@
+\section{Charakterystyka statyczna}
+
+Na pierwszy rzut oka stanowisko Inteco mo¿na uznaæ za obiekt $3 \times 3$. Chwila refleksji uzmys³awia jednak, ¿e nie wszystkie wejœcia maj¹ wp³yw na wszystkie wyjœcia. Na przyk³ad rozszczelnienie zaworu poni¿ej zbiornika dolnego nie wp³ywa na poziom wody w~zbiorniku górnym. Zadanie 7 postawi³o przed nami problem zbadania charakterystyki statycznej obiektu. W~przypadku ogólnego obiektu $3 \times 3$ by³oby to niebagatelne zadania. Wymaga³o by ono najpewniej zbadania stanów ustalonych wyjœæ w~pewnym szeœcianie z~przestrzeni stanów ustalonych sygna³ów wejœciowych. Dla krawêdzi takiego szeœcianu ekstrapolowanej z~$n$ punktów ($n$ pomiarów) oznacza³oby to koniecznoœæ wykonania $n^3$ ekperymentów! Innym podejœciem, przy za³o¿eniu, ¿e obiekt jest, przynajmniej w~przybli¿eniu, liniowy by³oby zebranie odpowiedzi skokowych dla ka¿dego toru wejœcia-wyjœcia i~identyfikacja na ich podstawie macierzy transmitancji obiektu. Z~macierzy tej mo¿naby z~kolei w~sposób analityczny wyznaczyæ charakterystykê statyczn¹.
+
+
+Problem ten mo¿na jednak w~znakomitym stopniu uproœciæ, je¿eli weŸmie siê pod uwagê pewne charakterystyczne cechy obiektu. Za³ó¿my, ¿e obiekt znajduje siê w~stanie ustalonym \footnote{Tak jak w~treœci zadania zak³adamy, ¿e dop³yw do górnego zbiornika jest sta³y, ¹~manipulujemy jeydnie stopniem rozszczelnienia zaworów}. Je¿eli zmienimy stopieñ otwarcia zaworu pod zbiornikiem górnym, to poziom wody zmieni siê oczywiœcie chwilowo we wszystkich zbiornikach \footnote{Ze zbiornika górnego zacznie wyp³ywaæ wiêcej wody, zatem wiêcej wody wpadnaæ bêdzie do zbiornika œrodkowego, przez co zwiêkszy siê w~nim ciœnienie hydrostatyczne. Poskutkuje to zmian¹ wyp³ywu z~tego zbiornika i~zajœciem podobych zmian w~zbiorniku dolnym.}. Zauwa¿my jednak, ¿e po pewnym czasie poziom wody w~zbiorniku górnym ustali siê na pewnym poziomie. Je¿eli poziom bêdzie utrzymywany, a~dop³yw do zbiornika górnego sta³y to bêdzie to znaczyæ, ¿e wy³ywa z niego ta sama iloœæ wody, co przed zmian¹ pozycji zaworu. Co za tym idzie, poziomy w~pozosta³ych zbiornikach równie¿ wróc¹ do stanu pierwotnego. Rozumowanie to mo¿na uogólniæ na wszystkie zbiorniki. 
+
+\vskip 1cm
+\begin{figure}[H]
+    \centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			width=0.75\textwidth,
+			height=0.45\textwidth,
+			xmin=-1,xmax=1,ymin=-2,ymax=22,
+			xlabel={$u$},
+			ylabel={$y$},
+			xtick={-1, -0.6, -0.2, 0.2, 0.6, 1},
+			ytick={-2, 2, 6, 10, 14, 18, 22},
+			legend pos=north west,
+			y tick label style={/pgf/number format/1000 sep={,}},
+		]
+		\addplot[smooth, blue]   file {data/exercise_7/static_high.txt};
+		\addplot[smooth, red]    file {data/exercise_7/static_medium.txt};
+		\addplot[smooth, green]  file {data/exercise_7/static_low.txt};
+		\legend{$U1-Y1$, $U2-Y2$, $U3-Y3$}
+	\end{axis}
+	\end{tikzpicture}
+    \caption{Charakterystyki statyczne poszczególnych zbiorników stanowiska Inteco}
+    \label{inteco_static}
+\end{figure}
+\vskip 1cm
+
+Spostrze¿enie to nasuwa bardzo praktyczny wniosek: patrz¹c jedynie z~punktu widzenia stanów ustalonych, stanowisko Inteco mo¿na traktowaæ jako trzy obiekty wymiaru $1 \times 1$. Co za tym idzie, do okreœlenia charakterystyki statycznej obiektu wystarczaj¹ce jest przeprowadzenie $n$ eksperymentów dla ka¿dej pary wejœcie-wyjœcie. Eksperymenty takie zosta³y przeprowadzone, a~ich wyniki przedstawiono rys. \ref{inteco_static}. Pomiary na ka¿dym torze wykonywane by³y w~przedziale sterowañ $<0; 1>$ z~krokiem $0.1$. Jak widaæ, tory s¹ silnie nieliniowe. Charakterystyki mog¹ byæ przybli¿onê relacj¹ $\overline{y}(\overline{u}) ~ \sqrt{\overline{u}}$, co zgadza siê z~przewidywaniami teoretycznymi. Zgodnie z~treœci¹ zadan projektowych sterowanie obiektem powinno byæ ograniczone do wartoœci zadanych z~przedzia³u $<10; 15>$. W~tym zakresie mo¿na z~powodzeniem przybli¿yæ chcarakterystyki funkcjami liniowymi, co uzasadnia u¿ycie klasycznego regulatora PID do sterowania obiektem.

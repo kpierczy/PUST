@@ -1,0 +1,66 @@
+\section{Badanie odpornoœci wybranego regulatora}
+
+Badania odpornoœci przeprowadzono na regulatorze sprzê¿onym z~najwy¿szym zbiornikiem. Testy zosta³y przeprowadzone na tej samej trajektorii co testy w~zadaniach 8 i~9. Rezultaty zosta³y przedstawione na rys \ref{PID1_disturbance}. Jak widaæ, regulator nie radzi sobie dobrze w~szerszym zakresie zak³óceñ. Analizê takiego stanu rzeczy warto rozbiæ na dwie czêœci. Po pierwsze, je¿eli zak³ócenia si¹ dodatnie (woda jest dop³ywa do zbiornika), to w~pewnym zakresie ich wartoœci regulator jest na nie niemal w~pe³ni odporny. Wynika to z~faktu, ¿e regulator jest zazwyczaj w~stanie otworzyæ sterowany zawór bardziej ni¿ wynika³oby to z~niezak³óconej pracy \footnote{Obiekt jest regulowany w~zakresie wyjœciowym $<10; 15>$ zatem zawór w~niewielu przypadkach jest otwarty w~ca³oœci}. Na rysunkach zosta³y przedstawione jedynie przebiegi zwi¹zane ze zbiornikiem górnym. Nalezy jednak pamiêtaæ, ¿e taki zabieg ma wp³yw na zbiorniki znajduj¹ce siê poni¿ej. Drugi przypadek, to zak³ócenia ujemne (woda wyciekaj¹ca ze zbiornika). W~takiej sytuacji regulator radzi sobie znacznie gorzej. Wynika to z~faktu podkreœlonego ju¿ w~poprzednich paragrafach - sterownik nie mo¿e zapewniæ dodatkowego dop³ywu do zbiorników, a~jedynie zmniejszyæ stopieñ otwarcia zworu. Tu te¿ ponownie objawia siê wada niezale¿nie dzia³aj¹cych regulatorów. Nieœwiadome sytuacji w~innych zbiornikach nie s¹ one w~stanie skoordynowaæ swoich dzia³añ, aby zapewniæ najmniejszy \textbf{œredni uchyb} na wszystkich zbiornikach \footnote{Uwaga ta dotyczy w~wiêkszym stopniu zbiorników znajduj¹cych siê ni¿ej}. Omówionych problemów nie da siê zniwelowaæ poprzez zmianê dobranych parametrów regulacji. Poprawa odpornoœci wymaga³a by ca³kowitej zmiany konstrukcji zestawu regulatorów.
+
+\begin{figure}[H]
+    \centering
+	\subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.76\textwidth,
+				height=0.45\textwidth,
+				xmin=0,xmax=200,ymin=-0.2,ymax=1.2,
+				xlabel={$t [s]$},
+				ylabel={$u(t)$},
+				xtick={0, 40, 80, 120, 160, 200},
+				ytick={-0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_11/U1.txt};
+			\legend{$U1$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+	\vskip 0.5cm
+	\subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.76\textwidth,
+				height=0.45\textwidth,
+				xmin=0,xmax=200,ymin=0,ymax=20,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 40, 80, 120, 160, 200},
+				ytick={10, 11, 12, 13, 14, 15},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+            \addplot[const plot, blue]   file {data/exercise_11/Y1.txt};
+            \addplot[const plot, red]   file {data/exercise_11/Y1_zad.txt};
+			\legend{$Y1$, ${Y1}^{zad}$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+	\vskip 0.5cm
+	\subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.76\textwidth,
+				height=0.45\textwidth,
+				xmin=0,xmax=200,ymin=-10,ymax=10,
+				xlabel={$t [s]$},
+				ylabel={$z(t)$},
+				xtick={0, 40, 80, 120, 160, 200},
+				ytick={-10, -6, -2, 2, 6, 10},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_11/Z1.txt};
+			\legend{$Z1$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+    \caption{Przebiegi sygna³ów procesowych w~trakcie testowania odpornoœci górnego regulatora na zewnêtrzne zak³ócenie}
+    \label{PID1_disturbance}
+\end{figure}

@@ -1,0 +1,63 @@
+\section{Przeciwdzia³anie awarii czujników}
+
+Rozwa¿ania teoretyczne, z~przycyzn czysto praktycznych, zak³adaj¹ zazwyczaj stabiln¹, niezak³ócon¹ pracê sensorów oraz elementów wykonawczych. Taki stan rzeczy nie odzwierciedla jednak sytuacji rzeczywistych. Ka¿dy uk³ad fizyczny nara¿ony jest na czynniki zewnêtrzne, które mog¹ spowodowaæ jego ca³kowit¹ awariê lub przynajmniej czêœciowe upoœledzenie funkcjonalnoœci. Szczególnie niebezpieczne mog¹ byæ awarie torów pomiarowych. Je¿eli algorytm steruj¹cy (lub nawet operator) nie jest œwiadomy rzeczywistej wartoœci regulowanej zmiennej, to mo¿e on doprowadziæ j¹ poza bezpieczny zakres pracy. To z~kolei skutkuje czêsto dalsz¹ ekspancj¹ uszkodzeñ lub nawet zagro¿eniem dla ¿ycia ludzkiego.
+
+Jedn¹ z~najprostszych metod przeciwdzia³ania takim awariom jest zgrubne oszacowanie dopuszczalnych wartoœci mierzonych. Gdy pomiar opuœci przyjêty zakres, wówczas czujnik uznawany jest za uszkodzony i~jego odczyty nie s¹ dane pod uwagê przy dalszym wyznaczniu sterowañ. Podjêta mo¿e byæ wówczas procedura maj¹ca na celu utrzymanie bezpicznych wartoœci wyjœci torów wyjœciowych w~bezpicznym zakresie (nawet kosztem pogorszenia jakoœci regulacji) do czasu naprawy awarii. W³aœnie taki mechanizm zosta³ przez nas zaimplementowany w~przypadku stanowiska G-C.
+
+Gdy pomiar wartoœci wyjœciowej przekracza 250$^\circ$C koresponduj¹ca z~ni¹ grza³ka zostaje wy³¹czona. Sytuacja taka zosta³a przedstawiona na rys. \ref{sensor_fault}. Mechanizm ten reazlizowany jest poprzez proste wyra¿enie warunkowe widoczne na poni¿szym listingu.
+
+\vskip 1cm
+\begin{lstlisting}[style=customc,frame=single] 
+    IF HC_T1 > HC_UPPER_BOUND_PV THEN
+        HC_G1 := HC_LOWER_BOUND_PV;
+    END_IF;
+    IF HC_T3 > HC_UPPER_BOUND_PV THEN
+        HC_G2 := HC_LOWER_BOUND_PV;
+    END_IF;
+\end{lstlisting}
+\vskip 1cm
+
+\begin{figure}[H]
+    \centering
+    \subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[		
+					width=0.75\textwidth,
+					height=0.45\textwidth,
+					xmin=0,xmax=140,ymin=90,ymax=270,
+					xlabel={$t [s]$},
+					ylabel={$y(t)$},
+					xtick={0, 20, 40, 60, 80, 100, 120, 140},
+					ytick={90, 120, 150, 180, 210, 240, 270},
+					legend pos=north west,
+					y tick label style={/pgf/number format/1000 sep={,}},
+				]
+				\addplot[const plot, blue]   file {data/exercise_2/secure_T1.txt};
+				\addplot[const plot, green]  file {data/exercise_2/secure_T3.txt};
+				\legend{$T1$, $T3$}
+			\end{axis}
+		\end{tikzpicture}
+	}
+    \vskip 0.5cm
+	\subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[		
+					width=0.75\textwidth,
+					height=0.45\textwidth,
+					xmin=0,xmax=140,ymin=0,ymax=1000,
+					xlabel={$t [s]$},
+					ylabel={$y(t)$},
+					xtick={0, 20, 40, 60, 80, 100, 120, 140},
+					ytick={0, 200, 400, 600, 800, 1000},
+					legend pos=north west,
+					y tick label style={/pgf/number format/1000 sep={,}},
+				]
+				\addplot[const plot, blue]   file {data/exercise_2/secure_G1.txt};
+				\addplot[const plot, green]  file {data/exercise_2/secure_G2.txt};
+				\legend{$T1$, $T3$}
+			\end{axis}
+		\end{tikzpicture}
+	}
+    \caption{Przebieg sygna³ów steruj¹cych $G1$, $G2$ po przekroczeniu maksymalnych dopuszczalnych odczytów z~czujników $T1$, $T3$}
+    \label{sensor_fault}
+\end{figure}

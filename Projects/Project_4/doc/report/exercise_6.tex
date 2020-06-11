@@ -1,0 +1,26 @@
+\chapter{Stanowisko Inteco}
+
+Po zrealizowaniu ostatniego projektu z~Projektowania Uk³adów Sterowania ka¿dy student Automatyki i~Robotyki mo¿e stwierdziæ, ¿e stanowisko grzej¹co ch³odz¹ce nie ma przed nim ¿adnych tajemnic. Je¿eli kiedykolwiek zostanie przed kimœ z~nas postawiony obiekt, to regulator PID lub DMC zaprojektuje i~nastroi on intuicyjnie, niemal bezwiednie nawet je¿eli nie bêdzie to potrzebne. Œwiadomi takiego stanu rzeczy przechodzimy do konfrontacji z~kolejnym obiektem --- stanowiskiem Inteco.
+
+Jak ju¿ opisano w~przypadku stanowiska G-C awaria czujników jest jedn¹ z~potencjalnie najniebezpieczniejszych awarii w~systemie. Pamiêtaj¹c o~tym tak¿e w~przypadku stanowiska Inteco zaimplementowaliœmy prosty mechanizm zabezpieczaj¹cy analogiczny do opisanego wy¿ej. Po wykryciu wartoœci krytycznej ($\geq$19.95) na którymkolwiek z~czujników poziomu zapalana jest odpowiednia flaga. Sprawdzana jest ona z~kolei w~momencie aktualizacji sterowania. Je¿eli jest zapalona, to koresponduj¹cy z~ni¹ zawór zostaje w~pe³ni otwarty. W~przeciwnym wypadku aplikowane jest sterowanie wynikaj¹ce z~regulatora. Blok instrukcji warunkowych odpowiedzialnych za realizacjê mechanizmu zabezpieczaj¹cego zosta³ przedsatawiony na listingu poni¿ej.
+
+\vskip 1cm
+\begin{lstlisting}[style=customc,frame=single] 
+    IF WATER_Y1 > 19.95 THEN
+        WATER_Y1_OVERFLOW := TRUE;
+    ELSE
+        WATER_Y1_OVERFLOW := FALSE;
+    END_IF;
+    IF WATER_Y2 > 19.95 THEN
+        WATER_Y2_OVERFLOW := TRUE;
+        ELSE
+        WATER_Y2_OVERFLOW := FALSE;
+    END_IF;
+    IF WATER_Y3 > 19.95 THEN
+        WATER_Y3_OVERFLOW := TRUE;
+        ELSE
+        WATER_Y3_OVERFLOW := FALSE;
+    END_IF;
+\end{lstlisting}
+\vskip 1cm
+

@@ -1,0 +1,114 @@
+\section{W³asna implementacja PID}
+
+Implementacja klasycznego regulatora PID omawiana by³a na ³amach naszych sprawozdañ ju¿ niejednokrotnie. Zasadniczo i~w tym przypadku nie ró¿ni siê ona niczym prócz wywo³añ funkcji dostepnych w~œrodowisku \textit{GX works}. Regulator zost¹³ napisany w~wariancie inkrementalnym, w którym w~pamiêci przechowywane s¹ dwie poprzednie wartoœci uchybu oraz ostatnia wartoœæ sterowania. Na bazie równañ \ref{PID_eq} - \ref{PID_param_3} wyznaczane s¹ przyrosty sterowañ w~kolejnych iteracjach. Generyczny regulator PID zosta³ zaimplementowany jako osobny, parametryzowany blok funkcyjny. Ograniczenia wartoœci sterowañ s¹ w~nim uwzglêdniane w~sposób progowy poprzez ich ucinanie po opuszczeniu przedzia³u $<0, 1>$. 
+
+\vskip 0.5cm
+\begin{equation}
+    u(k) = r_0 * e(k) + r_1 * e(k-1) + r_2 * e(k-2)
+    \label{PIF_eq}
+\end{equation}
+\begin{equation}
+    r_0 = K * ( 1 + \frac{T_s}{2*T_i} + \frac{T_d}{T_s} )
+    \label{PID_param_1}
+\end{equation}
+\begin{equation}
+    r_1 = K * ( \frac{T_s}{2*T_i} - \frac{2*T_d}{T_s} - 1)
+    \label{PID_param_2}
+\end{equation}
+\begin{equation}
+    r_2 = K * \frac{T_d}{T_s}
+    \label{PID_param_2}
+\end{equation}
+\vskip 0.5cm
+
+Tym razem zdecydowaliœmy siê spróbowac nastroiæ regulator bezpoœrendio na obiekcie \footnote{Nalezy pamiêtaæ, ¿e podejœcie takie nie zawsze jest mo¿liwe. Je¿eli sterowalibyœmy reaktorem j¹drowym, to z~pewnoœci¹ bardziej racjonalnym podejœciem by³oby stworznenie modelu obiektu, który pos³u¿y³by do strojenia arlgorytmu.}. Gdyby podejœcie takie zawiod³o lub okaza³o siê zbyt czasoch³onne mogliœmy w~ka¿dym momencie pozyskaæ odpowiedzi skokowe z~liniowego obszaru charakterystyki i~na ich podstawie zidentyfikowaæ macierz transmitancji, która pos³u¿y³aby nam do nastrojenia regulatora w~trybie off-line. Dzia³anie takie okaza³o siê jednak niepotrzebne, gdy¿ z~powodzeniem uda³o nam siê nastroiæ regulatory metod¹ in¿yniersk¹. 
+
+Rozpoczêliœmy od ustawienia sta³ych wartoœci sterowañ $U2$ i~$U3$ \footnote{zawory pod zbiornikami œrodkowym i~dolnynm} równych $1$. Nastêpnym krokiem by³o urchomienie regulatora PID sprze¿onego z~sygna³ami $U1$, $Y1$. Po wy³¹czeniu cz³onów ca³kuj¹cego i~ró¿niczkuj¹cego dobraliœmy wartoœæ cz³onu proprcjonalnego tak, aby zapewniæ jak najmniejszy uchyb ustalony przy jednoczesnym niewprowadzaniu nadmiernych oscylacji do uk³adu. Kolejnym krokiem by³o dobranie cz³onu ca³kuj¹cego niweluj¹cego uchyb ustalony bez nadmiernego przeregulowania. Ostatecznie w³¹czyliœmy cz³on ró¿niczkuj¹cy i~postaraliœmy siê o~poprawienie dynamiki ca³ego uk³adu. Po kilku drobnych korektach maj¹cych ograniczyæ przeregulowania zwi¹zane z~w³¹czniem ró¿niczki oraz z³agodzeniem oscylacji sterowañ cay proces zosta³ powtórzony kolejno dla œrodkowego i~dolnego zbiornika \footnote{Przy strojeniu natêpnych regulatorów poprzednie pozostawa³y w³¹czone} uda³o nam siê uzyskaæ regulator, którego przebiegi dla przyk³adowej trajektorii zadanej widoczne s¹ na rys \ref{definit_PID_our}.
+
+Regulator dzia³a poprawnie. Wszystkie wartoœci zadane s¹ osi¹gane, przeregulowanie praktycznie nie wystêpuje. Przebiegi sygna³ów steruj¹cych nie oscyluj¹. Jedyn¹ wad¹ naszego rozwi¹zania jest czas regulacji. W~przypadku spadku wartoœci zadanej jest on stosunkowo krótki, jednak przy wzroœcie nap³yw wody do zbiornika ma charakter co najwy¿ej liniowy. Wynika to wprost z~charakteru obiektu sterowania a~tak¿e z~braku interferencji miêdzy regulatorami. Jako, ¿e mo¿liwe jest sterowanie jedynie odp³ywem, a~nie dop³ywem, nie da siê tego stanu rzeczy zmieniæ. Gdyby zastosowany zosta³ wielowymiarowy regulator DMC sytuacja mog³a by ulec poprawie \textbf{w~niektórych przypadkach}.
+
+\begin{figure}[H]
+    \centering
+    \subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.76\textwidth,
+				height=0.38\textwidth,
+				xmin=0,xmax=200,ymin=10,ymax=15,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 40, 80, 120, 160, 200},
+				ytick={10, 11, 12, 13, 14, 15},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_8/pid_our/Y1.txt};
+			\addplot[const plot, red]    file {data/exercise_8/pid_our/Y1_zad.txt};
+			\legend{$Y1$, $Y1_zad$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+    \vskip 0.5cm
+    \subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.76\textwidth,
+				height=0.38\textwidth,
+				xmin=0,xmax=200,ymin=10,ymax=15,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 40, 80, 120, 160, 200},
+				ytick={10, 11, 12, 13, 14, 15},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_8/pid_our/Y2.txt};
+			\addplot[const plot, red]    file {data/exercise_8/pid_our/Y2_zad.txt};
+			\legend{$Y2$, $Y2_zad$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+	\vskip 0.5cm
+    \subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.76\textwidth,
+				height=0.38\textwidth,
+				xmin=0,xmax=200,ymin=10,ymax=15,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 40, 80, 120, 160, 200},
+				ytick={10, 11, 12, 13, 14, 15},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_8/pid_our/Y3.txt};
+			\addplot[const plot, red]    file {data/exercise_8/pid_our/Y3_zad.txt};
+			\legend{$Y3$, $Y3_zad$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+    \vskip 0.5cm
+	\subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.76\textwidth,
+				height=0.38\textwidth,
+				xmin=0,xmax=200,ymin=-0.2,ymax=1.2,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 40, 80, 120, 160, 200},
+				ytick={-0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_8/pid_our/U1.txt};
+			\addplot[const plot, red]    file {data/exercise_8/pid_our/U2.txt};
+			\addplot[const plot, green]   file {data/exercise_8/pid_our/U3.txt};
+			\legend{$U1$, $U2$, $U3$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+    \caption{Przebiegi sygna³ów steruj¹cych i~wyjœciowych przy ostatecznej wersji autorskiego reulatora PID}
+    \label{definit_PID_our}
+\end{figure}

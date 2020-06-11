@@ -1,0 +1,50 @@
+\section{Panel HMI i~kontrola trajektorii zadanej}
+
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.7]{HC_Main.png}
+    \caption{Czêœæ g³ówna panelu operatora}
+    \label{hc_main}
+\end{figure}
+\vskip 0.5cm
+
+Stworzony panel operatorski posiada trzy poziomy. Pierwszy z~nich pozwala po prostu na wybór obiektu sterowania. Po wejœciu w~sekcjê poœwiêconom stanowisku grzej¹co-ch³odz¹cemu ukazuje nam siê obraz widoczny na rys. \ref{hc_main}. Wartoœci temperatur $T1$ i~$T3$ zosta³y zwizualizowane w~postaci s³upków z~podzia³k¹ i~poruszaj¹cych siê po nich czerwonych poprzeczkach. Dok³adna wartoœæ liczbowa wyœwietlana jest na lewo od wskaŸników. Na tej samej wysokoœci, po lewej stronie panelu znajduj¹ siê pola pozwalaj¹ce ustawiæ wartoœæ zadan¹ \footnote{W~przypadku sterowania automatycznego}. Powy¿ej zosta³ z~kolei umiejscowiony przycisk, który umo¿liwia prze³¹czanie regulatora miêdzy trybem manualnym a~automatycznym. W~przypadku pierwszego z~nich wartoœci sterowañ mog¹ zostaæ ustawione przy pomocy pól w~lewej dolnej czêœci ekranu.
+
+Po naciœniêciêciu przycisku "changing trajectory" u¿ytkownik przechodzi do panelu, w~którym mo¿liwe jest ustawienie zmienianej skokowo trajektorii zadanej (rys. \ref{hc_trajectory}). Trajektoria sk³ada siê z~piêciu przedzia³ów czasowych, ka¿dy o~d³ugoœci równej wartoœci ustawionej w~polu "duration". Dla ka¿dego z przedzia³ów mo¿liwe jest ustawienie innej wartoœci zadanej. Po zakoñczeniu ostatniego segmentu trajektoria wartoœci zadanej jest zapêtlana. Po ustawieniu porz¹danej trajektorii u¿ytkownik mo¿e uruchomiæ jej realizacjê poprzez prze³¹czenie przycisku w~lewym górnym rogu ekranu. Implementacja ta rozwi¹zuje problem postawiony w~zadaniu 5. Realizacja programowa odbywa siê poprzez prost¹ sekwencjê instrukcji warunkowych widocznych na poni¿szym listingu. Wykonywana jest ona przy ka¿dej iteracji programu.
+
+\vskip 1cm
+\begin{lstlisting}[style=customc,frame=single] 
+	IF HC_TRAJ_ON THEN
+		IF traj = 0 THEN
+			HC_DMC.HC_T1_ZAD := HC_T1_TRAJ1;
+			HC_DMC.HC_T2_ZAD := HC_T2_TRAJ1;
+		ELSIF traj = 1*HC_DURATION THEN
+			HC_DMC.HC_T1_ZAD := HC_T1_TRAJ2;
+			HC_DMC.HC_T2_ZAD := HC_T2_TRAJ2;
+		ELSIF traj = 2*HC_DURATION THEN
+			HC_DMC.HC_T1_ZAD := HC_T1_TRAJ3;
+			HC_DMC.HC_T2_ZAD := HC_T2_TRAJ3;
+		ELSIF traj = 3*HC_DURATION THEN
+			HC_DMC.HC_T1_ZAD := HC_T1_TRAJ4;
+			HC_DMC.HC_T2_ZAD := HC_T2_TRAJ4;
+		ELSIF traj = 4*HC_DURATION THEN
+			HC_DMC.HC_T1_ZAD := HC_T1_TRAJ5;
+			HC_DMC.HC_T2_ZAD := HC_T2_TRAJ5;
+		ELSIF traj = 5*HC_DURATION THEN
+			traj :=0;
+		ELSE;
+		END_IF;
+		traj := traj + 1;
+	END_IF;
+\end{lstlisting}
+\vskip 1cm
+
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.7]{HC_trajectory.png}
+    \caption{Panel umo¿liwiaj¹cy konfiguracjê trajektorii zadanej dla stanowiska G-C}
+    \label{hc_trajectory}
+\end{figure}
+\vskip 0.5cm

@@ -1,0 +1,55 @@
+\section{Trajektorie zadane}
+
+W~ramach panelu operatorskiego ziamplementowana zosta³a zak³adka pozwalaj¹c zmieniaæ trajektoriê zadan¹ wszystkich trzech wyjœæ procesu w~trzech przedzia³ach czasowych równej d³ugoœci \footnote{Opis z~perspektywy u¿ytkownika zamieszczony zosta³ w~sekcji 7}. Tak jak w przypadku stanowiska G-C implementacja sprowadza siê do blok instrukcji warunkowych œledz¹cych wartoœæ czasu \verb traj. Gdy znajduje siê on w~pwnych ramach wartoœci sterowania ustawiane s¹ na te widoczne w~paneli HMI. Fragment kodu odpowiedzialny za automat stanów przedstawiony zosta³ na poni¿szym listingu.
+
+\vskip 0.5cm
+\begin{lstlisting}[style=customc,frame=single] 
+    IF WATER_TRAJ_ON THEN
+        
+        IF WATER_DURATION <> WATER_DURATION_HMI THEN
+            WATER_DURATION := WATER_DURATION_HMI;
+            traj := 0;
+        END_IF;
+        
+        IF  traj <= 1*WATER_DURATION_HMI-1 THEN
+            PID1.SV := WATER_Y1_TRAJ1;
+            PID2.SV := WATER_Y2_TRAJ1;
+            PID3.SV := WATER_Y3_TRAJ1;
+            WATER_CURRENT_TRAJ1 := TRUE;
+            WATER_CURRENT_TRAJ2 := FALSE;
+            WATER_CURRENT_TRAJ3 := FALSE;
+        ELSIF traj <= 2*WATER_DURATION_HMI-1 THEN
+            PID1.SV := WATER_Y1_TRAJ2;
+            PID2.SV := WATER_Y2_TRAJ2;
+            PID3.SV := WATER_Y3_TRAJ2;
+            WATER_CURRENT_TRAJ1 := FALSE;
+            WATER_CURRENT_TRAJ2 := TRUE;
+            WATER_CURRENT_TRAJ3 := FALSE;
+        ELSIF traj <= 3*WATER_DURATION_HMI-1 THEN
+            PID1.SV := WATER_Y1_TRAJ3;
+            PID2.SV := WATER_Y2_TRAJ3;
+            PID3.SV := WATER_Y3_TRAJ3;
+            WATER_CURRENT_TRAJ1 := FALSE;
+            WATER_CURRENT_TRAJ2 := FALSE;
+            WATER_CURRENT_TRAJ3 := TRUE;
+        ELSIF traj >= 3*WATER_DURATION_HMI-1 THEN
+            PID1.SV := WATER_Y1_TRAJ1;
+            PID2.SV := WATER_Y2_TRAJ1;
+            PID3.SV := WATER_Y3_TRAJ1;
+            WATER_CURRENT_TRAJ1 := TRUE;
+            WATER_CURRENT_TRAJ2 := FALSE;
+            WATER_CURRENT_TRAJ3 := FALSE;
+            traj :=0;
+        ELSE;
+        END_IF;
+        traj := traj + 1;
+    ELSE
+        WATER_CURRENT_TRAJ1 := FALSE;
+        WATER_CURRENT_TRAJ2 := FALSE;
+        WATER_CURRENT_TRAJ3 := FALSE;
+        traj := 0;
+    END_IF;
+\end{lstlisting}
+\vskip 1 cm
+
+Zmienne \verb WATER_CURRENT_TRAJx  odpowiedzialne s¹ za wizualizacjê aktualnego stanu uk³adu. Po przejœciu automatu przez wszystkie stany jest on resetowany, a~ca³a sekwencja powtarza siê.

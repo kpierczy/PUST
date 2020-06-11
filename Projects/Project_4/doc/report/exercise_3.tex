@@ -1,0 +1,176 @@
+\section{Zbieranie odpowiedzi skokowych}
+
+W~ramach projektu laboratoryjnego 3.5 przygotowaliœmy podstawowy regulator DMC w~wersji analitycznej o~wymiarze $2 \times 2$. Mia³ on za zadanie regulawaæ pracê modelu stanowiska grzej¹co-ch³odz¹cego przygotowanego w~œrodowisku \verb Matlab. Kolejne laboratorium 
+wymog³o na nas przeniesienie tej implementacji na sterownik PLC. Podstawy teoretyczne opisuj¹ce dzia³anie regulatora zosta³y opisane szerzej w~poprzednim sprawozdaniu. W~tym miejscu przypomnimy jedynie kilka podstawowych wzorów. Wartoœæ sterowania obliczana jest w procesie optymalizacji uchybu na pewnym horyzoncie predykcji. Je¿eli znany jest model obiektu sterowania w~postaci odpowiedzi skokowych 
+poszczególnych torów wejœcia-wyjœcia, to mo¿na skonstruowaæ pewne macierze $M$ oraz $M^P$. Dla macierzy parametrów regulatora $\Psi$, $\Lambda$ prawo regulacji przybiera wówczas postaæ \ref{DMC_eq}.
+
+\vskip 0.5cm
+\begin{equation}
+\begin{cases}
+    \Delta U(k) = K[Y^{zad}(k)-Y(k) -M^P\Delta U^P(k)] \\
+	K = (M^T \Psi M + \Lambda)^{-1} M^T \Psi
+	\label{DMC_eq}
+\end{cases}
+\end{equation}
+\vskip 0.5cm
+
+Projektowanie rozpoczêliœmy od zebrania czterech odpowiedzi skokowych, po jednej dla ka¿dego toru. W~tym celu napisany zosta³ prosty program wykonuj¹cy skoki wartoœci steruj¹cych. Po ustabilizowaniu uk³adu w~punkcie pracy nastêpowa³ skok o~(...) na grza³ce $G1$, a~nastêpnie zbierane by³y odpowiedzi skokowy na obu wyjœciach. Po ustabilizowaniu temperatur $T1$ i $T3$, rozumianym jako spadek wariancji pomiarów w~pewnym oknie czasowym poni¿ej wartoœci zadanej, wartoœæ sterowania wraca³a do punktu pracy. Nastêpnie wykonywany by³ skok na drugiej grza³ce i~ponownie zbierane by³y odpowiedzi skokowe. Zbieranie przebiegów odby³o siê za pomoc¹ aplikacji \textit{GX LogViewer}, która umo¿liwia monitorowanie i~zapisywanie do plików wartoœci wskazanych komórek pamiêci sterownika w~regularnych odstêpach czasu. Zgodnie ze specyfikacj¹ okres próbkowania wynosi³ $1s$. Zebrane odpowiedzi zosta³y zaprezentowane na \ref{step_responses},
+
+\vskip 1cm
+\begin{figure}[H]
+    \centering
+	\begin{tikzpicture}
+		\begin{axis}[
+				width=0.75\textwidth,
+				height=0.45\textwidth,
+				xmin=0,xmax=100,ymin=120,ymax=190,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 20, 40, 60, 80, 100},
+				ytick={120, 130, 140, 150, 160, 170, 180, 190},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_3/step_responses/G1T1.txt};
+			\addplot[const plot, red]    file {data/exercise_3/step_responses/G1T3.txt};
+			\addplot[const plot, green]  file {data/exercise_3/step_responses/G2T1.txt};
+			\addplot[const plot, orange] file {data/exercise_3/step_responses/G2T3.txt};
+			\legend{$G1-T1$, $G1-T3$, $G2-T1$, $G2-T3$}
+		\end{axis}
+	\end{tikzpicture}
+    \caption{Nieznormalizowane odpowiedzi skokowe zebrane z~obiektu}
+    \label{step_responses}
+\end{figure}
+\vskip 0.5cm
+
+
+\section{Implementacja regulatora DMC}
+
+Pliki tekstowe zawieraj¹ce surowe dane z~obiektu zosta³y przez nas zaimportowane do œrodowiska \verb Matlab. Po uporz¹dkowaniu do postaci wektorów o~jednolitej d³ugoœci poddaliœmy je obróbce \textbf{z~wykorzystaniem klasy DMC}, któr¹ zaimplementowaliœmy w~ramach projektu trzeciego. Klasa ta dokonuje automatycznej normalizacji odpowiedzi oraz oblicza macierze obecne w~prawie regulacji na bazie zadanych parametrów regulatora. Generacja  macierzy odbywa³a siê oczywiœcie kilkukrotnie w~czasie dobierania nastaw algorytmu.Kolejny prosty skrypt umo¿liwi³ nam zapisanie obliczonych wartoœci do plików w~postaci, w~której mog³y byæ one bezpoœrednio przekopiowane do programu pisanego w~œrodowisku \textit{GX Works}. Zapisywana by³a oczywiœcie jedynie czêœæ danych z~obliczonych macierzy, poniewa¿ \textbf{algorytm DMC zosta³ zaimplementowany w wersji "oszczêdnej"}
+
+Miêdzy implementacj¹ DMC w~Matlabie, a~implementacjê na rzeczywistym sterowniku PLC jest kilka zasadniczych ró¿nic. Po pierwsze, nale¿y wzi¹æ pod uwagê zasoby sprzêtowe sterownika. Gdy tworzony regulator wchodzi³ bêdzie w~interakcjê jedynie z~modelem obiektu, to zazwyczaj czas wykonowania obliczeñ nie gra roli. Model obiektu funkcjonuje pod dyktando programu nadrzêdnego, a~czas up³ywaj¹cy w~symulacji jest jedynie pozorny \footnote{Oczywiœcie mo¿liwe jest stworzenie bardziej realistycznych modeli, o czym przekonaliœmy siê w~trakcie laboratorium 3.5}. W~rzeczywistoœci obiekt regulacji funkcjonuje niezale¿nie od regulatora. Utrzymanie sta³ego okresu próbkowania oraz aplikacji sterowania jest fundamentem poprawnej regulacji, dlatego projektuj¹c rzeczywisty regulator nale¿y bezwzglêdnie wzi¹æ pod uwagê dostêpn¹ moc obliczeniow¹ i~na jej podstawie oszacowaæ maksymalny czas obliczeñ w~pojedynczej iteracji. Szacowanie tego typu na podstawie samej dokumentacji sterownika mo¿e byæ bardzo uci¹¿liwe. poniewa¿ czasy wykonywania poszczególnych instrukcji nie musz¹ byæ jednakowe. Z~pomoc¹ przychodzi nam œrodowisko \textit{GX Works}. Umo¿liwia ono przeprowadzenie symulacji napisanego programu i~obserwacjê parametrów jego wykonywania, w~tym parametrów czasowych. Kryterium czasu nie by³o w~naszym przypadku krytyczne. Rz¹d dynamiki stanowiska G-C zosta³ ustalony na 139. Konsekwencj¹ tego jest bardzo krótki czas wykonywania programu niezale¿nie od przyjêtych horyzontów regulacji i~sterowania. Waha³ siê on od $81us$ do $7200us$ (przy inicjalizacji sterownika) na iteracjê. Œrednia uplasowa³a siê na poziomie $~200us$. Czasy te s¹ dalece ni¿sze ni¿ okres próbkowania obiektu.
+
+Kolejnym zagadnieniem jest zajêtoœæ pamiêci. Gdy obiekt stabilizuje siê d³ugo wyd³u¿a siê równie¿ rz¹d dynamiki. To z~kolei poci¹ga za sob¹ zwiêkszenie wymiarów macierzy i~wektorów, na których operuje DMC. Jako, ¿e obiekty te, s¹ zazwyczaj przechowywane bezpoœrednio w~pamiêci sterownika nale¿y uwzglêdniæ je w~procesie projektowania. Wymiar macierzy $M^P$ to $(N \cdot n_y) \times ((D-1) \cdot n_u)$, a~macierzy K $(N_u \cdot n_u) \times (N \cdot n_y)$. Jak widaæ, z³o¿onoœæ pamiêciowa jest liniowo zale¿na od horyzontu predykcji $N$. Je¿eli korzystamy z~"oszczêdnej" wersji DMC, to przechowujemy jedynie pierwsze $n_u$ wierszy macierzy $K$, zatem z³o¿onoœæ pamiêciowa \textbf{nie zale¿y od horyzontu sterowania $N_u$}. Przepiszmy prawo regulacji \ref{DMC_eq} w~wersji "oszczêdnej".
+
+\vskip 0.5cm
+\begin{equation}
+	\Delta U(k) = \overline{K_1}[Y^{zad}(k)-Y(k) -M^P\Delta U^P(k)] \\
+	\label{DMC_eq_economical}    
+\end{equation}
+\vskip 0.5cm
+
+Wektory $Y^{zad}(k)$ oraz $Y(k)$ sa d³ugoœci $(N \cdot n_y)$. Mo¿emy jednak zauwa¿yæ, ¿e iloœæ unikalnych elementów w~ka¿dym z nich wynosi jedynie $n_y$. Nastêpnie zauwa¿my, ¿e macierze $K$ i~$M^P$ nie zmieniaj¹ siê w~trakcie pracy sterownika. Pogrupujy teraz wyra¿enia obecne w~równaniu \ref{DMC_eq_economical}.
+
+\vskip 0.5cm
+\begin{equation}
+	\Delta U(k) = \overline{K_1}[Y^{zad}(k)-Y(k) -M^P\Delta U^P(k)] \\
+	\label{DMC_eq_economical_grouped}    
+\end{equation}
+\vskip 0.5cm
+
+Wykorzystuj¹c pierwsze z~powy¿szych spostrze¿eñ mo¿emy dojœæ do wniosku, ¿e reprezentacjê macierzy $\overline{K_1}$ dla pierwszego sk³adnika mo¿na efektywnie ograniczyæ do rozmiaru $n_y \cdot n_y$ sumuj¹c odpowiednie jej elementy. Ponadto, zamiast przechowywaæ oddzielnie macierze $\overline{K_1}$ i~$M^P$ mo¿emy a~priori obliczyæ ich iloczyn otrzymuj¹c macierz wymiaru $n_u \times ((D-1) \cdot n_u)$. W~ten sposób oszczêdzamy znaczn¹ ilosæ pamiêci. Ponadto niwelujemy problem przechowywania dwuwymiarowych tablic w~pamiêci sterownika. W³aœnie takie podejœcie zastosowaliœmy w~projekcie.
+
+Ostatni¹ z~widocznych ró¿nic, chocia¿ nie wp³ywaj¹c¹ na pracê samego sterownika, jest przymus pracy w~dwóch odrêbnych œrodowiska w~trakcie projektowania uk³adu regulacji. W~przypadku \verb Matlaba  obliczenia off-line i on-line by³y wykonywane w~tym samym œrodowisku. Oprogramowanie \textit{GX Works} nie posiada modu³u umo¿liwiaj¹cego wykonywanie tego typu operacji, co wymusi³o repetetywne przenoszenie danych miêdzy œrodowiskami. Warto podkreœliæ ten fakt szczególnie, gdy mo¿liwe jest wykonanie matematycznego modelu obiektu regulacji i~przeprowadzenie wstêpnego strojenia algorytmu w~œrodowisku symulowanym. Mo¿e to zaoszczêdziæ znaczn¹ iloœæ czasu projektanta.
+
+\vskip 2cm
+\section{Strojenie parametrów regulatora}
+
+Dobór parametrów regulatora przebiega³ dwuetapowo. Kieruj¹c siê wy¿ej poczynionymi spostrze¿eniami postanowiliœmy rozpocz¹æ od \textbf{przybli¿enia odpowiedzi skokowych modelami matematycznymi} w~postaci inercji drugiego rzêdu. W~tym celu wykorzystaliœmy mechanizm zaimplementowany w~ramach laboratorium 3.5. Stworzyliœmy funkcjê celu, która równa by³a b³êdowi œredniokwadratowemu pope³nianemu przez model na zadanej trajektorii sygna³ów wejœciowych \footnote{Wykorzystane zosta³y trajektorie u¿yte do zebrania odpowiedzi skokowych z~obiektu}. Funkcja ta zosta³a nastêpnie zminimalizowana przez algorytm genetyczny dla wszystkich czterech modeli \footnote{Optymalizacja przeprowadzana na pojedynczej trajektorii mo¿e dawaæ niezadowalaj¹ce efekty, gdy obiekt jest nieliniowy. Ze wzglêdu na obszernoœæ projektu zdecydowaliœmy siê jednak pozostaæ przy takim scenariuszu, aby nie zwiêkszaæ czasu poœwiêconego na zbieranie danych z~obiektu. Jak wynika z~naszych dotychczasowych doœwiadczeñ, stanowisko G-C ma charakter liniowy przy pracy wiewielkim zakresie wokó³ punktu pracy. Bior¹c pod uwagê, ¿e modele mia³y pos³u¿yæ jedynie do wstêpnej kalibracji regulatora, podejœcie to powinno umo¿liwiaæ osi¹gniêcie zamierzonych rezultatów.}. Wyjœcia modeli takich samych przebiegów wejœæ zosta³y przedstawione na rys. \ref{models}
+
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+	\begin{tikzpicture}
+		\begin{axis}[
+				width=0.75\textwidth,
+				height=0.45\textwidth,
+				xmin=0,xmax=100,ymin=120,ymax=190,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 20, 40, 60, 80, 100},
+				ytick={120, 130, 140, 150, 160, 170, 180, 190},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_3/model_step_responses/G1T1.txt};
+			\addplot[const plot, red]    file {data/exercise_3/model_step_responses/G1T3.txt};
+			\addplot[const plot, green]  file {data/exercise_3/model_step_responses/G2T1.txt};
+			\addplot[const plot, orange] file {data/exercise_3/model_step_responses/G2T3.txt};
+			\legend{$G1-T1$, $G1-T3$, $G2-T1$, $G2-T3$}
+		\end{axis}
+	\end{tikzpicture}
+    \caption{Odpowiedzi skokowe stworzonych modeli}
+    \label{models}
+\end{figure}
+\vskip 0.5cm
+
+Po dokonaniu aproksymacji przyst¹piliœmy do strojenia wirtualnego regulatora. Ponownie zost¹³y wykorzystane mechanizmy z~laboratorium 3.5. Modele z~postaci wektora parametrów zosta³y przekszta³cone do postaci funkcji, które po podaniu zadanej trajektorii wejœciowej zwracaj¹ przebieg wyjœcia. W~takiej formie zosta³y one przekazane do konstruktora zimplementowanej przez nas wczeœniej klasy DMC \footnote{Klasa DMC implementuje regulator DMC dla ogólnego przypadku $n \times m$-wymiarowego}. Konstruktor ten dokonuje zebrania i~normalizacji odpowiedzi skokowej, a~nastêpnie obliczenia optymalnych macierzy DMC dla zadanych parametrów. Udostepnia te¿ wygodny interfejs, który automatycznie zarz¹dza wektorami zapisanymi w~pamiêci regulatora, co umo¿liwia zwiêz³¹ implementacjê pêtli sterowania. Dziêki temu uda³o nam siê w stosunkowo krótkim czasie odnaleŸæ parametry zapewniaj¹ce zadowalaj¹c¹ jakoœæ sterowania. 
+
+Drugim krokiem by³o przeniesienie znalezionych parametrów na sterownik. Zgodnie z~naszymi oczekiwaniami nie by³a ona idealna, chocia¿ o~wiele lepsza ni¿ w przypadku losowo wybranych parametrów. Dalsze poprawki zosta³y na³o¿one metod¹ in¿yniersk¹. Manipulacja wartoœciami $N$, $N_u$ i $\lambda$ w~niewielkich otoczeniach punktów znalezionych w~symulacji pozwoli³o poprawiæ zarówno paramtery sterowania, tj. przeregulowania i~czas regulacji, a~tak¿e z³agodziæ przebiegi wartoœci steruj¹cych. Praca ostatecznej wersji regulatora dla przyk³adowej trajektorii zadanej zosta³a przedstawiona na rys. \ref{definite_DMC} 
+
+\begin{figure}[H]
+    \centering
+    \subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.75\textwidth,
+				height=0.45\textwidth,
+				xmin=0,xmax=400,ymin=100,ymax=180,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 80, 160, 240, 320, 400},
+				ytick={100, 120, 140, 160, 180},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_3/final/T1.txt};
+			\addplot[const plot, red]    file {data/exercise_3/final/T1_zad.txt};
+			\legend{$T1$, ${T1}^{zad}$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+    \vskip 0.5cm
+    \subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.75\textwidth,
+				height=0.45\textwidth,
+				xmin=0,xmax=400,ymin=100,ymax=180,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 80, 160, 240, 320, 400},
+				ytick={100, 120, 140, 160, 180},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_3/final/T3.txt};
+			\addplot[const plot, red]    file {data/exercise_3/final/T3_zad.txt};
+			\legend{$T2$, ${T2}^{zad}$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+	\vskip 0.5cm
+    \subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.75\textwidth,
+				height=0.45\textwidth,
+				xmin=0,xmax=400,ymin=0,ymax=750,
+				xlabel={$t [s]$},
+				ylabel={$u(t)$},
+				xtick={0, 80, 160, 240, 320, 400},
+				ytick={0, 125, 250, 375, 500, 625, 750},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_3/final/G1.txt};
+			\addplot[const plot, red]    file {data/exercise_3/final/G2.txt};
+			\legend{$G1$, $G2$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+    \caption{Przebiegi sygna³ów steruj¹cych i~wyjœciowych przy ostatecznej wersji reulatora DMC}
+    \label{definite_DMC}
+\end{figure}
+
+Jak widaæ przebiegi nie s¹ idealne. Szczególnie uderzaj¹ce s¹ oscylacje wartoœci wyjœciowej w stanie ustalony o~amplitudzie rzedu $3-4^{\circ}C$. Niestety mimo d³ugiego czasu strojenia nie uda³o siê ich wyeliminowaæ. Bior¹c pod uwagê, ¿e stanowisko operuje na temperaturach w~zakresie $~25-200^{\circ}C$ oscylacje te nie wydaj¹ siê tak krytyczne. Obserwuj¹c pozosta³e cechy regulacji mo¿na zauwa¿yæ, ¿e wartoœci zadane s¹ osi¹gane stosunkowo szybko. Ponadto praktycznie nie wystepuje przeregulowanie. Miejscem wartym poprawy jest natomiast przebieg wartoœci steruj¹cej. Oscylacje, które wystepuj¹ na grza³kach $G1$ i~$G2$ maj¹ stosunkowo wysokie amplitudy i~doœæ krótki okres. Zwiêkszenie parametru $\lambda$ mog³o by poprawiæ tê sytuacjê, jednak przy zmianie tej bez wprowadzanie poprawek tak¿e do innych parametrów jakoœæ regulacji ulega³a pogorszeniu. Kolejnym pomys³em na poprawê algorytmu by³oby, implementowane ju¿ przez nas w~poprzednich projektach, "przewidywanie" wartoœci zadanej. Jako, ¿e w~wielu praktycznych przypadkach sterowania jest ona odgórnie znana, warto zawrzeæ tê informacjê w~wektorze $Y^{zad}$, na którym operuje algorytm. Sprawia to, ¿e regulator podejmuje akcjê  jeszcze przed faktyczn¹ zmian¹ aktualnej wartoœci zadanej, co mo¿e zwiêkszyæ stabilnoœæ uk³adu. 

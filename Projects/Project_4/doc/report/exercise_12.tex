@@ -1,0 +1,32 @@
+\section{Wizualizacja procesu}
+
+HMI przeznaczony do obs³ugi stanowiska Inteco sk³ada siê z~trzech zak³adek. Pierwsza z~nich, widoczna na rys. \ref{WATER_main}, to karta g³ówna. Widoczna jest na niej wizualizacja wartoœci zmiennych wyjœciowych oraz dok³adne wartoœci liczbowe zarówno wielkoœci zadanych jak i~aktualnych. Pola z podpisem \verb SV  (ang. \textit{set value}) s¹ edytowalne, a~ich wartoœæ wyznacza aktualn¹ wartoœæ zadan¹. Kolejna zak³adka, ukazana na rys. \ref{WATER_pid}, jest przeznaczona do kontrolowania nastaw regulatora. Widoczne po lewej stronie s³upki pozwalaj¹ ponownie monitorowaæ stan poziomów wody w~zbiornikach. Centraln¹ czêœc ekranu zajmuje zbiór edytowalnych pól umo¿liwiaj¹cych zmianê nastaw regulatora w~trybie on-line. Przycisk widoczny po lewej stronie umo¿liwia natomiast prze³¹czanie pomiêdzy autorskim, a wbudowanym regulatorem PID.
+
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.7]{WATER_Main.png}
+    \caption{Panel g³ówny dla stanowiska Inteco}
+    \label{WATER_main}
+\end{figure}
+\vskip 0.5cm
+
+Ostatnia karta przeznaczona jest to zadawania trajektorii zmian wartoœci zadanej. Jak wspomniano w~poprzednich sekcjach, zaimplementowany zosta³ automat stanów umo¿liwiaj¹cy zaplanowanie wartoœci zadanych w~trzech równych przedzia³ach czasowych. Jest to mo¿liwe poprzez wpisanie odpowiednich wartoœci w~pola widoczne w~prawym górnym rogu rys. \ref{WATER_trajectory}. Prze³¹czenie miêdzy wartoœciami zadanymi wynikaj¹cym z~automatu stanu, a~tymi podanymi na~panelu g³ównym nastepuje na skutek przycisku znajduj¹cego siê w~górnej czêœci rysunku. Gdy pod¹¿anie za trajektori¹ zadan¹ jest w³¹czone, aktualny stan automatu wizualizowany jest w~postaci jednej z~lampek zapalanych w~prawym górnym rogu ekranu. Okres przedzia³ów czasowych konfiguruje siê poprzez zmianê wartoœci pola {\verb duration}.  Wykresy obecne w~lewej czêœci ekranu oraz przystaj¹ce do nich pola liczbowe pozwalaj¹ monitorowaæ poziom rozszczelnienia poszczególnych zaworów.
+
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.7]{WATER_pid.png}
+    \caption{Panel konfiguracyjny regulatorów PID}
+    \label{WATER_pid}
+\end{figure}
+\vskip 0.5cm
+
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.7]{WATER_trajectory.png}
+    \caption{Panel konfigurarji trajektorii zadanych.}
+    \label{WATER_trajektory}
+\end{figure}
+\vskip 0.5cm

@@ -1,0 +1,139 @@
+
+\begin{figure}[H]
+    \centering
+    \subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.76\textwidth,
+				height=0.45\textwidth,
+				xmin=0,xmax=200,ymin=10,ymax=15,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 40, 80, 120, 160, 200},
+				ytick={10, 11, 12, 13, 14, 15},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_8/pid_builtin/Y1.txt};
+			\addplot[const plot, red]    file {data/exercise_8/pid_builtin/Y1_zad.txt};
+			\legend{$Y1$, $Y1_zad$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+    \vskip 0.5cm
+    \subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.76\textwidth,
+				height=0.45\textwidth,
+				xmin=0,xmax=200,ymin=10,ymax=15,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 40, 80, 120, 160, 200},
+				ytick={10, 11, 12, 13, 14, 15},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_8/pid_builtin/Y2.txt};
+			\addplot[const plot, red]    file {data/exercise_8/pid_builtin/Y2_zad.txt};
+			\legend{$Y2$, $Y2_zad$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+	\vskip 0.5cm
+    \subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.76\textwidth,
+				height=0.45\textwidth,
+				xmin=0,xmax=200,ymin=10,ymax=15,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 40, 80, 120, 160, 200},
+				ytick={10, 11, 12, 13, 14, 15},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_8/pid_builtin/Y3.txt};
+			\addplot[const plot, red]    file {data/exercise_8/pid_builtin/Y3_zad.txt};
+			\legend{$Y3$, $Y3_zad$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+    \vskip 0.5cm
+
+    \caption{Przebiegi sygna³ów wyjœciowych przy ostatecznej wersji wbudowanego reulatora PID}
+    \label{definit_pid_builtin_y}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+	\subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.76\textwidth,
+				height=0.45\textwidth,
+				xmin=0,xmax=200,ymin=-0.2,ymax=1.2,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 40, 80, 120, 160, 200},
+				ytick={-0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_8/pid_builtin/U1.txt};
+			\legend{$U1$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+	\vskip 0.5cm
+	\subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.76\textwidth,
+				height=0.45\textwidth,
+				xmin=0,xmax=200,ymin=-0.2,ymax=1.2,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 40, 80, 120, 160, 200},
+				ytick={-0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_8/pid_builtin/U2.txt};
+			\legend{$U2$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+	\vskip 0.5cm
+	\subfloat{
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=0.76\textwidth,
+				height=0.45\textwidth,
+				xmin=0,xmax=200,ymin=-0.2,ymax=1.2,
+				xlabel={$t [s]$},
+				ylabel={$y(t)$},
+				xtick={0, 40, 80, 120, 160, 200},
+				ytick={-0.2, 0, 0.2, 0.4, 0.6, 0.8, 1.0, 1.2},
+				legend pos=north west,
+				y tick label style={/pgf/number format/1000 sep={,}},
+			]
+			\addplot[const plot, blue]   file {data/exercise_8/pid_builtin/U3.txt};
+			\legend{$U3$}
+		\end{axis}
+		\end{tikzpicture}
+	}
+    \vskip 0.5cm
+
+    \caption{Przebiegi sygna³ów steruj¹cych przy ostatecznej wersji wbudowanego reulatora PID}
+    \label{definit_pid_builtin_u}
+\end{figure}
+
+
+
+\section{Wbudowany regulator PID}
+
+Œrodowisko \textit{GX Works} posiada wbudowany blok funkcyjny realizuj¹cy regulator PID. Kosztem zupe³nie nieintuicyjnego interfejsu niweluje ona potrzebê budowania jego w³asnej implementacji. W~ramach projektu przetestowaliœmy jego dzia³anie w~tych samych warunkach, w których testowany by³ nasz autorski regulator. Procedura strojenia by³a identyczna z~t¹ opisan¹ w~poprzedniej sekcji. Wyniki pracy nastrojonego regulatora przedstawia rys. \ref{definit_PID_builtin_y} i~\ref{definit_PID_builtin_u}.
+
+Nastawy znalezione dla regulatora wbudowanego s¹ identyczne jak w~przypadku wersji autorskie. Przy takim ustawieniu przebiegi wartoœci wyjœciowych s¹ równie¿ identyczne, przez co wszystkie wniosku z~poprzedniego paragrafu pozostaj¹ w~mocy. Jedyn¹, potencjalnie znacz¹c¹, ró¿nic¹ miêdzy regulatorami jest sposób zarz¹dzania sygna³ami steruj¹cymi. Jak widaæ na rys. \ref{definit_PID_builtin_u} wbudowany regulator steruje za pomoc¹ \textbf{gêstoœci sygna³ów binarnych}. Podejœcie takie jest jak najbardziej do przyjêcia w~przypadku elementó wykonawczych o~du¿ej bezw³adnoœci. W~przypadku elementów "szybszych" \underline{mo¿e} to doprowadziæ do ich uszkodzenia.
