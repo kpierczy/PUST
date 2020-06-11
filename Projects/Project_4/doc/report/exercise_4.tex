@@ -1,0 +1,66 @@
+\chapter{DMC}
+\section{Algorytm DMC w wersji MIMO}
+Algorytm DMC w wersji MIMO dzia³a na tej samej zasadzie co algorytm DMC w wersji SISO, czyli oblicza zachowanie wyjœcia obiektu wprzód na podstawie poprzednich przyrostów sygna³u sterowania. Podstawowa ró¿nic¹ oczywiœcie jest to, ¿e w naszym przypadku jest 12 torów sterowania ( 4 wejœcia i 3 wyjœcia ), ale sama regu³a dzia³ania pozostaje taka sama. Ju¿ mo¿na tutaj zauwa¿yæ przewagê DMC w wersji MIMO nad PID w wersji MIMO tak¹, ¿e DMC wykorzystuje wszystkie wejœcia i "jest œwiadome" wp³ywu ka¿dego wejœcia na ka¿de wyjœcie. Pozwala to nam na otrzymanie znacz¹co lepszej jakoœci regulacji co potwierdzaj¹ nasze eksperymenty. Oczywiœcie nie ma nic za darmo co oznacza, ¿e DMC w wersji MIMO wymaga znacz¹co iloœæ obliczeñ ni¿ PID w wersji MIMO, ale ten problem mo¿emy zmniejszyæ poprzez zaimplementowanie DMC w najprostszej wersji analitycznej ( dziêki temu mamy mniej obliczeñ do wykonania co obrót pêtli).
+
+\section{Kalibracja algorytmu DMC w wersji MIMO}
+
+Kalibracjê podzieliliœmy na dwie czêœci. Pierwsza czêœæ sk³ada siê z doboru parametrów podstawowych takich jak horyzont dynamiki obiektu, horyzont predykcji i horyzont sterowania algorytmu DMC. Parametry Lambda i Psi s¹ równe 1, ¿eby nie faworyzowaæ ¿adnego toru sterowania. Druga czêœæ sk³ada siê z doboru parametrów Lambda i Psi dla ustalonych wczeœniej wartoœci podstawowych.
+	Dla otrzymania mo¿liwie najlepszej jakoœci regulacji bêdziemy wykorzystawali wczeœniej wspomniany algorytm ewolucyjny, by mo¿na porównaæ wyniki z wynikami regulacji za pomoc¹ algorytmu PID w wersji MIMO.
+	
+	Wyniki pierwszego etapu kalibracji mo¿emy zobaczyæ na wykresach poni¿ej:
+	
+	\begin{center}
+		\begin{figure}[H]
+		\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_DMC/DMC_D_204_N_107_Nu_54_Lambda_1_1_1_1__Psi_1_1_1__U1_error_69.8736.pdf}}
+		\label{DMC_D_204_N_107_Nu_54_Lambda_1_1_1_1__Psi_1_1_1__U1_error_69.8736}
+		\caption{DMC=D=204, N=107, Nu=54, Lambda=[1, 1, 1, 1], [Psi=1, 1, 1], error=69.8736}
+		\end{figure}
+		\end{center}
+	
+	W drugim etapie kalibracji wykorzystamy zarówno metodê in¿ynierska jak i algorytm ewolucyjny, by móc równie¿ porównaæ, czy metoda in¿ynierska pozwala na otrzymanie porównywalnego wyniku.
+	Najpierw pragniemy pokazaæ wyniki kalibracji metod¹ in¿yniersk¹:
+	
+	\begin{center}
+		\begin{figure}[H]
+		\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_DMC/DMC_D_204_N_107_Nu_54_Lambda_1_2_3_4__Psi_1_2_3__U1_error_69.2682.pdf}}
+		\label{DMC_D_204_N_107_Nu_54_Lambda_1_2_3_4__Psi_1_2_3__U1_error_69.2682}
+		\caption{DMC=D=204, N=107, Nu=54, Lambda=[1, 2, 3, 4], Psi=[1, 2, 3], error=69.2682}
+		\end{figure}
+		\end{center}
+
+		\begin{center}
+			\begin{figure}[H]
+			\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_DMC/DMC_D_204_N_107_Nu_54_Lambda_0.5_0.5_0.5_0.5__Psi_1_1_1__U1_error_55.4869.pdf}}
+			\label{DMC_D_204_N_107_Nu_54_Lambda_0.5_0.5_0.5_0.5__Psi_1_1_1__U1_error_55.4869}
+			\caption{DMC=D=204, N=107, Nu=54, Lambda=[0.5, 0.5, 0.5, 0.5], Psi=[1, 1, 1], error=55.4869}
+			\end{figure}
+			\end{center}
+			\begin{center}
+				\begin{figure}[H]
+				\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_DMC/DMC_D_204_N_107_Nu_54_Lambda_0.5_0.5_0.5_0.5__Psi_10_1_1__U1_error_45.7233.pdf}}
+				\label{DMC_D_204_N_107_Nu_54_Lambda_0.5_0.5_0.5_0.5__Psi_10_1_1__U1_error_45.7233}
+				\caption{DMC=D=204, N=107, Nu=54, Lambda=[0.5, 0.5, 0.5, 0.5], Psi=[10, 1, 1], error=45.7233}
+				\end{figure}
+				\end{center}
+
+				\begin{center}
+					\begin{figure}[H]
+					\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_DMC/DMC_D_204_N_107_Nu_54_Lambda_0.5_0.5_0.5_0.5__Psi_20_1_1__U1_error_46.6045.pdf}}
+					\label{DMC_D_204_N_107_Nu_54_Lambda_0.5_0.5_0.5_0.5__Psi_20_1_1__U1_error_46.6045}
+					\caption{DMC=D=204, N=107, Nu=54, Lambda=[0.5, 0.5, 0.5, 0.5], Psi=[20, 1, 1], error=46.6045}
+					\end{figure}
+					\end{center}
+
+	
+	Jak widaæ jakoœæ regulacji jest znacz¹co lepsza ni¿ w przypadku algorytmu regulacji PID w wersji MIMO. B³¹d obliczany dla przyk³adowego przebiegu jest prawie 10-krotnie mniejszy ni¿ w przypadku PID.
+	Teraz dla porównania wyniki algorytmu ewolucyjnego:
+	
+	\begin{center}
+		\begin{figure}[H]
+		\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_DMC/DMC_D_204_N_107_Nu_54_Lambda_42.7092_55.6008_357.2521_284.4598__Psi_503.0319_516.5173_980.2935__U1_error_45.2539.pdf}}
+		\label{DMC_D_204_N_107_Nu_54_Lambda_42.7092_55.6008_357.2521_284.4598__Psi_503.0319_516.5173_980.2935__U1_error_45.2539}
+		\caption{DMC=D=204, N=107, Nu=54, Lambda=[42.7092, 55.6008, 357.2521, 284.4598], Psi=[503.0319, 516.5173, 980.2935], error=45.2539}
+		\end{figure}
+		\end{center}
+	
+	Obliczony b³¹d na ca³ej d³ugoœci przebiegu jest prawie taki sam jak z metody in¿ynierskiej. Oznacza to, ¿e pomimo 7 parametrów, które na raz kalibrujemy jesteœmy wstanie to zrobiæ z wykorzystaniem doœwiadczenia zdobytego podczas kalibrowania innych regulatorów.

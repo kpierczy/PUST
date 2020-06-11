@@ -1,38 +1,45 @@
-\chapter{Stanowisko grzej¹co-ch³odz¹ce}
+\chapter{Sprawdzenie punktu pracy}
 
-W ramach laboratorium otrzymaliœmy do dyspozycji dwa obiekty regulacji \footnote[1]{Niestety ze wzglêdu na zaistnia³¹ pandemiê ostatecznie musieliœmy ograniczyæ siê jedynie do badañ opartych o~modele tych¿e obiektów}. Pierwszym z~nich by³o, dobrze znane wszystkim studentom Automatyki i~Robotyk z~naszego wydzia³u, stanowisko grzej¹co-ch³odz¹ce (G-C). Jego unikalne w³asnoœci w~postaci choæby stabilnych wartoœci parametrów statycznych czy niemal idealnie wywa¿onych relacji miêdzy torami wejœcia i~wyjœcia sprawiaj¹, ¿e stanowi ono doskona³e narzêdzie do badañ laboratoryjnych, szczególnie prowadzonych przez studentów. Jedn¹ z~najwa¿niejszych cech stanowiska jest jego okres pomiaru równy jednej sekundzie. Nie da siê zaprzeczyæ, ¿e praca z~modelami matematycznymi ma tê wadê, ¿e wszystkie symulacje przeprowadzane s¹ w~u³amkach sekund. Sprawia to, ¿e osoba zajmuj¹ca siê badaniem nie ma czêsto czasu zastanowiæ siê nad ich g³êbszymi aspektami. Nie ma czasu przystan¹æ i~pomyœleæ, co skutkuje niejednokrotnie wieloma niedoci¹gniêciami lub po prostu pominiêciem ciekawszych zagadnieñ.
-
-Na szczêœcie sytuacja taka nie ma miejsca w~przypadku stanowiska G-C. Wielogodzinne zbieranie danych z~obiektu celem pozyskania odpowiedniego modelu, d³ugie sesje dostrajania regulatorów oraz nastêpuj¹ce po nich kilkudniowe maratony akwizycji danych porównuj¹cych dzia³anie kilku wariantów to tylko niektóre z~przyjemnoœci, których dostarcza ono studentom naszego wydzia³u. Taki stan rzeczy ma oczywiœcie szereg pozytywnych konsekwencji ¿eby wymieniæ chocia¿ wspomniany czas na refleksje. Refleksje nie tylko na temat algorytmów regulacji, ale równie¿ na temat samego siebie, na temat miejsca i~czasu, w którym siê znaleŸliœmy. Na temat potoku ¿yciowych mo¿liwoœci, które pojawiaj¹ siê przed nami z~ka¿d¹ osi¹gniêt¹ przez stanowisko wartoœci¹ zadan¹. Okresy obserwacji tworz¹cych siê na naszych oczach przebiegów zmiennych procesowych to tak¿e czas na relaks i~oczyszczenie umys³u, których pró¿no szukaæ wœród innych projektów laboratoryjnych. Nocne koszmary z~udzia³em niedaj¹cych siê nastroiæ regulatorów PID oraz wadliwych czujników temperatury stanowi¹ jedynie symboliczn¹ op³atê za tak obfity zbiór niekwestionowanych przyjemnoœci. Z~nieprzejednanym zapa³em i~niepohamowan¹ eufori¹ budz¹c¹ siê w~nas na myœl o~mo¿liwoœci pracy z~tak kunsztownym obiektem zabraliœmy siê wiêc do pracy...
-
-\section{Okreœlanie punktu pracy}
-
-W~przypadku modeli matematycznych eksperymentalne okreœlanie punktów pracy mog³o wydawaæ siê bezcelowe, zbêdne. Mog³y byæ one przecie¿ wyliczone w~przeci¹gu kilku chwil z~u¿yciem równañ opisuj¹cych model. Zadanie to przybiera jednak na wadze, gdy do czynienia mamy z~rzeczywistym procesem. Eksperyment bywa wówczas jedyn¹ sensown¹ metod¹ pozyskania informaji o~obiekcie. Wyznaczenie dok³adnych punktów pracy mo¿e byæ jednym z~kluczowych punktów w~procesie projektowania regulatora, poniewa¿ stanowiæ one bêd¹ o~jego ostatecznej postaci. Maj¹c na uwadze taki stan rzeczy przeprowadziliœmy kilka eksperymentów maj¹cych na celu ustalenie wartosci temperatur wyjœciowych przy podanym w~zadaniu sterowaniu $G1 = 34$, $G2 = 39$.
-
-\vskip 1cm
-\begin{figure}[H]
-    \centering
-	\begin{tikzpicture}
-		\begin{axis}[
-				width=0.75\textwidth,
-				height=0.45\textwidth,
-				xmin=0,xmax=140,ymin=80,ymax=160,
-				xlabel={$t [s]$},
-				ylabel={$y(t)$},
-				xtick={0, 20, 40, 60, 80, 100, 120, 140},
-				ytick={80, 100, 120, 140, 160},
-				legend pos=north west,
-				y tick label style={/pgf/number format/1000 sep={,}},
-			]
-			\addplot[const plot, blue]   file {data/exercise_1/work_point_T1.txt};
-			\addplot[const plot, red]    file {data/exercise_1/work_point_T3.txt};
-			\legend{$T1$, $T3$}
-		\end{axis}
-	\end{tikzpicture}
-    \caption{Przebieg tempretur wyjœciowych po ustaleniu wartoœci sterowañ w~punkcie pracy}
-    \label{work_point}
-\end{figure}
-
-Na rys. \ref{work_point} przedstawione zosta³y przebiegi temperatur T1 i~T3 po zaaplikowaniu w.w. wartoœci sterowania. Jak widaæ, zbiegaj¹ one do stabilnych wartoœci równych w~przyblli¿eniu $T1=...$, $T3=...$ 
+Przed rozpoczêciem eksperymentów musimy ustaliæ dozwolony punkt pracy. Zgodnie z treœci¹ projektu jest to punkt dla sterowania U = [0,0,0,0] ( taki zapis oznacza, ¿e U1 = 0, U2 = 0, U3 = 0 i U4 = 0 ) i wyjœcie obiektu powinno siê stabilizowaæ na wartoœci Y = [0,0,0] ( zapis analogiczny jak w przypadku sterowania).
 
 
 
+
+\vskip 0.5cm
+    \begin{figure}[H]
+        \begin{tikzpicture}
+            \begin{groupplot}[
+                group style={group size=1 by 2},
+                width=1\textwidth,
+                height=0.3\textheight
+                ]
+
+                \nextgroupplot
+                [xmin=0,xmax=200,ymin=-5,ymax=5,
+                xlabel={$t[s]$},ylabel={$Y1,Y2,Y3$},legend cell align=left,
+                legend pos=south east]
+                \addplot[const plot,color=blue,semithick] file {data/exercise_1/Y1_U1_0_U2_0_U3_0_U4_0.txt};
+                \addplot[const plot,color=green,semithick] file {data/exercise_1/Y2_U1_0_U2_0_U3_0_U4_0.txt};
+                \addplot[const plot,color=yellow,semithick] file {data/exercise_1/Y3_U1_0_U2_0_U3_0_U4_0.txt};
+                \legend{$Y1$,$Y2$,$Y3$}
+                
+                \nextgroupplot
+                [xmin=0,xmax=200,ymin=-5,ymax=5,
+                xlabel={$t[s]$},ylabel={$U1,U2,U3,U4$},legend cell align=left,
+                legend pos=north east]
+                \addplot[const plot,color=blue,semithick] file {data/exercise_1/U1.txt};
+                \addplot[const plot,color=green,semithick] file {data/exercise_1/U2.txt};
+                \addplot[const plot,color=yellow,semithick] file {data/exercise_1/U3.txt};
+                \addplot[const plot,color=red,semithick] file {data/exercise_1/U4.txt};
+                \legend{$U1$,$U2$,$U3$,$U4$}
+            
+            \end{groupplot}
+        \end{tikzpicture}
+        \label{step_response}
+        \caption{Punkt pracy}
+    \end{figure}
+\vskip 0.5cm
+
+
+
+Jak widzimy podany punkt pracy w projekcie jest poprawny i obiekt siê stabilizuje na podanych wartoœciach.

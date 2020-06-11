@@ -1,63 +1,301 @@
-\section{Przeciwdzia≥anie awarii czujnikÛw}
+\chapter{Odpowiedzi skokowe}
 
-Rozwaøania teoretyczne, z~przycyzn czysto praktycznych, zak≥adajπ zazwyczaj stabilnπ, niezak≥Ûconπ pracÍ sensorÛw oraz elementÛw wykonawczych. Taki stan rzeczy nie odzwierciedla jednak sytuacji rzeczywistych. Kaødy uk≥ad fizyczny naraøony jest na czynniki zewnÍtrzne, ktÛre mogπ spowodowaÊ jego ca≥kowitπ awariÍ lub przynajmniej czÍúciowe upoúledzenie funkcjonalnoúci. SzczegÛlnie niebezpieczne mogπ byÊ awarie torÛw pomiarowych. Jeøeli algorytm sterujπcy (lub nawet operator) nie jest úwiadomy rzeczywistej wartoúci regulowanej zmiennej, to moøe on doprowadziÊ jπ poza bezpieczny zakres pracy. To z~kolei skutkuje czÍsto dalszπ ekspancjπ uszkodzeÒ lub nawet zagroøeniem dla øycia ludzkiego.
 
-Jednπ z~najprostszych metod przeciwdzia≥ania takim awariom jest zgrubne oszacowanie dopuszczalnych wartoúci mierzonych. Gdy pomiar opuúci przyjÍty zakres, wÛwczas czujnik uznawany jest za uszkodzony i~jego odczyty nie sπ dane pod uwagÍ przy dalszym wyznaczniu sterowaÒ. PodjÍta moøe byÊ wÛwczas procedura majπca na celu utrzymanie bezpicznych wartoúci wyjúci torÛw wyjúciowych w~bezpicznym zakresie (nawet kosztem pogorszenia jakoúci regulacji) do czasu naprawy awarii. W≥aúnie taki mechanizm zosta≥ przez nas zaimplementowany w~przypadku stanowiska G-C.
 
-Gdy pomiar wartoúci wyjúciowej przekracza 250$^\circ$C korespondujπca z~niπ grza≥ka zostaje wy≥πczona. Sytuacja taka zosta≥a przedstawiona na rys. \ref{sensor_fault}. Mechanizm ten reazlizowany jest poprzez proste wyraøenie warunkowe widoczne na poniøszym listingu.
+Nasz obiekt posiada 4 wejúcia i 3 wyjúcia i kaøde wejúcie oddzia≥u na wszystkie wyjúcia. Oznacza to, øe potrzebujemy 12 odpowiedzi skokowych, øeby otrzymaÊ pe≥nπ informacjÍ o obiekcie. Odpowiedzi skokowe sπ otrzymywane poprzez ustawienie jednego wejúcia na wartoúÊ rÛwnπ 1, a pozosta≥ych na 0. Zgodnie ze sztukπ, poniewaø skok sterowania nastÍpuje w pierwszej prÛbce to dopiero od drugiej prÛbki zaczynamy zbieraÊ odpowiedü skokowπ. W naszym przypadku skoki sπ wykonywane z punktu pracy wymienionego w punkcie 2 i wielkoúÊ skoku wynosi 1 co powoduje, øe nie musimy przeskalowywaÊ odpowiedzi skokowej.
 
-\vskip 1cm
-\begin{lstlisting}[style=customc,frame=single] 
-    IF HC_T1 > HC_UPPER_BOUND_PV THEN
-        HC_G1 := HC_LOWER_BOUND_PV;
-    END_IF;
-    IF HC_T3 > HC_UPPER_BOUND_PV THEN
-        HC_G2 := HC_LOWER_BOUND_PV;
-    END_IF;
-\end{lstlisting}
-\vskip 1cm
-
+\vskip 0.5cm
 \begin{figure}[H]
     \centering
-    \subfloat{
-		\begin{tikzpicture}
-			\begin{axis}[		
-					width=0.75\textwidth,
-					height=0.45\textwidth,
-					xmin=0,xmax=140,ymin=90,ymax=270,
-					xlabel={$t [s]$},
-					ylabel={$y(t)$},
-					xtick={0, 20, 40, 60, 80, 100, 120, 140},
-					ytick={90, 120, 150, 180, 210, 240, 270},
-					legend pos=north west,
-					y tick label style={/pgf/number format/1000 sep={,}},
-				]
-				\addplot[const plot, blue]   file {data/exercise_2/secure_T1.txt};
-				\addplot[const plot, green]  file {data/exercise_2/secure_T3.txt};
-				\legend{$T1$, $T3$}
-			\end{axis}
-		\end{tikzpicture}
-	}
-    \vskip 0.5cm
-	\subfloat{
-		\begin{tikzpicture}
-			\begin{axis}[		
-					width=0.75\textwidth,
-					height=0.45\textwidth,
-					xmin=0,xmax=140,ymin=0,ymax=1000,
-					xlabel={$t [s]$},
-					ylabel={$y(t)$},
-					xtick={0, 20, 40, 60, 80, 100, 120, 140},
-					ytick={0, 200, 400, 600, 800, 1000},
-					legend pos=north west,
-					y tick label style={/pgf/number format/1000 sep={,}},
-				]
-				\addplot[const plot, blue]   file {data/exercise_2/secure_G1.txt};
-				\addplot[const plot, green]  file {data/exercise_2/secure_G2.txt};
-				\legend{$T1$, $T3$}
-			\end{axis}
-		\end{tikzpicture}
-	}
-    \caption{Przebieg sygna≥Ûw sterujπcych $G1$, $G2$ po przekroczeniu maksymalnych dopuszczalnych odczytÛw z~czujnikÛw $T1$, $T3$}
-    \label{sensor_fault}
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_DMC/StepResponse_U1_Y1.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Odpowiedü skokowa U1-Y1}
+    \label{work_point_check}
 \end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_DMC/StepResponse_U1_Y2.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Odpowiedü skokowa U1-Y2}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_DMC/StepResponse_U1_Y3.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Odpowiedü skokowa U1-Y3}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+
+
+
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_DMC/StepResponse_U2_Y1.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Odpowiedü skokowa U2-Y1}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_DMC/StepResponse_U2_Y2.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Odpowiedü skokowa U2-Y2}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_DMC/StepResponse_U2_Y3.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Odpowiedü skokowa U2-Y3}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+
+
+
+
+
+
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_DMC/StepResponse_U3_Y1.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Odpowiedü skokowa U3-Y1}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_DMC/StepResponse_U3_Y2.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Odpowiedü skokowa U3-Y2}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_DMC/StepResponse_U3_Y3.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Odpowiedü skokowa U3-Y3}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+
+
+
+
+
+
+
+
+\vskip 0.5cm
+\begin{figure}[h]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_DMC/StepResponse_U4_Y1.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Odpowiedü skokowa U4-Y1}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[h]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_DMC/StepResponse_U4_Y2.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Odpowiedü skokowa U4-Y2}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[h]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_DMC/StepResponse_U4_Y3.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Odpowiedü skokowa U4-Y3}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+
+Nasz algorytm DMC posiada tylko jeden parametr D ( horyzont dynamiki ), co oznacza, øe wszystkie odpowiedzi skokowe bÍdπ tej samej d≥ugoúci i rÛwnej parametrowi D.

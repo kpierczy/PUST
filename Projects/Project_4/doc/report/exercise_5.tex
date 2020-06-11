@@ -1,0 +1,23 @@
+\chapter{Porównanie i wnioski}
+\section{Porównianie wyników sterowania algorytmami PID i DMC}
+
+Zgodnie z naszymi eksperymentami nie uda³o nam siê znaleŸæ ¿adnych ró¿nic pomiêdzy dwoma wersjami algorytmu DMC w wersji MIMO jeœli chodzi o jakoœæ regulacji. Zgodnie z logik¹ i wyczuciem nie powinno byæ ¿adnych ró¿nic poza czasem wykonania, gdy¿ pierwszy element z wektora obliczonych przysz³ych przyrostów sterowañ jest obliczany w taki sam sposób.
+
+\begin{center}
+    \begin{figure}[H]
+    \makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_6/DMC_D_204_N_107_Nu_54_Lambda_0.5_0.5_0.5_0.5__Psi_1_1_1__U1_error_55.4869.pdf}}
+    \label{DMC_D_204_N_107_Nu_54_Lambda_0.5_0.5_0.5_0.5__Psi_1_1_1__U1_error_55.4869}
+    \caption{DMC D=204, N=107, Nu=54, Lambda=[0.5, 0.5, 0.5, 0.5], Psi=[1, 1, 1], error=55.4869}
+    \end{figure}
+    \end{center}
+    \begin{center}
+        \begin{figure}[H]
+        \makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_DMC/DMC_D_204_N_107_Nu_54_Lambda_0.5_0.5_0.5_0.5__Psi_1_1_1__U1_error_55.4869.pdf}}
+        \label{DMC_D_204_N_107_Nu_54_Lambda_0.5_0.5_0.5_0.5__Psi_1_1_1__U1_error_55.4869}
+        \caption{DMC D=204, N=107, Nu=54, Lambda=[0.5, 0.5, 0.5, 0.5], Psi=[1, 1, 1], error=55.4869}
+        \end{figure}
+        \end{center}
+
+
+\section{Wnioski}
+Zgodnie z naszymi eksperymentami mo¿na wywnioskowaæ , ¿e w przypadku obiektu typu MIMO algorytm DMC pozwoli na znacz¹co lepsz¹ jakoœæ regulacji ni¿ algorytm PID. Jednak¿e, je¿eli obiekt typu MIMO mo¿na w przybli¿eniu podzieliæ na obiekty typu SISO ( ka¿de wejœcie oddzia³uje znacz¹co na tylko jedno wyjœcie i ma w przybli¿eniu zerowy wp³yw na pozosta³e wyjœcia ) to algorytm PID w wersji MIMO równie¿ powienien pozwoliæ na bardzo dobr¹ jakoœæ regulacji, gdy¿ algorytm PID bardzo dobrze radzi sobie z regulacj¹ obietów typu SISO.

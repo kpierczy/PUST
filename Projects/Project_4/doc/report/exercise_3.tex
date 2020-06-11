@@ -1,176 +1,479 @@
-\section{Zbieranie odpowiedzi skokowych}
-
-W~ramach projektu laboratoryjnego 3.5 przygotowaliœmy podstawowy regulator DMC w~wersji analitycznej o~wymiarze $2 \times 2$. Mia³ on za zadanie regulawaæ pracê modelu stanowiska grzej¹co-ch³odz¹cego przygotowanego w~œrodowisku \verb Matlab. Kolejne laboratorium 
-wymog³o na nas przeniesienie tej implementacji na sterownik PLC. Podstawy teoretyczne opisuj¹ce dzia³anie regulatora zosta³y opisane szerzej w~poprzednim sprawozdaniu. W~tym miejscu przypomnimy jedynie kilka podstawowych wzorów. Wartoœæ sterowania obliczana jest w procesie optymalizacji uchybu na pewnym horyzoncie predykcji. Je¿eli znany jest model obiektu sterowania w~postaci odpowiedzi skokowych 
-poszczególnych torów wejœcia-wyjœcia, to mo¿na skonstruowaæ pewne macierze $M$ oraz $M^P$. Dla macierzy parametrów regulatora $\Psi$, $\Lambda$ prawo regulacji przybiera wówczas postaæ \ref{DMC_eq}.
-
+\chapter{PID}
+\section{Algorytm PID w wersji MIMO}
+Algorytm PID w wersji MIMO sk³ada siê z kilku algorytmów PID w wersji SISO ( kilku w tym wypadku oznacza iloœæ wyjœæ regulowanego obiektu ). Regulatory PID sa zaimplementowane w wersji przyrostowej. Obiekt regulowany ma 4 wejœcia, a tylko 3 wyjœcia co powoduje, ¿e bêdziemy mogli sterowaæ tylko 3 wejœciami z 4. Zgodnie ze skryptem powiniœmy wybraæ dla ka¿dego wyjœcia takie wejœcie, które ma najwiêkszy wp³yw na dane wyjœcie. W naszym eksperymencie postanowiliœmy lekko zmodyfikowaæ tê regu³ê w taki sposób, ¿e wybieramy dla ka¿dego wyjœcia wejœcie o najwiêkszym wp³ywie na to wyjœcie i mo¿liwie minimalnym wp³ywie na pozosta³e wyjœcia. To podejœcie pozwoli nam w pewnym stopniu zamieniæ obiektu typu MIMO na kilka obiektów typu SISO. Jest to bardzo wa¿ne, gdy¿ algorytm regulacji PID w wersji MIMO sk³ada siê z niezale¿nych regulatorów PID w wersji SISO, wiêc taki algorytm najlepiej bêdzie dzia³a³ , gdy obiekt MIMO mo¿na zamienic na kilka obiektów SISO.
+	
 \vskip 0.5cm
-\begin{equation}
-\begin{cases}
-    \Delta U(k) = K[Y^{zad}(k)-Y(k) -M^P\Delta U^P(k)] \\
-	K = (M^T \Psi M + \Lambda)^{-1} M^T \Psi
-	\label{DMC_eq}
-\end{cases}
-\end{equation}
-\vskip 0.5cm
-
-Projektowanie rozpoczêliœmy od zebrania czterech odpowiedzi skokowych, po jednej dla ka¿dego toru. W~tym celu napisany zosta³ prosty program wykonuj¹cy skoki wartoœci steruj¹cych. Po ustabilizowaniu uk³adu w~punkcie pracy nastêpowa³ skok o~(...) na grza³ce $G1$, a~nastêpnie zbierane by³y odpowiedzi skokowy na obu wyjœciach. Po ustabilizowaniu temperatur $T1$ i $T3$, rozumianym jako spadek wariancji pomiarów w~pewnym oknie czasowym poni¿ej wartoœci zadanej, wartoœæ sterowania wraca³a do punktu pracy. Nastêpnie wykonywany by³ skok na drugiej grza³ce i~ponownie zbierane by³y odpowiedzi skokowe. Zbieranie przebiegów odby³o siê za pomoc¹ aplikacji \textit{GX LogViewer}, która umo¿liwia monitorowanie i~zapisywanie do plików wartoœci wskazanych komórek pamiêci sterownika w~regularnych odstêpach czasu. Zgodnie ze specyfikacj¹ okres próbkowania wynosi³ $1s$. Zebrane odpowiedzi zosta³y zaprezentowane na \ref{step_responses},
-
-\vskip 1cm
 \begin{figure}[H]
     \centering
-	\begin{tikzpicture}
-		\begin{axis}[
-				width=0.75\textwidth,
-				height=0.45\textwidth,
-				xmin=0,xmax=100,ymin=120,ymax=190,
-				xlabel={$t [s]$},
-				ylabel={$y(t)$},
-				xtick={0, 20, 40, 60, 80, 100},
-				ytick={120, 130, 140, 150, 160, 170, 180, 190},
-				legend pos=north west,
-				y tick label style={/pgf/number format/1000 sep={,}},
-			]
-			\addplot[const plot, blue]   file {data/exercise_3/step_responses/G1T1.txt};
-			\addplot[const plot, red]    file {data/exercise_3/step_responses/G1T3.txt};
-			\addplot[const plot, green]  file {data/exercise_3/step_responses/G2T1.txt};
-			\addplot[const plot, orange] file {data/exercise_3/step_responses/G2T3.txt};
-			\legend{$G1-T1$, $G1-T3$, $G2-T1$, $G2-T3$}
-		\end{axis}
-	\end{tikzpicture}
-    \caption{Nieznormalizowane odpowiedzi skokowe zebrane z~obiektu}
-    \label{step_responses}
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_PID/Y1_U1_1_U2_0_U3_0_U4_0.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Wp³yw wejœci¹ U1 na Y1}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_PID/Y1_U1_0_U2_1_U3_0_U4_0.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Wp³yw wejœci¹ U2 na Y1}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_PID/Y1_U1_0_U2_0_U3_1_U4_0.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Wp³yw wejœci¹ U3 na Y1}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_PID/Y1_U1_0_U2_0_U3_0_U4_1.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Wp³yw wejœci¹ U4 na Y1}
+    \label{work_point_check}
 \end{figure}
 \vskip 0.5cm
 
 
-\section{Implementacja regulatora DMC}
 
-Pliki tekstowe zawieraj¹ce surowe dane z~obiektu zosta³y przez nas zaimportowane do œrodowiska \verb Matlab. Po uporz¹dkowaniu do postaci wektorów o~jednolitej d³ugoœci poddaliœmy je obróbce \textbf{z~wykorzystaniem klasy DMC}, któr¹ zaimplementowaliœmy w~ramach projektu trzeciego. Klasa ta dokonuje automatycznej normalizacji odpowiedzi oraz oblicza macierze obecne w~prawie regulacji na bazie zadanych parametrów regulatora. Generacja  macierzy odbywa³a siê oczywiœcie kilkukrotnie w~czasie dobierania nastaw algorytmu.Kolejny prosty skrypt umo¿liwi³ nam zapisanie obliczonych wartoœci do plików w~postaci, w~której mog³y byæ one bezpoœrednio przekopiowane do programu pisanego w~œrodowisku \textit{GX Works}. Zapisywana by³a oczywiœcie jedynie czêœæ danych z~obliczonych macierzy, poniewa¿ \textbf{algorytm DMC zosta³ zaimplementowany w wersji "oszczêdnej"}
 
-Miêdzy implementacj¹ DMC w~Matlabie, a~implementacjê na rzeczywistym sterowniku PLC jest kilka zasadniczych ró¿nic. Po pierwsze, nale¿y wzi¹æ pod uwagê zasoby sprzêtowe sterownika. Gdy tworzony regulator wchodzi³ bêdzie w~interakcjê jedynie z~modelem obiektu, to zazwyczaj czas wykonowania obliczeñ nie gra roli. Model obiektu funkcjonuje pod dyktando programu nadrzêdnego, a~czas up³ywaj¹cy w~symulacji jest jedynie pozorny \footnote{Oczywiœcie mo¿liwe jest stworzenie bardziej realistycznych modeli, o czym przekonaliœmy siê w~trakcie laboratorium 3.5}. W~rzeczywistoœci obiekt regulacji funkcjonuje niezale¿nie od regulatora. Utrzymanie sta³ego okresu próbkowania oraz aplikacji sterowania jest fundamentem poprawnej regulacji, dlatego projektuj¹c rzeczywisty regulator nale¿y bezwzglêdnie wzi¹æ pod uwagê dostêpn¹ moc obliczeniow¹ i~na jej podstawie oszacowaæ maksymalny czas obliczeñ w~pojedynczej iteracji. Szacowanie tego typu na podstawie samej dokumentacji sterownika mo¿e byæ bardzo uci¹¿liwe. poniewa¿ czasy wykonywania poszczególnych instrukcji nie musz¹ byæ jednakowe. Z~pomoc¹ przychodzi nam œrodowisko \textit{GX Works}. Umo¿liwia ono przeprowadzenie symulacji napisanego programu i~obserwacjê parametrów jego wykonywania, w~tym parametrów czasowych. Kryterium czasu nie by³o w~naszym przypadku krytyczne. Rz¹d dynamiki stanowiska G-C zosta³ ustalony na 139. Konsekwencj¹ tego jest bardzo krótki czas wykonywania programu niezale¿nie od przyjêtych horyzontów regulacji i~sterowania. Waha³ siê on od $81us$ do $7200us$ (przy inicjalizacji sterownika) na iteracjê. Œrednia uplasowa³a siê na poziomie $~200us$. Czasy te s¹ dalece ni¿sze ni¿ okres próbkowania obiektu.
 
-Kolejnym zagadnieniem jest zajêtoœæ pamiêci. Gdy obiekt stabilizuje siê d³ugo wyd³u¿a siê równie¿ rz¹d dynamiki. To z~kolei poci¹ga za sob¹ zwiêkszenie wymiarów macierzy i~wektorów, na których operuje DMC. Jako, ¿e obiekty te, s¹ zazwyczaj przechowywane bezpoœrednio w~pamiêci sterownika nale¿y uwzglêdniæ je w~procesie projektowania. Wymiar macierzy $M^P$ to $(N \cdot n_y) \times ((D-1) \cdot n_u)$, a~macierzy K $(N_u \cdot n_u) \times (N \cdot n_y)$. Jak widaæ, z³o¿onoœæ pamiêciowa jest liniowo zale¿na od horyzontu predykcji $N$. Je¿eli korzystamy z~"oszczêdnej" wersji DMC, to przechowujemy jedynie pierwsze $n_u$ wierszy macierzy $K$, zatem z³o¿onoœæ pamiêciowa \textbf{nie zale¿y od horyzontu sterowania $N_u$}. Przepiszmy prawo regulacji \ref{DMC_eq} w~wersji "oszczêdnej".
-
-\vskip 0.5cm
-\begin{equation}
-	\Delta U(k) = \overline{K_1}[Y^{zad}(k)-Y(k) -M^P\Delta U^P(k)] \\
-	\label{DMC_eq_economical}    
-\end{equation}
-\vskip 0.5cm
-
-Wektory $Y^{zad}(k)$ oraz $Y(k)$ sa d³ugoœci $(N \cdot n_y)$. Mo¿emy jednak zauwa¿yæ, ¿e iloœæ unikalnych elementów w~ka¿dym z nich wynosi jedynie $n_y$. Nastêpnie zauwa¿my, ¿e macierze $K$ i~$M^P$ nie zmieniaj¹ siê w~trakcie pracy sterownika. Pogrupujy teraz wyra¿enia obecne w~równaniu \ref{DMC_eq_economical}.
-
-\vskip 0.5cm
-\begin{equation}
-	\Delta U(k) = \overline{K_1}[Y^{zad}(k)-Y(k) -M^P\Delta U^P(k)] \\
-	\label{DMC_eq_economical_grouped}    
-\end{equation}
-\vskip 0.5cm
-
-Wykorzystuj¹c pierwsze z~powy¿szych spostrze¿eñ mo¿emy dojœæ do wniosku, ¿e reprezentacjê macierzy $\overline{K_1}$ dla pierwszego sk³adnika mo¿na efektywnie ograniczyæ do rozmiaru $n_y \cdot n_y$ sumuj¹c odpowiednie jej elementy. Ponadto, zamiast przechowywaæ oddzielnie macierze $\overline{K_1}$ i~$M^P$ mo¿emy a~priori obliczyæ ich iloczyn otrzymuj¹c macierz wymiaru $n_u \times ((D-1) \cdot n_u)$. W~ten sposób oszczêdzamy znaczn¹ ilosæ pamiêci. Ponadto niwelujemy problem przechowywania dwuwymiarowych tablic w~pamiêci sterownika. W³aœnie takie podejœcie zastosowaliœmy w~projekcie.
-
-Ostatni¹ z~widocznych ró¿nic, chocia¿ nie wp³ywaj¹c¹ na pracê samego sterownika, jest przymus pracy w~dwóch odrêbnych œrodowiska w~trakcie projektowania uk³adu regulacji. W~przypadku \verb Matlaba  obliczenia off-line i on-line by³y wykonywane w~tym samym œrodowisku. Oprogramowanie \textit{GX Works} nie posiada modu³u umo¿liwiaj¹cego wykonywanie tego typu operacji, co wymusi³o repetetywne przenoszenie danych miêdzy œrodowiskami. Warto podkreœliæ ten fakt szczególnie, gdy mo¿liwe jest wykonanie matematycznego modelu obiektu regulacji i~przeprowadzenie wstêpnego strojenia algorytmu w~œrodowisku symulowanym. Mo¿e to zaoszczêdziæ znaczn¹ iloœæ czasu projektanta.
-
-\vskip 2cm
-\section{Strojenie parametrów regulatora}
-
-Dobór parametrów regulatora przebiega³ dwuetapowo. Kieruj¹c siê wy¿ej poczynionymi spostrze¿eniami postanowiliœmy rozpocz¹æ od \textbf{przybli¿enia odpowiedzi skokowych modelami matematycznymi} w~postaci inercji drugiego rzêdu. W~tym celu wykorzystaliœmy mechanizm zaimplementowany w~ramach laboratorium 3.5. Stworzyliœmy funkcjê celu, która równa by³a b³êdowi œredniokwadratowemu pope³nianemu przez model na zadanej trajektorii sygna³ów wejœciowych \footnote{Wykorzystane zosta³y trajektorie u¿yte do zebrania odpowiedzi skokowych z~obiektu}. Funkcja ta zosta³a nastêpnie zminimalizowana przez algorytm genetyczny dla wszystkich czterech modeli \footnote{Optymalizacja przeprowadzana na pojedynczej trajektorii mo¿e dawaæ niezadowalaj¹ce efekty, gdy obiekt jest nieliniowy. Ze wzglêdu na obszernoœæ projektu zdecydowaliœmy siê jednak pozostaæ przy takim scenariuszu, aby nie zwiêkszaæ czasu poœwiêconego na zbieranie danych z~obiektu. Jak wynika z~naszych dotychczasowych doœwiadczeñ, stanowisko G-C ma charakter liniowy przy pracy wiewielkim zakresie wokó³ punktu pracy. Bior¹c pod uwagê, ¿e modele mia³y pos³u¿yæ jedynie do wstêpnej kalibracji regulatora, podejœcie to powinno umo¿liwiaæ osi¹gniêcie zamierzonych rezultatów.}. Wyjœcia modeli takich samych przebiegów wejœæ zosta³y przedstawione na rys. \ref{models}
 
 \vskip 0.5cm
 \begin{figure}[H]
     \centering
-	\begin{tikzpicture}
-		\begin{axis}[
-				width=0.75\textwidth,
-				height=0.45\textwidth,
-				xmin=0,xmax=100,ymin=120,ymax=190,
-				xlabel={$t [s]$},
-				ylabel={$y(t)$},
-				xtick={0, 20, 40, 60, 80, 100},
-				ytick={120, 130, 140, 150, 160, 170, 180, 190},
-				legend pos=north west,
-				y tick label style={/pgf/number format/1000 sep={,}},
-			]
-			\addplot[const plot, blue]   file {data/exercise_3/model_step_responses/G1T1.txt};
-			\addplot[const plot, red]    file {data/exercise_3/model_step_responses/G1T3.txt};
-			\addplot[const plot, green]  file {data/exercise_3/model_step_responses/G2T1.txt};
-			\addplot[const plot, orange] file {data/exercise_3/model_step_responses/G2T3.txt};
-			\legend{$G1-T1$, $G1-T3$, $G2-T1$, $G2-T3$}
-		\end{axis}
-	\end{tikzpicture}
-    \caption{Odpowiedzi skokowe stworzonych modeli}
-    \label{models}
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_PID/Y2_U1_1_U2_0_U3_0_U4_0.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Wp³yw wejœci¹ U1 na Y2}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_PID/Y2_U1_0_U2_1_U3_0_U4_0.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Wp³yw wejœci¹ U2 na Y2}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_PID/Y2_U1_0_U2_0_U3_1_U4_0.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Wp³yw wejœci¹ U3 na Y2}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_PID/Y2_U1_0_U2_0_U3_0_U4_1.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Wp³yw wejœci¹ U4 na Y2}
+    \label{work_point_check}
 \end{figure}
 \vskip 0.5cm
 
-Po dokonaniu aproksymacji przyst¹piliœmy do strojenia wirtualnego regulatora. Ponownie zost¹³y wykorzystane mechanizmy z~laboratorium 3.5. Modele z~postaci wektora parametrów zosta³y przekszta³cone do postaci funkcji, które po podaniu zadanej trajektorii wejœciowej zwracaj¹ przebieg wyjœcia. W~takiej formie zosta³y one przekazane do konstruktora zimplementowanej przez nas wczeœniej klasy DMC \footnote{Klasa DMC implementuje regulator DMC dla ogólnego przypadku $n \times m$-wymiarowego}. Konstruktor ten dokonuje zebrania i~normalizacji odpowiedzi skokowej, a~nastêpnie obliczenia optymalnych macierzy DMC dla zadanych parametrów. Udostepnia te¿ wygodny interfejs, który automatycznie zarz¹dza wektorami zapisanymi w~pamiêci regulatora, co umo¿liwia zwiêz³¹ implementacjê pêtli sterowania. Dziêki temu uda³o nam siê w stosunkowo krótkim czasie odnaleŸæ parametry zapewniaj¹ce zadowalaj¹c¹ jakoœæ sterowania. 
 
-Drugim krokiem by³o przeniesienie znalezionych parametrów na sterownik. Zgodnie z~naszymi oczekiwaniami nie by³a ona idealna, chocia¿ o~wiele lepsza ni¿ w przypadku losowo wybranych parametrów. Dalsze poprawki zosta³y na³o¿one metod¹ in¿yniersk¹. Manipulacja wartoœciami $N$, $N_u$ i $\lambda$ w~niewielkich otoczeniach punktów znalezionych w~symulacji pozwoli³o poprawiæ zarówno paramtery sterowania, tj. przeregulowania i~czas regulacji, a~tak¿e z³agodziæ przebiegi wartoœci steruj¹cych. Praca ostatecznej wersji regulatora dla przyk³adowej trajektorii zadanej zosta³a przedstawiona na rys. \ref{definite_DMC} 
 
+
+
+
+
+
+
+
+\vskip 0.5cm
 \begin{figure}[H]
     \centering
-    \subfloat{
-		\begin{tikzpicture}
-			\begin{axis}[
-				width=0.75\textwidth,
-				height=0.45\textwidth,
-				xmin=0,xmax=400,ymin=100,ymax=180,
-				xlabel={$t [s]$},
-				ylabel={$y(t)$},
-				xtick={0, 80, 160, 240, 320, 400},
-				ytick={100, 120, 140, 160, 180},
-				legend pos=north west,
-				y tick label style={/pgf/number format/1000 sep={,}},
-			]
-			\addplot[const plot, blue]   file {data/exercise_3/final/T1.txt};
-			\addplot[const plot, red]    file {data/exercise_3/final/T1_zad.txt};
-			\legend{$T1$, ${T1}^{zad}$}
-		\end{axis}
-		\end{tikzpicture}
-	}
-    \vskip 0.5cm
-    \subfloat{
-		\begin{tikzpicture}
-			\begin{axis}[
-				width=0.75\textwidth,
-				height=0.45\textwidth,
-				xmin=0,xmax=400,ymin=100,ymax=180,
-				xlabel={$t [s]$},
-				ylabel={$y(t)$},
-				xtick={0, 80, 160, 240, 320, 400},
-				ytick={100, 120, 140, 160, 180},
-				legend pos=north west,
-				y tick label style={/pgf/number format/1000 sep={,}},
-			]
-			\addplot[const plot, blue]   file {data/exercise_3/final/T3.txt};
-			\addplot[const plot, red]    file {data/exercise_3/final/T3_zad.txt};
-			\legend{$T2$, ${T2}^{zad}$}
-		\end{axis}
-		\end{tikzpicture}
-	}
-	\vskip 0.5cm
-    \subfloat{
-		\begin{tikzpicture}
-			\begin{axis}[
-				width=0.75\textwidth,
-				height=0.45\textwidth,
-				xmin=0,xmax=400,ymin=0,ymax=750,
-				xlabel={$t [s]$},
-				ylabel={$u(t)$},
-				xtick={0, 80, 160, 240, 320, 400},
-				ytick={0, 125, 250, 375, 500, 625, 750},
-				legend pos=north west,
-				y tick label style={/pgf/number format/1000 sep={,}},
-			]
-			\addplot[const plot, blue]   file {data/exercise_3/final/G1.txt};
-			\addplot[const plot, red]    file {data/exercise_3/final/G2.txt};
-			\legend{$G1$, $G2$}
-		\end{axis}
-		\end{tikzpicture}
-	}
-    \caption{Przebiegi sygna³ów steruj¹cych i~wyjœciowych przy ostatecznej wersji reulatora DMC}
-    \label{definite_DMC}
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_PID/Y3_U1_1_U2_0_U3_0_U4_0.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Wp³yw wejœci¹ U1 na Y3}
+    \label{work_point_check}
 \end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_PID/Y3_U1_0_U2_1_U3_0_U4_0.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Wp³yw wejœci¹ U2 na Y3}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_PID/Y3_U1_0_U2_0_U3_1_U4_0.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Wp³yw wejœci¹ U3 na Y3}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
+\vskip 0.5cm
+\begin{figure}[H]
+    \centering
+        \begin{tikzpicture}
+            \begin{axis}[
+                    width=1\textwidth,
+                    height=0.25\textheight,
+                    xmin=0,xmax=100,ymin=0,ymax=3,
+                    xlabel={$t [s]$},
+                    ylabel={$y(t)$},
+                    xtick={0, 25, 50, 75, 100},
+                    ytick={0,0.5,1.0,1.5, 2.0, 2.5, 3.0},
+                    legend pos=north east,
+                    y tick label style={/pgf/number format/1000 sep={,}},
+                ]
+                \addplot[const plot, blue]                file {data/exercise_2_PID/Y3_U1_0_U2_0_U3_0_U4_1.txt};
+                \legend{$y(t)$}
+            \end{axis}
+        \end{tikzpicture}
+    \caption{Wp³yw wejœci¹ U4 na Y3}
+    \label{work_point_check}
+\end{figure}
+\vskip 0.5cm
 
-Jak widaæ przebiegi nie s¹ idealne. Szczególnie uderzaj¹ce s¹ oscylacje wartoœci wyjœciowej w stanie ustalony o~amplitudzie rzedu $3-4^{\circ}C$. Niestety mimo d³ugiego czasu strojenia nie uda³o siê ich wyeliminowaæ. Bior¹c pod uwagê, ¿e stanowisko operuje na temperaturach w~zakresie $~25-200^{\circ}C$ oscylacje te nie wydaj¹ siê tak krytyczne. Obserwuj¹c pozosta³e cechy regulacji mo¿na zauwa¿yæ, ¿e wartoœci zadane s¹ osi¹gane stosunkowo szybko. Ponadto praktycznie nie wystepuje przeregulowanie. Miejscem wartym poprawy jest natomiast przebieg wartoœci steruj¹cej. Oscylacje, które wystepuj¹ na grza³kach $G1$ i~$G2$ maj¹ stosunkowo wysokie amplitudy i~doœæ krótki okres. Zwiêkszenie parametru $\lambda$ mog³o by poprawiæ tê sytuacjê, jednak przy zmianie tej bez wprowadzanie poprawek tak¿e do innych parametrów jakoœæ regulacji ulega³a pogorszeniu. Kolejnym pomys³em na poprawê algorytmu by³oby, implementowane ju¿ przez nas w~poprzednich projektach, "przewidywanie" wartoœci zadanej. Jako, ¿e w~wielu praktycznych przypadkach sterowania jest ona odgórnie znana, warto zawrzeæ tê informacjê w~wektorze $Y^{zad}$, na którym operuje algorytm. Sprawia to, ¿e regulator podejmuje akcjê  jeszcze przed faktyczn¹ zmian¹ aktualnej wartoœci zadanej, co mo¿e zwiêkszyæ stabilnoœæ uk³adu. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	Zgodnie z przyjêt¹ przez nas regu³¹ wybieramy 3 nastêpuj¹ce pary wejœcie-wyjœcie ( para wejœcie-wyjœcie oznacza, ¿e regulator bêdzie generowa³ sterowanie na wybranym wejœciu , a uchyb pobiera³ z wybranego wyjœcia do obliczania sterowania):\\
+	1. Pierwszy PID : wejœcie nr 1 , wyjœcie nr 2\\
+	2. Drugi PID : wejœcie nr 3 , wyjœcie nr 1\\
+	3. Trzeci PID : wejœcie nr 4 , wyjœcie nr 3\\
+    
+    
+\section{Kalibracja algorytmu PID w wersji MIMO}
+
+Kalibracjê przeprowadzamy za pomoc¹ klasycznej metody in¿ynierskiej. Kalibracjê zaczynamy od regulatora pierwszego, gdy¿ wejœcie numer 1 ma znacz¹cy wp³yw na wyjœcie numer 2 i niewielki wp³yw na pozosta³e, co pozwala nam na skalibrowanie tego regulatora niezale¿nie od pozosta³ych ( oczywiœcie ten wp³yw jest, ale na tyle ma³y, ¿e mo¿emy go pomin¹æ ). Nastêpnie kalibrujemy pozosta³e dwa PID na raz, gdy¿ ich wp³yw jest znacz¹cy na wiêcej ni¿ jedno wyjœcie. Po przeprowadzonej kalibracji wykorzystujemy algorytm ewolucjny zaimplementowany w œrodowisku matlab do sprawdzenia, czy otrzymana jakoœæ regulacji metod¹ in¿yniersk¹ mo¿e byæ znacz¹co lepsza ( oczywiœcie algorytm ewolucyjny nie daje gwarancji na znalezienie optimum globalnego, ale jest wstanie zazwyczaj znaleŸæ zadowalaj¹ce optimum lokalne ).
+
+\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_1_Ti_10000_Td_0_PID_2_K_0_Ti_10000_Td_0_PID_3_K_0_Ti_10000_Td_0_U2_error_6965.0769.pdf}}
+	\label{PID_1_K_1_Ti_10000_Td_0_PID_2_K_0_Ti_10000_Td_0_PID_3_K_0_Ti_10000_Td_0_U2_error_6965.0769}
+	\caption{PID1 K=1, Ti=10000, Td=0, PID2 K=0, Ti=10000, Td=0, PID3 K=0, Ti=10000, Td=0, error=6965}
+	\end{figure}
+	\end{center}
+
+\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_2_Ti_9_Td_0.01_PID_2_K_2_Ti_10_Td_0.03_PID_3_K_2_Ti_12_Td_0_U2_error_582.4618.pdf}}
+	\label{PID_1_K_2_Ti_9_Td_0.01_PID_2_K_2_Ti_10_Td_0.03_PID_3_K_2_Ti_12_Td_0_U2_error_582.4618}
+	\caption{PID1 K=2, Ti=9, Td=0.01, PID2 K=2, Ti=10, Td=0.03, PID3 K=2, Ti=12, Td=0,  error=582}
+	\end{figure}
+	\end{center}
+	\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_2_Ti_9_Td_0.01_PID_2_K_3_Ti_10_Td_0.03_PID_3_K_1_Ti_12_Td_0_U2_error_529.7063.pdf}}
+	\label{PID_1_K_2_Ti_9_Td_0.01_PID_2_K_3_Ti_10_Td_0.03_PID_3_K_1_Ti_12_Td_0_U2_error_529.7063}
+	\caption{PID1 K=2, Ti=9, Td=0.01, PID2 K=3, Ti=10, Td=0.03, PID3 K=1, Ti=12, Td=0,  error=529}
+	\end{figure}
+	\end{center}
+	\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_2_Ti_9_Td_0.01_PID_2_K_3_Ti_10_Td_0.03_PID_3_K_2_Ti_12_Td_0_U2_error_557.0538.pdf}}
+	\label{PID_1_K_2_Ti_9_Td_0.01_PID_2_K_3_Ti_10_Td_0.03_PID_3_K_2_Ti_12_Td_0_U2_error_557.0538}
+	\caption{PID1 K=2, Ti=9, Td=0.01, PID2 K=3, Ti=10, Td=0.03, PID3 K=2, Ti=12, Td=0,  error=557}
+	\end{figure}
+	\end{center}
+	\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_2_Ti_9_Td_0.01_PID_2_K_3_Ti_11_Td_0.03_PID_3_K_1_Ti_13_Td_0_U2_error_521.6835.pdf}}
+	\label{PID_1_K_2_Ti_9_Td_0.01_PID_2_K_3_Ti_11_Td_0.03_PID_3_K_1_Ti_13_Td_0_U2_error_521.6835}
+	\caption{PID1 K=2, Ti=9, Td=0.01, PID2 K=3, Ti=11, Td=0.03, PID3 K=1, Ti=13, Td=0,  error=521}
+	\end{figure}
+	\end{center}
+	\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_2_Ti_9_Td_0.01_PID_2_K_3_Ti_13_Td_0.03_PID_3_K_1_Ti_13_Td_0_U2_error_511.0043.pdf}}
+	\label{PID_1_K_2_Ti_9_Td_0.01_PID_2_K_3_Ti_13_Td_0.03_PID_3_K_1_Ti_13_Td_0_U2_error_511.0043}
+	\caption{PID1 K=2, Ti=9, Td=0.01, PID2 K=3, Ti=13, Td=0.03, PID3 K=1, Ti=13, Td=0,  error=511}
+	\end{figure}
+	\end{center}
+	\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_2_Ti_9_Td_0.01_PID_2_K_3_Ti_15_Td_0.03_PID_3_K_1.4_Ti_13_Td_0_U2_error_491.3601.pdf}}
+	\label{PID_1_K_2_Ti_9_Td_0.01_PID_2_K_3_Ti_15_Td_0.03_PID_3_K_1.4_Ti_13_Td_0_U2_error_491.3601}
+	\caption{PID1 K=2, Ti=9, Td=0.01, PID2 K=3, Ti=15, Td=0.03, PID3 K=1.4, Ti=13, Td=0,  error=491}
+	\end{figure}
+	\end{center}
+	\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_2_Ti_9_Td_0.01_PID_2_K_3_Ti_15_Td_0.03_PID_3_K_1.6_Ti_13_Td_0_U2_error_499.7016.pdf}}
+	\label{PID_1_K_2_Ti_9_Td_0.01_PID_2_K_3_Ti_15_Td_0.03_PID_3_K_1.6_Ti_13_Td_0_U2_error_499.7016}
+	\caption{PID1 K=2, Ti=9, Td=0.01, PID2 K=3, Ti=15, Td=0.03, PID3 K=1.6, Ti=13, Td=0,  error=499}
+	\end{figure}
+	\end{center}
+	\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_2_Ti_9_Td_0.01_PID_2_K_3_Ti_15_Td_0.03_PID_3_K_1_Ti_13_Td_0_U2_error_503.215.pdf}}
+	\label{PID_1_K_2_Ti_9_Td_0.01_PID_2_K_3_Ti_15_Td_0.03_PID_3_K_1_Ti_13_Td_0_U2_error_503.215}
+	\caption{PID1 K=2, Ti=9, Td=0.01, PID2 K=3, Ti=15, Td=0.03, PID3 K=1, Ti=13, Td=0,  error=503}
+	\end{figure}
+	\end{center}
+	\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_2_Ti_9_Td_0.01_PID_2_K_4_Ti_15_Td_0.03_PID_3_K_1.3_Ti_13_Td_0.02_U2_error_488.5814.pdf}}
+	\label{PID_1_K_2_Ti_9_Td_0.01_PID_2_K_4_Ti_15_Td_0.03_PID_3_K_1.3_Ti_13_Td_0.02_U2_error_488.5814}
+	\caption{PID1 K=2, Ti=9, Td=0.01, PID2 K=4, Ti=15, Td=0.03, PID3 K=1.3, Ti=13, Td=0.02,  error=488}
+	\end{figure}
+	\end{center}
+	\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_3_Ti_10_Td_0_PID_2_K_2_Ti_10_Td_0.03_PID_3_K_2_Ti_12_Td_0_U2_error_590.0449.pdf}}
+	\label{PID_1_K_3_Ti_10_Td_0_PID_2_K_2_Ti_10_Td_0.03_PID_3_K_2_Ti_12_Td_0_U2_error_590.0449}
+	\caption{PID1 K=3, Ti=10, Td=0, PID2 K=2, Ti=10, Td=0.03, PID3 K=2, Ti=12, Td=0,  error=590}
+	\end{figure}
+	\end{center}
+	\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_3_Ti_9_Td_0.01_PID_2_K_4_Ti_15_Td_0.03_PID_3_K_1.3_Ti_13_Td_0.02_U2_error_490.0846.pdf}}
+	\label{PID_1_K_3_Ti_9_Td_0.01_PID_2_K_4_Ti_15_Td_0.03_PID_3_K_1.3_Ti_13_Td_0.02_U2_error_490.0846}
+	\caption{PID1 K=3, Ti=9, Td=0.01, PID2 K=4, Ti=15, Td=0.03, PID3 K=1.3, Ti=13, Td=0.02,  error=490}
+	\end{figure}
+	\end{center}
+	\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_4_Ti_10_Td_0.02_PID_2_K_2_Ti_10_Td_0.02_PID_3_K_2_Ti_10_Td_0.02_U2_error_625.3985.pdf}}
+	\label{PID_1_K_4_Ti_10_Td_0.02_PID_2_K_2_Ti_10_Td_0.02_PID_3_K_2_Ti_10_Td_0.02_U2_error_625.3985}
+	\caption{PID1 K=4, Ti=10, Td=0.02, PID2 K=2, Ti=10, Td=0.02, PID3 K=2, Ti=10, Td=0.02,  error=625}
+	\end{figure}
+	\end{center}
+	\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_4_Ti_10_Td_0_PID_2_K_0_Ti_10000_Td_0_PID_3_K_0_Ti_10000_Td_0_U2_error_6348.2601.pdf}}
+	\label{PID_1_K_4_Ti_10_Td_0_PID_2_K_0_Ti_10000_Td_0_PID_3_K_0_Ti_10000_Td_0_U2_error_6348.2601}
+	\caption{PID1 K=4, Ti=10, Td=0, PID2 K=0, Ti=10000, Td=0, PID3 K=0, Ti=10000, Td=0,  error=6348}
+	\end{figure}
+	\end{center}
+	\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_4_Ti_10_Td_0_PID_2_K_1_Ti_10000_Td_0_PID_3_K_1_Ti_10000_Td_0_U2_error_1088.7912.pdf}}
+	\label{PID_1_K_4_Ti_10_Td_0_PID_2_K_1_Ti_10000_Td_0_PID_3_K_1_Ti_10000_Td_0_U2_error_1088.7912}
+	\caption{PID1 K=4, Ti=10, Td=0, PID2 K=1, Ti=10000, Td=0, PID3 K=1, Ti=10000, Td=0,  error=1088}
+	\end{figure}
+	\end{center}
+	\begin{center}
+	\begin{figure}[H]
+	\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_4_Ti_10_Td_0_PID_2_K_2_Ti_10000_Td_0_PID_3_K_2_Ti_10000_Td_0_U2_error_732.7717.pdf}}
+	\label{PID_1_K_4_Ti_10_Td_0_PID_2_K_2_Ti_10000_Td_0_PID_3_K_2_Ti_10000_Td_0_U2_error_732.7717}
+	\caption{PID1 K=4, Ti=10, Td=0, PID2 K=2, Ti=10000, Td=0, PID3 K=2, Ti=10000, Td=0,  error=732}
+	\end{figure}
+	\end{center}
+
+	
+	Teraz dla porównania wynik algorytmu ewolucyjnego :
+	
+	\begin{center}
+		\begin{figure}[H]
+		\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_1_K_2.1953_Ti_6.0433_Td_0.042969_PID_2_K_4.2026_Ti_45.3851_Td_0.00012793_PID_3_K_1.2957_Ti_99.9993_Td_0.00092811_U2_error_405.2532.pdf}}
+		\label{PID_1_K_2.1953_Ti_6.0433_Td_0.042969_PID_2_K_4.2026_Ti_45.3851_Td_0.00012793_PID_3_K_1.2957_Ti_99.9993_Td_0.00092811_U2_error_405.2532}
+		\caption{PID1 K=2.1953, Ti=6.0433, Td=0.042969, PID2 K=4.2026, Ti=45.3851, Td=0.00012793, PID3 K=1.2957, Ti=99.9993, Td=0.00092811, error=405}
+		\end{figure}
+	\end{center}
+	
+	Jak widaæ algorytm ewolucyjny znalaz³ lepsze rozwi¹zanie, ale otrzymana jakoœæ regulacji metod¹ in¿yniersk¹ jest porównywalna, ale nadal daleka od zadowalaj¹cej.
+	
+	Postanowiliœmy te¿ sprawdziæ jakoœæ regulacji dla innej konfiguracji par wejœcia-wyjœcie regulatorów. W tej czêœci ograniczymy siê jedynie do wyników algorytmu ewolucyjnego, gdy¿ pokazywanie kolejnych wykresów z kalibracji metod¹ in¿yniersk¹ mija siê z celem.
+	
+	Poni¿szy wynik jest dla przypadku :\\
+	1. Pierwszy PID : wejœcie nr 3 , wyjœcie nr 2\\
+	2. Drugi PID : wejœcie nr 2 , wyjœcie nr 1\\
+	3. Trzeci PID : wejœcie nr 1 , wyjœcie nr 3\\
+	
+	\begin{center}
+		\begin{figure}[H]
+		\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_3_2__2_1__1_3/PID_1_K_0.004756_Ti_71.7394_Td_0.0035729_PID_2_K_1.3234_Ti_20.7097_Td_0.008631_PID_3_K_0.21697_Ti_99.9936_Td_7.9386_U1_error_1715.0044.pdf}}
+		\label{PID_1_K_0.004756_Ti_71.7394_Td_0.0035729_PID_2_K_1.3234_Ti_20.7097_Td_0.008631_PID_3_K_0.21697_Ti_99.9936_Td_7.9386_U1_error_1715.0044}
+		\caption{PID1 K=0.004756, Ti=71.7394, Td=0.0035729, PID2 K=1.3234, Ti=20.7097, Td=0.008631, PID3 K=0.21697, Ti=99.9936, Td=7.9386, error=1715}
+		\end{figure}
+		\end{center}
+		
+	Poni¿szy wynik jest dla przypadku :\\
+	1. Pierwszy PID : wejœcie nr 4 , wyjœcie nr 2\\
+	2. Drugi PID : wejœcie nr 2 , wyjœcie nr 1\\
+	3. Trzeci PID : wejœcie nr 3 , wyjœcie nr 3\\
+	
+	\begin{center}
+		\begin{figure}[H]
+		\makebox[\textwidth]{\includegraphics[width=\paperwidth]{data/exercise_4_PID/PID_4_2__2_1__3_3/PID_1_K_0_Ti_9.0362_Td_9.0012_PID_2_K_0.66584_Ti_13.4519_Td_0.52067_PID_3_K_0.10938_Ti_2.3822_Td_0_U1_error_1758.5403.pdf}}
+		\label{PID_1_K_0_Ti_9.0362_Td_9.0012_PID_2_K_0.66584_Ti_13.4519_Td_0.52067_PID_3_K_0.10938_Ti_2.3822_Td_0_U1_error_1758.5403}
+		\caption{PID1 K=0, Ti=9.0362, Td=9.0012, PID2 K=0.66584, Ti=13.4519, Td=0.52067, PID3 K=0.10938, Ti=2.3822, Td=0,  error=1758}
+		\end{figure}
+		\end{center}
+		
+	
+	Jak mo¿na ³atwo zauwa¿yæ, ¿e z³y dobór par wejœcie-wyjœcie dla regulatorów powoduje, znacz¹co gorsz¹ jakoœæ regulacji, je¿eli w tych dwóch wypadkach w ogóle mo¿na mówiæ o regulacji ( oczywiœcie jest to regulacja, ale jej jakoœæ jest na tyle niska, ¿e nie mo¿na mówiæ tu jakkolwiek zadowalaj¹cych efektach). 
+	
