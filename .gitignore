@@ -10,3 +10,7 @@
 *.dep
 *.dpth
 *.md5
+*.synctex(busy)
+*.snm
+*.out
+*.nav
